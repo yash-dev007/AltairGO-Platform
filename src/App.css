@@ -1,0 +1,4 @@
+/* Minimal resets - all styles in index.css and CSS modules */
+* {
+  box-sizing: border-box;
+}

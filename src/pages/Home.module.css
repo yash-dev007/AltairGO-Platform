@@ -1,0 +1,465 @@
+.heroSection {
+    margin: 20px 40px 10px;
+    border-radius: 40px;
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    color: white;
+    padding: 2rem 60px;
+    background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.35)), url(https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2800&auto=format&fit=crop);
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    position: relative;
+}
+
+.heroContent {
+    max-width: 800px;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.heroTitle {
+    font-weight: 700;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.heroTitle span {
+    color: #4ade80;
+}
+
+.heroSubtitle {
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    font-weight: 300;
+    max-width: 500px;
+    line-height: 1.6;
+    opacity: 0.9;
+    letter-spacing: 0.02em;
+}
+
+.heroActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.primaryBtn {
+    background: #f1f5f9;
+    color: #0f172a;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.primaryBtn:hover {
+    background: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.secondaryBtn {
+    background: transparent;
+    border: 2px solid white;
+    color: white;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    backdrop-filter: blur(4px);
+    transition: all 0.2s;
+}
+
+.secondaryBtn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.statsSection {
+    padding: 4rem 2rem;
+    background: white;
+}
+
+.statsContainer {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    text-align: center;
+}
+
+.statItem h2 {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #1e293b;
+    letter-spacing: -0.03em;
+}
+
+.statItem p {
+    color: #64748b;
+    font-size: 1rem;
+    margin-top: 0.25rem;
+}
+
+.sectionPadding {
+    padding: 5rem 2rem;
+}
+
+.lightBg {
+    background: #f8fafc;
+}
+
+.whiteBg {
+    background: white;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.sectionHeader {
+    text-align: center;
+    margin-bottom: 3.5rem;
+}
+
+.sectionHeader h2 {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 800;
+    color: #1e293b;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.75rem;
+}
+
+.sectionHeader p {
+    color: #64748b;
+    font-size: 1.05rem;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.stepsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+}
+
+.stepCard {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    position: relative;
+    overflow: hidden;
+}
+
+.stepNum {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #e2e8f0;
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    line-height: 1;
+}
+
+.stepTitle {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.75rem;
+}
+
+.stepDesc {
+    color: #64748b;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.featuresGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.featureCard {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 1.75rem;
+    border: 1px solid #e2e8f0;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: default;
+}
+
+.featureCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+.featureIcon {
+    color: #1e293b;
+    margin-bottom: 1rem;
+    background: #e2e8f0;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.destinationsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.destinationsGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    grid-auto-flow: dense;
+}
+
+.ctaSection {
+    margin: 0 2rem 5rem;
+    border-radius: 32px;
+    padding: 4rem 3rem;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    color: white;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.ctaBadge {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.ctaBadgeItem {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+}
+
+/* Blogs Section */
+.blogsSection {
+    background: white;
+    padding: 8rem 0;
+}
+
+.blogsGrid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 2.5rem;
+    margin-top: 3.5rem;
+}
+
+@media (min-width: 768px) {
+    .blogsGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .blogsGrid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.blogCard {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    border: 1px solid #f1f5f9;
+    display: flex;
+    flex-direction: column;
+}
+
+.blogCard:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+}
+
+.blogImageContainer {
+    height: 240px;
+    position: relative;
+    overflow: hidden;
+    background: #f1f5f9;
+}
+
+.blogImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.blogCard:hover .blogImage {
+    transform: scale(1.05);
+}
+
+.blogCategory {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(4px);
+    color: #1e293b;
+    padding: 0.4rem 0.9rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.blogBody {
+    padding: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.blogMeta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #94a3b8;
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+}
+
+.blogTitle {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.4;
+    margin-bottom: 0.75rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.blogExcerpt {
+    color: #64748b;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.blogLink {
+    margin-top: auto;
+    color: #1e293b;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: gap 0.2s;
+}
+
+.blogLink:hover {
+    gap: 10px;
+    color: #4ade80;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .heroSection {
+        margin: 10px 20px;
+        padding-left: 40px;
+    }
+
+    .destinationsGrid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .heroSection {
+        margin: 10px;
+        min-height: 70vh;
+        padding: 3rem 20px;
+        border-radius: 24px;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .heroContent {
+        align-items: center;
+    }
+
+    .heroActions {
+        justify-content: center;
+    }
+
+    .statsContainer {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+
+    .destinationsGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .ctaSection {
+        margin: 0 1rem 3rem;
+        padding: 3rem 1.5rem;
+        border-radius: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .heroTitle {
+        font-size: 2.25rem;
+    }
+
+    .destinationsGrid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .primaryBtn,
+    .secondaryBtn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .ctaBadge {
+        gap: 1rem;
+    }
+}

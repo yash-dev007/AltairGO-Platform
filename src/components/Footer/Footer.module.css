@@ -1,0 +1,267 @@
+.footer {
+  background-color: #0b1120;
+  color: #e2e8f0;
+  padding: 5rem 0 2rem 0;
+  margin-top: 5rem;
+  position: relative;
+  font-family: var(--font-main);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.topSection {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 4rem;
+  padding-bottom: 4rem;
+}
+
+.brandCol {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 450px;
+}
+
+.brandLogo {
+  display: flex;
+  align-items: center;
+}
+
+.footerLogo {
+  height: 70px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.brandAccent {
+  color: #4ade80;
+}
+
+.brandDesc {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+.socials {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.socialLink {
+  background: transparent;
+  color: #e2e8f0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+}
+
+.socialLink:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.linksCol {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.colTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.linksCol a {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+  text-decoration: none;
+  width: fit-content;
+}
+
+.linksCol a:hover {
+  color: white;
+}
+
+.newsletterSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #171f30;
+  padding: 2.5rem 3rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 3rem;
+}
+
+.newsletterContent {
+  max-width: 500px;
+}
+
+.newsletterTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.newsletterDesc {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.form {
+  flex: 0 0 450px;
+}
+
+.inputGroup {
+  display: flex;
+  position: relative;
+  gap: 1rem;
+  align-items: center;
+}
+
+.input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.9rem 1.5rem;
+  border-radius: 2rem;
+  color: white;
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: all 0.3s;
+}
+
+.input::placeholder {
+  color: #64748b;
+}
+
+.input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.submitBtn {
+  background: #10b981;
+  color: #ffffff;
+  border: none;
+  padding: 0.9rem 2rem;
+  border-radius: 2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.submitBtn:hover {
+  background: #059669;
+}
+
+.bottomSection {
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  color: #475569;
+  font-size: 0.85rem;
+}
+
+.legalLinks {
+  display: flex;
+  gap: 2rem;
+}
+
+.legalLinks a {
+  color: #475569;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.legalLinks a:hover {
+  color: #94a3b8;
+}
+
+@media (min-width: 768px) {
+  .bottomSection {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 1024px) {
+  .topSection {
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+
+  .brandCol {
+    grid-column: span 2;
+    max-width: 100%;
+  }
+
+  .newsletterSection {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2rem;
+    padding: 2rem;
+  }
+
+  .form {
+    width: 100%;
+    flex: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .topSection {
+    grid-template-columns: 1fr;
+  }
+
+  .brandCol {
+    grid-column: span 1;
+  }
+
+  .inputGroup {
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+  }
+
+  .input {
+    width: 100%;
+  }
+
+  .submitBtn {
+    width: 100%;
+  }
+
+  .legalLinks {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+}
