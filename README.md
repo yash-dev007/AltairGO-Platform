@@ -24,14 +24,16 @@ AltairGO Platform is a production-grade React SPA that delivers AI-powered trip 
 
 ## Features
 
-- **Trip Planning Wizard** — 5-step flow: destinations, dates, budget, traveler profile, review
-- **AI Itinerary Generation** — Live polling with progress stages, auto-save on completion
-- **Itinerary Viewer** — 5-tab view: itinerary, bookings, expenses, readiness checklist, notes
-- **Destination Discovery** — Bento grid with filters, AI recommendations, budget estimator
+- **Trip Planning Wizard** — 5-step flow with progressive disclosure: destination search + AI recommendations, dates/duration, budget slider with live ₹/person/day hint, interests chips (8 options) + collapsible advanced options (dietary, fitness, accessibility, special occasion)
+- **AI Itinerary Generation** — Real-time **SSE stream** via `EventSource` for live status updates; falls back to polling; auto-saves on completion
+- **Itinerary Viewer** — **6-tab** view: itinerary (pending bookings banner + day briefing links), bookings (3-step explainer + status pills), expenses, readiness checklist, notes, post-trip summary
+- **Booking Management** — Type emoji icons, left color-coded border, booking_url links, booking refs, "Confirm & Book All Approved" CTA
+- **Post-trip Summary & Reviews** — Planned vs actual spend, activity type highlights, star rating + tag chip review form
+- **Destination Discovery** — Bento grid with filters, AI recommendations, **semantic AI search** (`q=` via text embeddings)
 - **Destination Details** — 4-tab deep-dive: overview, best time to visit, attractions, budget
-- **Daily Briefing** — Day-of carry list, weather, SOS contacts
+- **Daily Briefing** — Day-of carry list, weather, crowd warnings, SOS contacts
 - **Trip Sharing** — Public read-only trip view via share token
-- **Admin Dashboard** — Stats, job triggers, SSE live feed, engine config
+- **Admin Dashboard** — Stats, job triggers, SSE live feed, engine config, **Feature Flags CRUD** with traffic %, data source health
 - **Auth** — JWT-based login/register with auto token refresh
 
 ---
@@ -117,7 +119,7 @@ npm run build
 | `/planner` | Trip Planner | Protected |
 | `/planner/generating/:jobId` | Generating | Protected |
 | `/trips` | My Trips Dashboard | Protected |
-| `/trip/:id` | Trip Viewer | Protected |
+| `/trip/:id` | Trip Viewer (6 tabs) | Protected |
 | `/trip/:id/briefing/:day` | Daily Briefing | Protected |
 | `/profile` | Profile | Protected |
 | `/admin` | Admin Dashboard | Admin |
