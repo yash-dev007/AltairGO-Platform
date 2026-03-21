@@ -26,6 +26,7 @@ const GeneratingPage = () => {
   const [error, setError] = useState(null);
   const savedRef = useRef(false);
   const pollRef = useRef(null);
+  const pollErrorCount = useRef(0);
 
   const stateData = location.state || {};
 
@@ -70,8 +71,12 @@ const GeneratingPage = () => {
           clearInterval(msgInterval);
           setError(data.error_message || 'Generation failed. Please try again.');
         }
-      } catch (err) {
-        console.error('Poll error:', err);
+      } catch {
+        pollErrorCount.current += 1;
+        if (pollErrorCount.current >= 5) {
+          clearInterval(msgInterval);
+          setError('Lost connection to the server. Please check your network and try again.');
+        }
       }
     };
 

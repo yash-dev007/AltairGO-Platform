@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, Clock, User, Tag } from 'lucide-react';
+import DOMPurify from 'dompurify';
 import styles from './BlogContent.module.css';
 
 const BlogContent = ({ blog }) => {
@@ -66,7 +67,7 @@ const BlogContent = ({ blog }) => {
             typeof blog.content === 'string' ? (
               <div
                 className={styles.prose}
-                dangerouslySetInnerHTML={{ __html: blog.content }}
+                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(blog.content) }}
               />
             ) : (
               <div className={styles.prose}>

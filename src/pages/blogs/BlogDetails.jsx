@@ -8,11 +8,13 @@ const BlogDetails = () => {
   const { id } = useParams();
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
 
   useEffect(() => {
+    setFetchError(false);
     getBlog(id)
       .then(data => setBlog(data))
-      .catch(err => console.error('Failed to fetch blog:', err))
+      .catch(() => setFetchError(true))
       .finally(() => setLoading(false));
   }, [id]);
 
@@ -22,10 +24,12 @@ const BlogDetails = () => {
 
   if (loading) return <DetailPageSkeleton />;
 
-  if (!blog) {
+  if (!blog || fetchError) {
     return (
       <div style={{ padding: '10rem 2rem', textAlign: 'center' }}>
-        <h2 style={{ marginBottom: '1rem', color: 'var(--primary)' }}>Blog post not found</h2>
+        <h2 style={{ marginBottom: '1rem', color: 'var(--primary)' }}>
+          {fetchError ? 'Could not load blog post' : 'Blog post not found'}
+        </h2>
         <Link
           to="/blogs"
           style={{

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import DOMPurify from 'dompurify';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import {
@@ -44,6 +45,7 @@ const AdminDashboard = () => {
   const [editingBlog, setEditingBlog] = useState(null); // null = new post
   const [blogSaving, setBlogSaving] = useState(false);
   const [previewBlog, setPreviewBlog] = useState(null);
+  const [pendingDeleteId, setPendingDeleteId] = useState(null);
   const EMPTY_BLOG = { title: '', category: '', date: '', readTime: '', image: '', excerpt: '', content: '', author: '', published: true };
 
   useEffect(() => {
@@ -70,7 +72,10 @@ const AdminDashboard = () => {
   const setupSSE = () => {
     const token = localStorage.getItem('ag_admin_token');
     if (!token) return;
-    const es = new EventSource(`/api/ops/live-metrics?token=${token}`);
+    // NOTE: EventSource does not support custom headers; the token must be passed
+    // as a query param. Ensure the backend treats this endpoint as short-lived and
+    // rate-limits it. Use HTTPS in production to prevent token exposure in plaintext.
+    const es = new EventSource(`/api/ops/live-metrics?token=${encodeURIComponent(token)}`);
     es.onmessage = (e) => {
       try {
         const data = JSON.parse(e.data);
@@ -107,6 +112,7 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
+    setPendingDeleteId(null);
     if (activeTab === 'config') loadEngineConfig();
     if (activeTab === 'blogs') loadBlogs();
   }, [activeTab]);
@@ -145,7 +151,8 @@ const AdminDashboard = () => {
   };
 
   const handleDeleteBlog = async (id) => {
-    if (!window.confirm('Delete this blog post? This cannot be undone.')) return;
+    if (pendingDeleteId !== id) { setPendingDeleteId(id); return; }
+    setPendingDeleteId(null);
     try {
       await adminDeleteBlog(id);
       setBlogs(prev => prev.filter(b => b.id !== id));
@@ -405,7 +412,13 @@ const AdminDashboard = () => {
                             <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
                               <button onClick={() => openPreview(blog)} title="Preview" style={{ padding: '0.45rem', background: 'rgba(255,255,255,0.05)', border: 'none', color: 'rgba(255,255,255,0.5)', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}><Eye size={15} /></button>
                               <button onClick={() => openEditBlog(blog)} title="Edit" style={{ padding: '0.45rem', background: 'rgba(255,255,255,0.05)', border: 'none', color: 'rgba(255,255,255,0.5)', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}><Pencil size={15} /></button>
-                              <button onClick={() => handleDeleteBlog(blog.id)} title="Delete" style={{ padding: '0.45rem', background: 'rgba(239,68,68,0.08)', border: 'none', color: '#fca5a5', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}><Trash2 size={15} /></button>
+                              <button
+                                onClick={() => handleDeleteBlog(blog.id)}
+                                title={pendingDeleteId === blog.id ? 'Click again to confirm delete' : 'Delete'}
+                                style={{ padding: '0.45rem 0.6rem', background: pendingDeleteId === blog.id ? 'rgba(239,68,68,0.25)' : 'rgba(239,68,68,0.08)', border: pendingDeleteId === blog.id ? '1px solid rgba(239,68,68,0.4)' : 'none', color: '#fca5a5', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', fontFamily: 'inherit' }}
+                              >
+                                <Trash2 size={15} />{pendingDeleteId === blog.id ? 'Confirm?' : ''}
+                              </button>
                             </div>
                           </div>
                         ))}
@@ -545,7 +558,7 @@ const AdminDashboard = () => {
                         {previewBlog.content && (
                           <div
                             style={{ fontSize: '1rem', color: '#1e293b', lineHeight: 1.8 }}
-                            dangerouslySetInnerHTML={{ __html: previewBlog.content }}
+                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(previewBlog.content) }}
                           />
                         )}
                       </div>

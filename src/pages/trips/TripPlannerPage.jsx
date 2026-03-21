@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { ChevronRight, ChevronLeft, MapPin, Search, X, Plus, Minus, Sparkles, Check, Calendar, Users, DollarSign, Heart } from 'lucide-react';
-import { getCountries, getDestinations, recommend, generateItinerary } from '../../services/api.js';
+import { getCountries, getDestinations, search as searchDestinations, recommend, generateItinerary } from '../../services/api.js';
 import toast from 'react-hot-toast';
 
 const STYLES = ['adventure', 'cultural', 'relaxation', 'photography', 'food', 'spiritual', 'family'];
@@ -71,13 +71,9 @@ const TripPlannerPage = () => {
     const t = setTimeout(async () => {
       setSearchLoading(true);
       try {
-        const data = await getDestinations({ limit: 8 });
-        const items = Array.isArray(data) ? data : (data.destinations || []);
-        const filtered = items.filter(d =>
-          d.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          d.state_name?.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-        setSearchResults(filtered.slice(0, 6));
+        const data = await searchDestinations(searchQuery, 'destination', 8);
+        const items = Array.isArray(data) ? data : (data.results || data.destinations || []);
+        setSearchResults(items.slice(0, 6));
       } catch { setSearchResults([]); }
       finally { setSearchLoading(false); }
     }, 300);

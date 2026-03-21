@@ -38,7 +38,8 @@ const ProtectedRoute = ({ children }) => {
 
 // Admin Route
 const AdminRoute = ({ children }) => {
-  const { isAdmin } = useAuth();
+  const { isAdmin, loading } = useAuth();
+  if (loading) return <LoadingOverlay message="Checking authentication..." />;
   if (!isAdmin) return <Navigate to="/admin/login" replace />;
   return children;
 };

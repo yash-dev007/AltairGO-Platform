@@ -8,9 +8,13 @@ import toast from 'react-hot-toast';
 
 const TripCard = ({ trip, onShare }) => {
   const navigate = useNavigate();
-  const itinerary = trip.itinerary_json
-    ? (typeof trip.itinerary_json === 'string' ? JSON.parse(trip.itinerary_json) : trip.itinerary_json)
-    : null;
+  const itinerary = (() => {
+    try {
+      return trip.itinerary_json
+        ? (typeof trip.itinerary_json === 'string' ? JSON.parse(trip.itinerary_json) : trip.itinerary_json)
+        : null;
+    } catch { return null; }
+  })();
   const title = trip.trip_title || itinerary?.trip_title || 'My Trip';
   const totalCost = trip.total_cost || trip.budget || itinerary?.total_cost || 0;
 

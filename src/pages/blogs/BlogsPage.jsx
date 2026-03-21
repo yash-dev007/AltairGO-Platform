@@ -7,11 +7,12 @@ import { BlogCardSkeleton } from '../../components/Skeleton/Skeleton';
 const BlogsPage = () => {
   const [blogsData, setBlogsData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
 
   useEffect(() => {
     getBlogs()
       .then(data => setBlogsData(Array.isArray(data) ? data : (data.blogs || [])))
-      .catch(err => console.error('Failed to fetch blogs:', err))
+      .catch(() => setFetchError(true))
       .finally(() => setLoading(false));
   }, []);
 
@@ -56,7 +57,11 @@ const BlogsPage = () => {
                 </Link>
               </div>
             </article>
-          )) : (
+          )) : fetchError ? (
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
+              Could not load blog posts. Please try again later.
+            </div>
+          ) : (
             <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
               No blog posts found.
             </div>

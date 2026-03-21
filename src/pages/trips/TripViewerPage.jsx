@@ -44,6 +44,7 @@ const TripViewerPage = () => {
   const [notes, setNotes] = useState('');
   const [expenseForm, setExpenseForm] = useState({ category: 'food', description: '', amount_inr: '', trip_day: 1 });
   const [showExpenseForm, setShowExpenseForm] = useState(false);
+  const [savingNotes, setSavingNotes] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -129,10 +130,13 @@ const TripViewerPage = () => {
   };
 
   const handleSaveNotes = async () => {
+    if (savingNotes) return;
+    setSavingNotes(true);
     try {
       await updateTripNotes(id, { notes });
       toast.success('Notes saved');
     } catch { toast.error('Could not save notes'); }
+    finally { setSavingNotes(false); }
   };
 
   if (loading) return (
@@ -152,9 +156,13 @@ const TripViewerPage = () => {
     </div>
   );
 
-  const itinerary = trip.itinerary_json
-    ? (typeof trip.itinerary_json === 'string' ? JSON.parse(trip.itinerary_json) : trip.itinerary_json)
-    : trip;
+  const itinerary = (() => {
+    try {
+      return trip.itinerary_json
+        ? (typeof trip.itinerary_json === 'string' ? JSON.parse(trip.itinerary_json) : trip.itinerary_json)
+        : trip;
+    } catch { return trip; }
+  })();
 
   const days = itinerary?.itinerary || [];
   const totalCost = itinerary?.total_cost || trip.total_cost || trip.budget || 0;
@@ -633,9 +641,10 @@ const TripViewerPage = () => {
               />
               <button
                 onClick={handleSaveNotes}
-                style={{ marginTop: '0.75rem', padding: '0.7rem 1.5rem', background: '#1e293b', color: 'white', border: 'none', borderRadius: '10px', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer', fontSize: '0.9rem' }}
+                disabled={savingNotes}
+                style={{ marginTop: '0.75rem', padding: '0.7rem 1.5rem', background: savingNotes ? '#94a3b8' : '#1e293b', color: 'white', border: 'none', borderRadius: '10px', fontFamily: 'inherit', fontWeight: 600, cursor: savingNotes ? 'not-allowed' : 'pointer', fontSize: '0.9rem' }}
               >
-                Save Notes
+                {savingNotes ? 'Saving...' : 'Save Notes'}
               </button>
             </div>
           </div>

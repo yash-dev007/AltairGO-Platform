@@ -13,7 +13,8 @@ const LoginPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get('redirect') || '/trips';
+  const rawRedirect = searchParams.get('redirect') || '/trips';
+  const redirectTo = rawRedirect.startsWith('/') && !rawRedirect.startsWith('//') ? rawRedirect : '/trips';
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
 

@@ -27,9 +27,13 @@ const SharedTripPage = () => {
     </div>
   );
 
-  const itinerary = trip.itinerary_json
-    ? (typeof trip.itinerary_json === 'string' ? JSON.parse(trip.itinerary_json) : trip.itinerary_json)
-    : trip;
+  const itinerary = (() => {
+    try {
+      return trip.itinerary_json
+        ? (typeof trip.itinerary_json === 'string' ? JSON.parse(trip.itinerary_json) : trip.itinerary_json)
+        : trip;
+    } catch { return trip; }
+  })();
   const days = itinerary?.itinerary || [];
   const title = itinerary?.trip_title || trip.trip_title || 'Shared Trip';
   const totalCost = itinerary?.total_cost || trip.total_cost || 0;
