@@ -197,16 +197,29 @@ const DashboardPage = () => {
             border: '1px dashed #e2e8f0',
           }}>
             <div style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>✈️</div>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.75rem' }}>No Saved Trips Yet</h2>
-            <p style={{ color: '#64748b', maxWidth: '400px', margin: '0 auto 2.5rem', lineHeight: 1.6 }}>
-              Start planning your next adventure with our AI-powered trip generator. It only takes 2 minutes!
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.75rem' }}>Your adventures start here</h2>
+            <p style={{ color: '#64748b', maxWidth: '440px', margin: '0 auto 2rem', lineHeight: 1.6 }}>
+              Tell us your destination, budget, and travel style — our AI builds a complete day-by-day plan with real costs in under 30 seconds.
             </p>
-            <Link
-              to="/planner"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', padding: '1rem 2.5rem', background: '#1e293b', color: 'white', textDecoration: 'none', borderRadius: '50px', fontWeight: 700, fontSize: '1rem' }}
-            >
-              <Sparkles size={20} /> Plan Your First Trip
-            </Link>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
+              {['✅ Real cost breakdowns', '✅ Hotel & flight included', '✅ Fully editable plan'].map((b, i) => (
+                <span key={i} style={{ background: '#f0fdf4', color: '#065f46', padding: '5px 14px', borderRadius: '999px', fontSize: '0.82rem', fontWeight: 600 }}>{b}</span>
+              ))}
+            </div>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <Link
+                to="/planner"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', padding: '0.9rem 2.25rem', background: '#1e293b', color: 'white', textDecoration: 'none', borderRadius: '50px', fontWeight: 700, fontSize: '1rem' }}
+              >
+                <Sparkles size={18} /> Plan My First Trip
+              </Link>
+              <Link
+                to="/discover"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '0.9rem 2rem', background: 'white', color: '#1e293b', textDecoration: 'none', borderRadius: '50px', fontWeight: 600, fontSize: '0.95rem', border: '1px solid #e2e8f0' }}
+              >
+                Browse destinations first
+              </Link>
+            </div>
           </div>
         )}
       </div>

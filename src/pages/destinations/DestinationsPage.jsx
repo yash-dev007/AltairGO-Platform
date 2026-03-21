@@ -25,6 +25,8 @@ const DestinationsPage = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [recommendLoading, setRecommendLoading] = useState(false);
+  const [aiQuery, setAiQuery] = useState('');
+  const [aiSearchLoading, setAiSearchLoading] = useState(false);
 
   const fetchDestinations = useCallback(async (reset = false, signal = null) => {
     setLoading(true);
@@ -75,6 +77,29 @@ const DestinationsPage = () => {
       toast.error('Could not load recommendations');
     } finally {
       setRecommendLoading(false);
+    }
+  };
+
+  const handleAiSearch = async (e) => {
+    e.preventDefault();
+    if (!aiQuery.trim()) return;
+    setAiSearchLoading(true);
+    try {
+      const params = { q: aiQuery.trim(), limit: 8 };
+      if (budgetFilter !== 'All') params.budget_category = budgetFilter;
+      if (travelerFilter !== 'All') params.traveler_type = travelerFilter;
+      const data = await recommend(params);
+      const items = Array.isArray(data) ? data : (data.destinations || []);
+      if (items.length > 0) {
+        setDestinations(items);
+        toast.success(`AI found ${items.length} matches for "${aiQuery}"`);
+      } else {
+        toast.error('No matches found. Try a different query.');
+      }
+    } catch {
+      toast.error('AI search failed. Try again.');
+    } finally {
+      setAiSearchLoading(false);
     }
   };
 
@@ -132,6 +157,27 @@ const DestinationsPage = () => {
             <Sparkles size={16} />
             {recommendLoading ? 'Loading...' : 'Not sure? Get AI Recommendations'}
           </button>
+
+          {/* Semantic AI search */}
+          <form onSubmit={handleAiSearch} style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem', maxWidth: '560px', margin: '0.75rem auto 0' }}>
+            <div style={{ position: 'relative', flex: 1 }}>
+              <Sparkles size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#a855f7', pointerEvents: 'none' }} />
+              <input
+                type="text"
+                value={aiQuery}
+                onChange={e => setAiQuery(e.target.value)}
+                placeholder='AI search: "beaches for families" or "mountain treks"'
+                style={{ width: '100%', paddingLeft: '40px', paddingRight: '12px', paddingTop: '0.7rem', paddingBottom: '0.7rem', border: '1.5px solid #e0d7f7', borderRadius: '50px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', background: '#faf5ff', color: '#1e293b', boxSizing: 'border-box' }}
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={aiSearchLoading || !aiQuery.trim()}
+              style={{ padding: '0.7rem 1.25rem', background: aiSearchLoading || !aiQuery.trim() ? '#c4b5fd' : '#7c3aed', color: 'white', border: 'none', borderRadius: '50px', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.9rem', cursor: aiSearchLoading || !aiQuery.trim() ? 'not-allowed' : 'pointer', whiteSpace: 'nowrap' }}
+            >
+              {aiSearchLoading ? '...' : 'Search'}
+            </button>
+          </form>
         </div>
 
         {loading && destinations.length === 0 ? (

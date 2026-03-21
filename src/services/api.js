@@ -140,6 +140,20 @@ export const adminGetEngineConfig = () => req('/api/ops/engine-config', { admin:
 export const adminUpdateEngineConfig = (data) => req('/api/ops/engine-config', { method: 'POST', body: data, admin: true });
 export const adminGetOpsSummary = () => req('/api/ops/summary', { admin: true });
 
+// Trip Reviews
+export const getTripReview = (id) => req(`/api/trip/${id}/review`);
+export const submitTripReview = (id, data) => req(`/api/trip/${id}/review`, { body: data });
+export const submitAttractionReview = (id, data) => req(`/api/attraction/${id}/review`, { body: data });
+
+// Post-Trip Summary
+export const getTripSummary = (id) => req(`/api/trip/${id}/summary`);
+
+// Admin — Feature Flags
+export const adminGetFeatureFlags = () => req('/api/admin/feature-flags', { admin: true });
+export const adminCreateFeatureFlag = (data) => req('/api/admin/feature-flags', { body: data, admin: true });
+export const adminUpdateFeatureFlag = (key, data) => req(`/api/admin/feature-flags/${key}`, { method: 'PATCH', body: data, admin: true });
+export const adminDeleteFeatureFlag = (key) => req(`/api/admin/feature-flags/${key}`, { method: 'DELETE', admin: true });
+
 // Admin — Blog CMS
 export const adminGetBlogs = () => req('/api/admin/blogs', { admin: true });
 export const adminCreateBlog = (data) => req('/api/admin/blogs', { body: data, admin: true });

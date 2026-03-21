@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { ChevronRight, ChevronLeft, MapPin, Search, X, Plus, Minus, Sparkles, Check, Calendar, Users, DollarSign, Heart } from 'lucide-react';
-import { getCountries, getDestinations, search as searchDestinations, recommend, generateItinerary } from '../../services/api.js';
+import { getCountries, getDestinations, search as searchDestinations, recommend, generateItinerary, estimateBudget } from '../../services/api.js';
 import toast from 'react-hot-toast';
 
 const STYLES = ['adventure', 'cultural', 'relaxation', 'photography', 'food', 'spiritual', 'family'];
@@ -15,6 +15,16 @@ const TRAVELER_TYPES = [
 ];
 const DIETARY = ['none', 'vegetarian', 'vegan', 'jain', 'halal', 'gluten-free'];
 const FITNESS = ['low', 'moderate', 'high'];
+const INTERESTS = [
+  { value: 'food', label: 'Food & Dining', emoji: '🍜' },
+  { value: 'adventure', label: 'Adventure', emoji: '🧗' },
+  { value: 'culture', label: 'Culture & History', emoji: '🏛️' },
+  { value: 'photography', label: 'Photography', emoji: '📸' },
+  { value: 'wellness', label: 'Wellness & Spa', emoji: '🧘' },
+  { value: 'nightlife', label: 'Nightlife', emoji: '🎉' },
+  { value: 'shopping', label: 'Shopping', emoji: '🛍️' },
+  { value: 'nature', label: 'Nature & Wildlife', emoji: '🌿' },
+];
 
 const getBudgetLabel = (budget, days, travelers) => {
   if (!days || !travelers) return '';
@@ -55,6 +65,12 @@ const TripPlannerPage = () => {
   const [dietary, setDietary] = useState('none');
   const [fitnessLevel, setFitnessLevel] = useState('moderate');
   const [specialOccasion, setSpecialOccasion] = useState('');
+  const [accessibility, setAccessibility] = useState(false);
+  const [selectedInterests, setSelectedInterests] = useState([]);
+  const [showAdvanced, setShowAdvanced] = useState(false);
+
+  // Budget hint
+  const [budgetHint, setBudgetHint] = useState(null);
 
   const [generating, setGenerating] = useState(false);
 
@@ -94,6 +110,8 @@ const TripPlannerPage = () => {
   const addDest = (dest) => {
     if (selectedDests.find(d => d.id === dest.id || d.name === dest.name)) return;
     setSelectedDests(prev => [...prev, dest]);
+    // Auto-set country from first destination added
+    if (dest.country_name) setSelectedCountry(dest.country_name);
     setSearchQuery('');
     setSearchResults([]);
   };
@@ -103,6 +121,21 @@ const TripPlannerPage = () => {
   const toggleStyle = (s) => {
     setSelectedStyles(prev =>
       prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]
+    );
+  };
+
+  // Debounced live budget hint
+  useEffect(() => {
+    if (step !== 3 || !budget || !duration || !travelers) return;
+    const daily = Math.round(budget / (duration * travelers));
+    const tier = daily < 1500 ? 'budget' : daily < 4000 ? 'mid' : 'luxury';
+    const tierLabel = tier === 'budget' ? 'Budget' : tier === 'mid' ? 'Standard' : 'Luxury';
+    setBudgetHint({ daily, tier, tierLabel });
+  }, [budget, duration, travelers, step]);
+
+  const toggleInterest = (val) => {
+    setSelectedInterests(prev =>
+      prev.includes(val) ? prev.filter(x => x !== val) : [...prev, val]
     );
   };
 
@@ -126,11 +159,12 @@ const TripPlannerPage = () => {
         travel_month: travelMonth,
         use_engine: true,
         dietary_restrictions: dietary !== 'none' ? [dietary] : [],
-        accessibility: 0,
+        accessibility: accessibility ? 1 : 0,
         children_count: childrenCount,
         senior_count: seniorCount,
         special_occasion: specialOccasion || null,
         fitness_level: fitnessLevel,
+        interests: selectedInterests.length > 0 ? selectedInterests : undefined,
       };
       if (startDate) payload.start_date = startDate;
 
@@ -192,29 +226,18 @@ const TripPlannerPage = () => {
           {step === 1 && (
             <div>
               <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#1e293b', marginBottom: '0.5rem' }}>Where do you want to go?</h2>
-              <p style={{ color: '#64748b', marginBottom: '2rem' }}>Search for destinations or let AI recommend based on your preferences</p>
-
-              <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontWeight: 600, color: '#1e293b', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Country</label>
-                <select
-                  value={selectedCountry}
-                  onChange={(e) => setSelectedCountry(e.target.value)}
-                  style={{ width: '100%', padding: '0.85rem 1rem', border: '1.5px solid #e2e8f0', borderRadius: '12px', fontFamily: 'inherit', fontSize: '0.95rem', outline: 'none', background: 'white' }}
-                >
-                  {countries.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
-                  {!countries.length && <option value="India">India</option>}
-                </select>
-              </div>
+              <p style={{ color: '#64748b', marginBottom: '2rem' }}>Type a destination or let AI suggest the perfect place for you</p>
 
               <div style={{ position: 'relative', marginBottom: '1rem' }}>
                 <Search size={18} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', pointerEvents: 'none' }} />
                 <input
                   type="text"
-                  placeholder="Search destinations..."
+                  placeholder="Search — Goa, Manali, Rajasthan..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  style={{ width: '100%', padding: '0.85rem 1rem 0.85rem 2.75rem', border: '1.5px solid #e2e8f0', borderRadius: '12px', fontFamily: 'inherit', fontSize: '0.95rem', outline: 'none' }}
+                  style={{ width: '100%', padding: '0.95rem 1rem 0.95rem 2.75rem', border: '1.5px solid #e2e8f0', borderRadius: '14px', fontFamily: 'inherit', fontSize: '0.95rem', outline: 'none' }}
                   onFocus={() => { if (searchQuery.length < 2) handleRecommend(); }}
+                  autoFocus
                 />
               </div>
 
@@ -350,6 +373,30 @@ const TripPlannerPage = () => {
                   onChange={(e) => setBudget(Number(e.target.value))}
                   style={{ width: '100%', accentColor: '#1e293b' }}
                 />
+
+                {/* Live budget hint */}
+                {budgetHint && (
+                  <div style={{
+                    marginTop: '1rem', padding: '1rem 1.25rem', borderRadius: '12px',
+                    background: budgetHint.tier === 'budget' ? '#eff6ff' : budgetHint.tier === 'mid' ? '#f0fdf4' : '#fefce8',
+                    border: `1px solid ${budgetHint.tier === 'budget' ? '#bfdbfe' : budgetHint.tier === 'mid' ? '#bbf7d0' : '#fde68a'}`,
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem',
+                  }}>
+                    <div>
+                      <span style={{ fontWeight: 700, fontSize: '1.1rem', color: '#1e293b' }}>
+                        ₹{budgetHint.daily.toLocaleString('en-IN')}
+                      </span>
+                      <span style={{ color: '#64748b', fontSize: '0.9rem' }}> per person, per day</span>
+                    </div>
+                    <span style={{
+                      fontWeight: 700, fontSize: '0.85rem', padding: '4px 12px', borderRadius: '999px',
+                      background: budgetHint.tier === 'budget' ? '#dbeafe' : budgetHint.tier === 'mid' ? '#dcfce7' : '#fef9c3',
+                      color: budgetHint.tier === 'budget' ? '#1d4ed8' : budgetHint.tier === 'mid' ? '#15803d' : '#a16207',
+                    }}>
+                      {budgetHint.tierLabel} travel
+                    </span>
+                  </div>
+                )}
               </div>
 
               <div style={{ marginBottom: '2rem' }}>
@@ -388,9 +435,10 @@ const TripPlannerPage = () => {
           {/* STEP 4: About You */}
           {step === 4 && (
             <div>
-              <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#1e293b', marginBottom: '0.5rem' }}>Tell us about yourself</h2>
-              <p style={{ color: '#64748b', marginBottom: '2rem' }}>Help us personalize your itinerary further</p>
+              <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#1e293b', marginBottom: '0.5rem' }}>Who's going?</h2>
+              <p style={{ color: '#64748b', marginBottom: '2rem' }}>Just the essentials — we'll handle the rest</p>
 
+              {/* Traveler type */}
               <div style={{ marginBottom: '1.75rem' }}>
                 <label style={{ display: 'block', fontWeight: 600, color: '#1e293b', marginBottom: '0.75rem', fontSize: '0.9rem' }}>I'm traveling as...</label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
@@ -407,59 +455,121 @@ const TripPlannerPage = () => {
                 </div>
               </div>
 
-              {(travelerType === 'family') && (
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <label style={{ display: 'block', fontWeight: 600, color: '#1e293b', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Children count</label>
+              {/* Children/senior counts — only show if relevant */}
+              {travelerType === 'family' && (
+                <div style={{ marginBottom: '1.5rem', padding: '1rem', background: '#f0fdf4', borderRadius: '12px', border: '1px solid #bbf7d0' }}>
+                  <label style={{ display: 'block', fontWeight: 600, color: '#1e293b', marginBottom: '0.75rem', fontSize: '0.9rem' }}>How many children?</label>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <button onClick={() => setChildrenCount(c => Math.max(0, c - 1))} style={{ width: '36px', height: '36px', borderRadius: '50%', border: '1.5px solid #e2e8f0', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Minus size={14} /></button>
+                    <button onClick={() => setChildrenCount(c => Math.max(0, c - 1))} style={{ width: '36px', height: '36px', borderRadius: '50%', border: '1.5px solid #bbf7d0', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Minus size={14} /></button>
                     <span style={{ fontSize: '1.3rem', fontWeight: 700, minWidth: '30px', textAlign: 'center' }}>{childrenCount}</span>
-                    <button onClick={() => setChildrenCount(c => c + 1)} style={{ width: '36px', height: '36px', borderRadius: '50%', border: '1.5px solid #e2e8f0', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Plus size={14} /></button>
+                    <button onClick={() => setChildrenCount(c => c + 1)} style={{ width: '36px', height: '36px', borderRadius: '50%', border: '1.5px solid #bbf7d0', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Plus size={14} /></button>
+                    <span style={{ fontSize: '0.85rem', color: '#15803d' }}>We'll pick family-friendly spots</span>
                   </div>
                 </div>
               )}
 
-              {(travelerType === 'senior') && (
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <label style={{ display: 'block', fontWeight: 600, color: '#1e293b', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Senior travelers</label>
+              {travelerType === 'senior' && (
+                <div style={{ marginBottom: '1.5rem', padding: '1rem', background: '#eff6ff', borderRadius: '12px', border: '1px solid #bfdbfe' }}>
+                  <label style={{ display: 'block', fontWeight: 600, color: '#1e293b', marginBottom: '0.75rem', fontSize: '0.9rem' }}>How many seniors?</label>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <button onClick={() => setSeniorCount(s => Math.max(0, s - 1))} style={{ width: '36px', height: '36px', borderRadius: '50%', border: '1.5px solid #e2e8f0', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Minus size={14} /></button>
+                    <button onClick={() => setSeniorCount(s => Math.max(0, s - 1))} style={{ width: '36px', height: '36px', borderRadius: '50%', border: '1.5px solid #bfdbfe', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Minus size={14} /></button>
                     <span style={{ fontSize: '1.3rem', fontWeight: 700, minWidth: '30px', textAlign: 'center' }}>{seniorCount}</span>
-                    <button onClick={() => setSeniorCount(s => s + 1)} style={{ width: '36px', height: '36px', borderRadius: '50%', border: '1.5px solid #e2e8f0', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Plus size={14} /></button>
+                    <button onClick={() => setSeniorCount(s => s + 1)} style={{ width: '36px', height: '36px', borderRadius: '50%', border: '1.5px solid #bfdbfe', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Plus size={14} /></button>
+                    <span style={{ fontSize: '0.85rem', color: '#1d4ed8' }}>Gentle pacing, accessible venues</span>
                   </div>
                 </div>
               )}
 
-              <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontWeight: 600, color: '#1e293b', marginBottom: '0.75rem', fontSize: '0.9rem' }}>Dietary Preferences</label>
+              {/* Interests */}
+              <div style={{ marginBottom: '1.75rem' }}>
+                <label style={{ display: 'block', fontWeight: 600, color: '#1e293b', marginBottom: '0.75rem', fontSize: '0.9rem' }}>What excites you most? <span style={{ color: '#94a3b8', fontWeight: 400 }}>(optional)</span></label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                  {DIETARY.map(d => (
-                    <button key={d} onClick={() => setDietary(d)} style={{ padding: '0.4rem 1rem', border: `1.5px solid ${dietary === d ? '#1e293b' : '#e2e8f0'}`, borderRadius: '999px', background: dietary === d ? '#1e293b' : 'white', color: dietary === d ? 'white' : '#475569', fontFamily: 'inherit', fontWeight: 500, cursor: 'pointer', textTransform: 'capitalize', fontSize: '0.85rem' }}>
-                      {d === 'none' ? 'No restriction' : d}
+                  {INTERESTS.map(i => (
+                    <button
+                      key={i.value}
+                      onClick={() => toggleInterest(i.value)}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: '6px',
+                        padding: '0.5rem 1rem',
+                        border: `1.5px solid ${selectedInterests.includes(i.value) ? '#1e293b' : '#e2e8f0'}`,
+                        borderRadius: '999px',
+                        background: selectedInterests.includes(i.value) ? '#1e293b' : 'white',
+                        color: selectedInterests.includes(i.value) ? 'white' : '#475569',
+                        fontFamily: 'inherit', fontWeight: 500, cursor: 'pointer', fontSize: '0.88rem',
+                        transition: 'all 0.15s',
+                      }}
+                    >
+                      <span>{i.emoji}</span> {i.label}
                     </button>
                   ))}
                 </div>
               </div>
 
-              <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontWeight: 600, color: '#1e293b', marginBottom: '0.75rem', fontSize: '0.9rem' }}>Fitness Level</label>
-                <div style={{ display: 'flex', gap: '0.75rem' }}>
-                  {FITNESS.map(f => (
-                    <button key={f} onClick={() => setFitnessLevel(f)} style={{ flex: 1, padding: '0.75rem', border: `1.5px solid ${fitnessLevel === f ? '#1e293b' : '#e2e8f0'}`, borderRadius: '12px', background: fitnessLevel === f ? '#1e293b' : 'white', color: fitnessLevel === f ? 'white' : '#475569', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer', textTransform: 'capitalize', fontSize: '0.9rem' }}>
-                      {f}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
+              {/* Advanced options — collapsed by default */}
               <div>
-                <label style={{ display: 'block', fontWeight: 600, color: '#1e293b', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Special Occasion (optional)</label>
-                <input
-                  type="text"
-                  placeholder="e.g. honeymoon, birthday, anniversary..."
-                  value={specialOccasion}
-                  onChange={(e) => setSpecialOccasion(e.target.value)}
-                  style={{ width: '100%', padding: '0.85rem 1rem', border: '1.5px solid #e2e8f0', borderRadius: '12px', fontFamily: 'inherit', fontSize: '0.95rem', outline: 'none' }}
-                />
+                <button
+                  type="button"
+                  onClick={() => setShowAdvanced(v => !v)}
+                  style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.9rem', padding: '0', marginBottom: showAdvanced ? '1.25rem' : '0' }}
+                >
+                  <ChevronRight size={16} style={{ transform: showAdvanced ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s' }} />
+                  Advanced options (dietary, fitness, accessibility, special occasion)
+                </button>
+
+                {showAdvanced && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', padding: '1.25rem', background: '#f8fafc', borderRadius: '14px', border: '1px solid #e2e8f0' }}>
+                    {/* Dietary */}
+                    <div>
+                      <label style={{ display: 'block', fontWeight: 600, color: '#1e293b', marginBottom: '0.6rem', fontSize: '0.88rem' }}>Dietary preference</label>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+                        {DIETARY.map(d => (
+                          <button key={d} onClick={() => setDietary(d)} style={{ padding: '0.35rem 0.9rem', border: `1.5px solid ${dietary === d ? '#1e293b' : '#e2e8f0'}`, borderRadius: '999px', background: dietary === d ? '#1e293b' : 'white', color: dietary === d ? 'white' : '#475569', fontFamily: 'inherit', fontWeight: 500, cursor: 'pointer', textTransform: 'capitalize', fontSize: '0.83rem' }}>
+                            {d === 'none' ? 'No restriction' : d}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Fitness */}
+                    <div>
+                      <label style={{ display: 'block', fontWeight: 600, color: '#1e293b', marginBottom: '0.6rem', fontSize: '0.88rem' }}>Activity intensity</label>
+                      <div style={{ display: 'flex', gap: '0.6rem' }}>
+                        {[{ v: 'low', l: 'Easy going' }, { v: 'moderate', l: 'Moderate' }, { v: 'high', l: 'Very active' }].map(f => (
+                          <button key={f.v} onClick={() => setFitnessLevel(f.v)} style={{ flex: 1, padding: '0.65rem', border: `1.5px solid ${fitnessLevel === f.v ? '#1e293b' : '#e2e8f0'}`, borderRadius: '10px', background: fitnessLevel === f.v ? '#1e293b' : 'white', color: fitnessLevel === f.v ? 'white' : '#475569', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer', fontSize: '0.85rem' }}>
+                            {f.l}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Accessibility */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div>
+                        <div style={{ fontWeight: 600, color: '#1e293b', fontSize: '0.88rem' }}>Wheelchair / mobility access needed</div>
+                        <div style={{ fontSize: '0.78rem', color: '#94a3b8', marginTop: '2px' }}>We'll filter out venues with poor accessibility</div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setAccessibility(v => !v)}
+                        style={{ width: '48px', height: '26px', borderRadius: '13px', border: 'none', cursor: 'pointer', background: accessibility ? '#1e293b' : '#e2e8f0', position: 'relative', transition: 'background 0.2s', flexShrink: 0 }}
+                      >
+                        <span style={{ position: 'absolute', top: '4px', left: accessibility ? '26px' : '4px', width: '18px', height: '18px', borderRadius: '50%', background: 'white', transition: 'left 0.2s' }} />
+                      </button>
+                    </div>
+
+                    {/* Special occasion */}
+                    <div>
+                      <label style={{ display: 'block', fontWeight: 600, color: '#1e293b', marginBottom: '0.5rem', fontSize: '0.88rem' }}>Special occasion? <span style={{ color: '#94a3b8', fontWeight: 400 }}>(optional)</span></label>
+                      <input
+                        type="text"
+                        placeholder="e.g. honeymoon, birthday, anniversary..."
+                        value={specialOccasion}
+                        onChange={(e) => setSpecialOccasion(e.target.value)}
+                        style={{ width: '100%', padding: '0.75rem 1rem', border: '1.5px solid #e2e8f0', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', background: 'white' }}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -477,6 +587,7 @@ const TripPlannerPage = () => {
                   { icon: <DollarSign size={18} />, label: 'Budget', value: `₹${Number(budget).toLocaleString('en-IN')} total (${getBudgetLabel(budget, duration, travelers)})` },
                   { icon: <Users size={18} />, label: 'Travelers', value: `${travelers} ${travelers === 1 ? 'person' : 'people'} • ${travelerType}` },
                   { icon: <Heart size={18} />, label: 'Style', value: selectedStyles.join(', ') || 'Cultural' },
+                  ...(selectedInterests.length > 0 ? [{ icon: <Sparkles size={18} />, label: 'Interests', value: selectedInterests.map(v => INTERESTS.find(i => i.value === v)?.label || v).join(', ') }] : []),
                   { icon: <Sparkles size={18} />, label: 'Dietary', value: dietary === 'none' ? 'No restrictions' : dietary },
                 ].map((item, i) => (
                   <div key={i} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>

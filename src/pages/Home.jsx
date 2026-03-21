@@ -23,10 +23,10 @@ const FEATURES = [
 ];
 
 const STEPS = [
-  { num: '01', title: 'Discover', desc: 'Browse 200+ curated destinations with AI recommendations based on your travel style.' },
-  { num: '02', title: 'Plan', desc: 'Fill in your dates, budget, travelers and preferences in our intuitive multi-step wizard.' },
-  { num: '03', title: 'Generate', desc: 'Our AI engine builds a complete day-by-day itinerary with real costs and schedules.' },
-  { num: '04', title: 'Book & Go', desc: 'Approve bookings, track expenses, get daily briefings and enjoy your trip.' },
+  { num: '01', title: 'Pick a Destination', desc: 'Browse 200+ curated destinations or let AI recommend the perfect spot based on your style and budget.' },
+  { num: '02', title: 'Set Your Preferences', desc: 'Choose dates, budget, number of travelers, dietary needs, and interests — takes under 2 minutes.' },
+  { num: '03', title: 'AI Builds Your Plan', desc: 'Our engine generates a complete day-by-day itinerary with activities, hotels, real costs and schedules.' },
+  { num: '04', title: 'Book Everything', desc: 'Approve hotel, flights, and activity bookings with one click. Track expenses and get day-of briefings.' },
 ];
 
 function useCountUp(target, duration = 2000, start = false) {
@@ -89,12 +89,12 @@ const Home = () => {
           </h1>
 
           <p className={styles.heroSubtitle}>
-            Generate intelligent day-by-day itineraries, real-time budget breakdowns, and personalized travel plans — all in seconds.
+            Tell us where, when, and how much — our AI builds a complete day-by-day itinerary with hotel costs, activity schedules, and budget breakdowns in under 30 seconds.
           </p>
 
           <div className={styles.heroActions}>
             <Link to="/planner" className={styles.primaryBtn}>
-              Plan My Trip <ArrowRight size={18} />
+              Plan My Trip Free <ArrowRight size={18} />
             </Link>
             <Link to="/discover" className={styles.secondaryBtn}>
               Explore Destinations

@@ -4,6 +4,8 @@ import { Sparkles, AlertCircle } from 'lucide-react';
 import { getItineraryStatus, saveTrip } from '../../services/api.js';
 import toast from 'react-hot-toast';
 
+const BASE = import.meta.env.VITE_API_URL || '';
+
 const MESSAGES = [
   'Analyzing your travel preferences...',
   'Filtering 200+ attractions across destinations...',
@@ -30,70 +32,103 @@ const GeneratingPage = () => {
 
   const stateData = location.state || {};
 
+  const handleCompleted = async (result, msgInterval) => {
+    if (savedRef.current) return;
+    savedRef.current = true;
+    setProgress(100);
+    clearInterval(msgInterval);
+    try {
+      const itinerary = result;
+      const savePayload = {
+        itinerary_json: itinerary,
+        trip_title: itinerary?.trip_title || 'My Trip',
+        budget: stateData.budget || itinerary?.total_cost || 0,
+        duration: stateData.duration || itinerary?.itinerary?.length || 0,
+      };
+      const saved = await saveTrip(savePayload);
+      if (saved.id) {
+        setTimeout(() => navigate(`/trip/${saved.id}`), 500);
+        return;
+      }
+    } catch {
+      // not logged in — fall through
+    }
+    setTimeout(() => navigate(`/trip/preview`, { state: { itinerary: result } }), 500);
+  };
+
   useEffect(() => {
     const msgInterval = setInterval(() => {
       setMessageIndex(i => (i + 1) % MESSAGES.length);
       setProgress(p => Math.min(p + 10, 90));
     }, 2500);
 
-    const poll = async () => {
-      try {
-        const data = await getItineraryStatus(jobId);
-        setStatus(data.status);
+    // ── Try SSE stream first ──────────────────────────────────────────────────
+    if (typeof EventSource !== 'undefined') {
+      const es = new EventSource(`${BASE}/get-itinerary-status/${jobId}/stream`);
+      pollRef.current = es;
 
-        if (data.status === 'completed' && !savedRef.current) {
-          savedRef.current = true;
-          setProgress(100);
-          clearInterval(msgInterval);
-
-          // Auto-save if user is logged in
-          try {
-            const itinerary = data.result;
-            const savePayload = {
-              itinerary_json: itinerary,
-              trip_title: itinerary?.trip_title || 'My Trip',
-              budget: stateData.budget || itinerary?.total_cost || 0,
-              duration: stateData.duration || itinerary?.itinerary?.length || 0,
-            };
-            const saved = await saveTrip(savePayload);
-            if (saved.id) {
-              setTimeout(() => navigate(`/trip/${saved.id}`), 500);
-              return;
-            }
-          } catch {
-            // If save fails (not logged in), still navigate but pass result
+      es.onmessage = async (e) => {
+        try {
+          const data = JSON.parse(e.data);
+          if (data.heartbeat) return;
+          const s = data.status;
+          setStatus(s);
+          if (s === 'completed') {
+            es.close();
+            await handleCompleted(data.result, msgInterval);
+          } else if (s === 'failed') {
+            es.close();
+            clearInterval(msgInterval);
+            setError(data.error_message || 'Generation failed. Please try again.');
           }
+        } catch { /* ignore parse errors */ }
+      };
 
-          // No save, navigate to shared/raw view
-          setTimeout(() => navigate(`/trip/preview`, { state: { itinerary: data.result } }), 500);
+      es.onerror = () => {
+        es.close();
+        // Fall back to polling
+        startPolling(msgInterval);
+      };
 
-        } else if (data.status === 'failed') {
-          clearInterval(msgInterval);
-          setError(data.error_message || 'Generation failed. Please try again.');
-        }
-      } catch {
-        pollErrorCount.current += 1;
-        if (pollErrorCount.current >= 5) {
-          clearInterval(msgInterval);
-          setError('Lost connection to the server. Please check your network and try again.');
-        }
-      }
-    };
+      return () => {
+        es.close();
+        clearInterval(msgInterval);
+      };
+    }
 
-    poll();
-    pollRef.current = setInterval(poll, 2000);
-
+    // ── Polling fallback ──────────────────────────────────────────────────────
+    startPolling(msgInterval);
     return () => {
       clearInterval(msgInterval);
       if (pollRef.current) clearInterval(pollRef.current);
     };
   }, [jobId, navigate]);
 
-  useEffect(() => {
-    if (status === 'completed' || status === 'failed') {
-      if (pollRef.current) clearInterval(pollRef.current);
-    }
-  }, [status]);
+  const startPolling = (msgInterval) => {
+    const poll = async () => {
+      try {
+        const data = await getItineraryStatus(jobId);
+        setStatus(data.status);
+        if (data.status === 'completed') {
+          clearInterval(pollRef.current);
+          await handleCompleted(data.result, msgInterval);
+        } else if (data.status === 'failed') {
+          clearInterval(pollRef.current);
+          clearInterval(msgInterval);
+          setError(data.error_message || 'Generation failed. Please try again.');
+        }
+      } catch {
+        pollErrorCount.current += 1;
+        if (pollErrorCount.current >= 5) {
+          clearInterval(pollRef.current);
+          clearInterval(msgInterval);
+          setError('Lost connection to the server. Please check your network and try again.');
+        }
+      }
+    };
+    poll();
+    pollRef.current = setInterval(poll, 2000);
+  };
 
   if (error) {
     return (

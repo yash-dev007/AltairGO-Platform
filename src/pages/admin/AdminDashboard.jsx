@@ -6,7 +6,7 @@ import {
   Activity, Users, MapPin, Zap, RefreshCw, BarChart2, Clock, CheckCircle, AlertCircle,
   Shield, LogOut, Play, TrendingUp, Database, BookOpen, Plus, Pencil, Trash2, Eye, EyeOff, X, Save, ArrowLeft
 } from 'lucide-react';
-import { adminGetOpsSummary, adminTriggerJob, adminGetStats, adminGetEngineConfig, adminUpdateEngineConfig, adminGetBlogs, adminCreateBlog, adminUpdateBlog, adminDeleteBlog } from '../../services/api.js';
+import { adminGetOpsSummary, adminTriggerJob, adminGetStats, adminGetEngineConfig, adminUpdateEngineConfig, adminGetBlogs, adminCreateBlog, adminUpdateBlog, adminDeleteBlog, adminGetFeatureFlags, adminCreateFeatureFlag, adminUpdateFeatureFlag, adminDeleteFeatureFlag } from '../../services/api.js';
 import toast from 'react-hot-toast';
 
 const StatCard = ({ icon, title, value, sub, color = '#1e293b' }) => (
@@ -47,6 +47,13 @@ const AdminDashboard = () => {
   const [previewBlog, setPreviewBlog] = useState(null);
   const [pendingDeleteId, setPendingDeleteId] = useState(null);
   const EMPTY_BLOG = { title: '', category: '', date: '', readTime: '', image: '', excerpt: '', content: '', author: '', published: true };
+
+  // Feature Flags state
+  const [featureFlags, setFeatureFlags] = useState([]);
+  const [flagsLoading, setFlagsLoading] = useState(false);
+  const [newFlag, setNewFlag] = useState({ flag_key: '', is_active: true, traffic_pct: 100 });
+  const [showNewFlagForm, setShowNewFlagForm] = useState(false);
+  const [savingFlag, setSavingFlag] = useState(false);
 
   useEffect(() => {
     if (!isAdmin) { navigate('/admin/login'); return; }
@@ -115,7 +122,53 @@ const AdminDashboard = () => {
     setPendingDeleteId(null);
     if (activeTab === 'config') loadEngineConfig();
     if (activeTab === 'blogs') loadBlogs();
+    if (activeTab === 'flags') loadFeatureFlags();
   }, [activeTab]);
+
+  const loadFeatureFlags = async () => {
+    setFlagsLoading(true);
+    try {
+      const data = await adminGetFeatureFlags();
+      setFeatureFlags(data.flags || []);
+    } catch { toast.error('Failed to load feature flags'); }
+    finally { setFlagsLoading(false); }
+  };
+
+  const handleToggleFlag = async (flag) => {
+    try {
+      const res = await adminUpdateFeatureFlag(flag.flag_key, { is_active: !flag.is_active });
+      setFeatureFlags(prev => prev.map(f => f.flag_key === flag.flag_key ? res.flag : f));
+    } catch (err) { toast.error(err.message || 'Failed to update flag'); }
+  };
+
+  const handleCreateFlag = async () => {
+    if (!newFlag.flag_key.trim()) { toast.error('flag_key is required'); return; }
+    setSavingFlag(true);
+    try {
+      const res = await adminCreateFeatureFlag(newFlag);
+      setFeatureFlags(prev => [...prev, res.flag]);
+      setNewFlag({ flag_key: '', is_active: true, traffic_pct: 100 });
+      setShowNewFlagForm(false);
+      toast.success('Feature flag created');
+    } catch (err) { toast.error(err.message || 'Failed to create flag'); }
+    finally { setSavingFlag(false); }
+  };
+
+  const handleDeleteFlag = async (key) => {
+    if (!window.confirm(`Delete flag "${key}"?`)) return;
+    try {
+      await adminDeleteFeatureFlag(key);
+      setFeatureFlags(prev => prev.filter(f => f.flag_key !== key));
+      toast.success('Flag deleted');
+    } catch (err) { toast.error(err.message || 'Failed to delete flag'); }
+  };
+
+  const handleFlagTrafficPct = async (flag, pct) => {
+    try {
+      const res = await adminUpdateFeatureFlag(flag.flag_key, { traffic_pct: pct });
+      setFeatureFlags(prev => prev.map(f => f.flag_key === flag.flag_key ? res.flag : f));
+    } catch (err) { toast.error(err.message || 'Failed'); }
+  };
 
   const loadBlogs = async () => {
     setBlogsLoading(true);
@@ -187,6 +240,7 @@ const AdminDashboard = () => {
     { key: 'live', label: 'Live Feed', icon: <Activity size={16} /> },
     { key: 'config', label: 'Engine Config', icon: <Database size={16} /> },
     { key: 'blogs', label: 'Blog CMS', icon: <BookOpen size={16} /> },
+    { key: 'flags', label: 'Feature Flags', icon: <Shield size={16} /> },
   ];
 
   return (
@@ -287,7 +341,7 @@ const AdminDashboard = () => {
 
                     {/* Celery Tasks */}
                     {summary.celery_tasks && Object.keys(summary.celery_tasks).length > 0 && (
-                      <div style={{ background: '#1e293b', borderRadius: '16px', padding: '1.5rem', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <div style={{ background: '#1e293b', borderRadius: '16px', padding: '1.5rem', marginBottom: '1.5rem', border: '1px solid rgba(255,255,255,0.06)' }}>
                         <h3 style={{ color: 'white', fontWeight: 700, marginBottom: '1rem' }}>Celery Task Status</h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                           {Object.entries(summary.celery_tasks).map(([task, info]) => (
@@ -301,6 +355,36 @@ const AdminDashboard = () => {
                               </div>
                             </div>
                           ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Job Health (DataSourceLog) */}
+                    {summary.job_health && Object.keys(summary.job_health).length > 0 && (
+                      <div style={{ background: '#1e293b', borderRadius: '16px', padding: '1.5rem', border: '1px solid rgba(255,255,255,0.06)' }}>
+                        <h3 style={{ color: 'white', fontWeight: 700, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <CheckCircle size={16} color="#4ade80" /> Data Source Health
+                        </h3>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                          {Object.entries(summary.job_health).map(([source, info]) => {
+                            const ok = info?.status === 'success';
+                            return (
+                              <div key={source} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem', background: 'rgba(255,255,255,0.04)', borderRadius: '8px' }}>
+                                <div>
+                                  <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.85rem', fontFamily: 'monospace' }}>{source}</span>
+                                  {info?.event_type && <span style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.35)', marginLeft: '0.5rem' }}>{info.event_type}</span>}
+                                </div>
+                                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                                  <span style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.35)' }}>
+                                    {info?.last_run ? new Date(info.last_run).toLocaleString() : 'Never'}
+                                  </span>
+                                  <span style={{ fontSize: '0.72rem', padding: '2px 8px', borderRadius: '6px', background: ok ? 'rgba(74,222,128,0.15)' : 'rgba(239,68,68,0.15)', color: ok ? '#4ade80' : '#fca5a5', fontWeight: 600 }}>
+                                    {info?.status || 'unknown'}
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     )}
@@ -564,6 +648,121 @@ const AdminDashboard = () => {
                       </div>
                     </div>
                   </>
+                )}
+              </div>
+            )}
+
+            {/* FEATURE FLAGS TAB */}
+            {activeTab === 'flags' && (
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                  <h2 style={{ color: 'white', fontWeight: 700, fontSize: '1.2rem' }}>Feature Flags</h2>
+                  <button
+                    onClick={() => setShowNewFlagForm(v => !v)}
+                    style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '0.6rem 1.25rem', background: 'rgba(74,222,128,0.15)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.3)', borderRadius: '10px', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.9rem' }}
+                  >
+                    <Plus size={16} /> New Flag
+                  </button>
+                </div>
+
+                {showNewFlagForm && (
+                  <div style={{ background: '#1e293b', borderRadius: '14px', padding: '1.5rem', marginBottom: '1.5rem', border: '1px solid rgba(74,222,128,0.2)' }}>
+                    <h3 style={{ color: 'white', fontWeight: 700, marginBottom: '1rem', fontSize: '0.95rem' }}>Create Feature Flag</h3>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 120px 120px', gap: '1rem', marginBottom: '1rem' }}>
+                      <div>
+                        <label style={{ display: 'block', color: 'rgba(255,255,255,0.55)', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.4rem' }}>Flag Key</label>
+                        <input
+                          value={newFlag.flag_key}
+                          onChange={e => setNewFlag(p => ({ ...p, flag_key: e.target.value }))}
+                          placeholder="e.g. new_booking_flow"
+                          style={{ width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', padding: '0.65rem 0.9rem', borderRadius: '8px', fontFamily: 'monospace', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', color: 'rgba(255,255,255,0.55)', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.4rem' }}>Traffic %</label>
+                        <input
+                          type="number" min={0} max={100}
+                          value={newFlag.traffic_pct}
+                          onChange={e => setNewFlag(p => ({ ...p, traffic_pct: Number(e.target.value) }))}
+                          style={{ width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', padding: '0.65rem 0.9rem', borderRadius: '8px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', color: 'rgba(255,255,255,0.55)', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.4rem' }}>Active</label>
+                        <button
+                          type="button"
+                          onClick={() => setNewFlag(p => ({ ...p, is_active: !p.is_active }))}
+                          style={{ width: '48px', height: '26px', borderRadius: '13px', border: 'none', cursor: 'pointer', background: newFlag.is_active ? '#4ade80' : 'rgba(255,255,255,0.15)', position: 'relative', transition: 'background 0.2s' }}
+                        >
+                          <span style={{ position: 'absolute', top: '4px', left: newFlag.is_active ? '26px' : '4px', width: '18px', height: '18px', borderRadius: '50%', background: 'white', transition: 'left 0.2s' }} />
+                        </button>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.75rem' }}>
+                      <button
+                        onClick={handleCreateFlag}
+                        disabled={savingFlag}
+                        style={{ padding: '0.6rem 1.5rem', background: '#4ade80', color: '#0f172a', border: 'none', borderRadius: '8px', fontFamily: 'inherit', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}
+                      >
+                        {savingFlag ? 'Creating...' : 'Create'}
+                      </button>
+                      <button
+                        onClick={() => setShowNewFlagForm(false)}
+                        style={{ padding: '0.6rem 1.25rem', background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.5)', border: 'none', borderRadius: '8px', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer', fontSize: '0.9rem' }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {flagsLoading ? (
+                  <div style={{ textAlign: 'center', padding: '3rem', color: 'rgba(255,255,255,0.4)' }}>Loading...</div>
+                ) : featureFlags.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '3rem', color: 'rgba(255,255,255,0.3)' }}>No feature flags yet.</div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    {featureFlags.map(flag => (
+                      <div key={flag.flag_key} style={{ background: '#1e293b', borderRadius: '14px', padding: '1.25rem 1.5rem', border: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        {/* Toggle */}
+                        <button
+                          onClick={() => handleToggleFlag(flag)}
+                          title={flag.is_active ? 'Disable' : 'Enable'}
+                          style={{ width: '44px', height: '24px', borderRadius: '12px', border: 'none', cursor: 'pointer', background: flag.is_active ? '#4ade80' : 'rgba(255,255,255,0.15)', position: 'relative', transition: 'background 0.2s', flexShrink: 0 }}
+                        >
+                          <span style={{ position: 'absolute', top: '3px', left: flag.is_active ? '23px' : '3px', width: '18px', height: '18px', borderRadius: '50%', background: 'white', transition: 'left 0.2s' }} />
+                        </button>
+                        {/* Key */}
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ color: 'white', fontWeight: 600, fontFamily: 'monospace', fontSize: '0.9rem', marginBottom: '2px' }}>{flag.flag_key}</div>
+                          {flag.details && <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.78rem' }}>{flag.details}</div>}
+                        </div>
+                        {/* Traffic */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
+                          <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)' }}>Traffic:</span>
+                          <input
+                            type="number" min={0} max={100}
+                            defaultValue={flag.traffic_pct}
+                            onBlur={e => handleFlagTrafficPct(flag, Number(e.target.value))}
+                            style={{ width: '60px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', padding: '3px 6px', borderRadius: '6px', fontFamily: 'inherit', fontSize: '0.85rem', outline: 'none', textAlign: 'center' }}
+                          />
+                          <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)' }}>%</span>
+                        </div>
+                        {/* Status badge */}
+                        <span style={{ fontSize: '0.72rem', padding: '3px 10px', borderRadius: '8px', background: flag.is_active ? 'rgba(74,222,128,0.15)' : 'rgba(255,255,255,0.06)', color: flag.is_active ? '#4ade80' : 'rgba(255,255,255,0.3)', fontWeight: 600, flexShrink: 0 }}>
+                          {flag.is_active ? 'Enabled' : 'Disabled'}
+                        </span>
+                        {/* Delete */}
+                        <button
+                          onClick={() => handleDeleteFlag(flag.flag_key)}
+                          title="Delete flag"
+                          style={{ padding: '0.4rem', background: 'rgba(239,68,68,0.08)', border: 'none', color: '#fca5a5', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', flexShrink: 0 }}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 )}
               </div>
             )}

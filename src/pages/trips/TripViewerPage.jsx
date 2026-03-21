@@ -9,10 +9,15 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recha
 import {
   getTrip, shareTrip, getTripBookings, approveBooking, rejectBooking, cancelBooking,
   executeAllBookings, getExpenses, addExpense, deleteExpense, getTripReadiness,
-  swapActivity, updateTripNotes
+  swapActivity, updateTripNotes, getTripSummary, getTripReview, submitTripReview,
 } from '../../services/api.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import toast from 'react-hot-toast';
+
+const BOOKING_TYPE_ICONS = {
+  hotel: '🏨', flight: '✈️', activity: '🎯', restaurant: '🍽️',
+  airport_transfer: '🚖', daily_cab: '🚕',
+};
 
 const PACING_COLORS = { intense: '#ef4444', moderate: '#f59e0b', relaxed: '#10b981' };
 const BOOKING_STATUS_COLORS = {
@@ -45,6 +50,13 @@ const TripViewerPage = () => {
   const [expenseForm, setExpenseForm] = useState({ category: 'food', description: '', amount_inr: '', trip_day: 1 });
   const [showExpenseForm, setShowExpenseForm] = useState(false);
   const [savingNotes, setSavingNotes] = useState(false);
+  const [tripSummary, setTripSummary] = useState(null);
+  const [existingReview, setExistingReview] = useState(null);
+  const [reviewForm, setReviewForm] = useState({ rating: 0, comment: '', tags: [] });
+  const [submittingReview, setSubmittingReview] = useState(false);
+
+  const REVIEW_TAGS = ['great-value', 'well-paced', 'hidden-gems', 'family-friendly', 'romantic', 'adventure', 'foodie', 'budget-friendly'];
+  const RATING_LABELS = ['', 'Disappointing', 'Below average', 'Average', 'Good', 'Excellent'];
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -56,6 +68,8 @@ const TripViewerPage = () => {
       const data = await getTrip(id);
       setTrip(data);
       setNotes(data.user_notes || '');
+      // Silently pre-load bookings so we can show pending-bookings banner on itinerary tab
+      getTripBookings(id).then(d => setBookings(d.bookings || d || [])).catch(() => {});
     } catch (err) {
       setError(err.message);
     } finally {
@@ -100,7 +114,42 @@ const TripViewerPage = () => {
     if (activeTab === 'bookings') loadBookings();
     if (activeTab === 'expenses') loadExpenses();
     if (activeTab === 'readiness') loadReadiness();
+    if (activeTab === 'summary') loadSummary();
   }, [activeTab]);
+
+  const loadSummary = async () => {
+    try {
+      const [sumData, reviewData] = await Promise.allSettled([
+        getTripSummary(id),
+        getTripReview(id),
+      ]);
+      if (sumData.status === 'fulfilled') setTripSummary(sumData.value);
+      if (reviewData.status === 'fulfilled' && reviewData.value?.review) {
+        const r = reviewData.value.review;
+        setExistingReview(r);
+        setReviewForm({ rating: r.rating || 0, comment: r.comment || '', tags: r.tags || [] });
+      }
+    } catch { /* silent */ }
+  };
+
+  const handleSubmitReview = async (e) => {
+    e.preventDefault();
+    if (!reviewForm.rating) { toast.error('Please select a rating'); return; }
+    setSubmittingReview(true);
+    try {
+      await submitTripReview(id, reviewForm);
+      toast.success(existingReview ? 'Review updated!' : 'Review submitted!');
+      loadSummary();
+    } catch (err) { toast.error(err.message || 'Could not submit review'); }
+    finally { setSubmittingReview(false); }
+  };
+
+  const toggleReviewTag = (tag) => {
+    setReviewForm(prev => ({
+      ...prev,
+      tags: prev.tags.includes(tag) ? prev.tags.filter(t => t !== tag) : [...prev.tags, tag].slice(0, 5),
+    }));
+  };
 
   const handleApproveBooking = async (bookingId) => {
     try {
@@ -177,6 +226,7 @@ const TripViewerPage = () => {
     { key: 'expenses', label: 'Expenses', icon: <DollarSign size={16} /> },
     { key: 'readiness', label: 'Readiness', icon: <TrendingUp size={16} /> },
     { key: 'notes', label: 'Notes', icon: <FileText size={16} /> },
+    { key: 'summary', label: 'Summary', icon: <Star size={16} /> },
   ];
 
   const toggleDay = (n) => {
@@ -231,9 +281,12 @@ const TripViewerPage = () => {
               </div>
             </div>
             {qualityScore && (
-              <div style={{ background: qualityScore >= 80 ? '#f0fdf4' : '#fffbeb', border: `1px solid ${qualityScore >= 80 ? '#bbf7d0' : '#fde68a'}`, borderRadius: '12px', padding: '0.75rem 1.25rem', textAlign: 'center' }}>
+              <div
+                title="Quality score (0–100) measures itinerary diversity, budget fit, activity spread, and pacing balance."
+                style={{ background: qualityScore >= 80 ? '#f0fdf4' : '#fffbeb', border: `1px solid ${qualityScore >= 80 ? '#bbf7d0' : '#fde68a'}`, borderRadius: '12px', padding: '0.75rem 1.25rem', textAlign: 'center', cursor: 'help' }}
+              >
                 <div style={{ fontSize: '1.5rem', fontWeight: 800, color: qualityScore >= 80 ? '#065f46' : '#92400e' }}>{qualityScore}</div>
-                <div style={{ fontSize: '0.75rem', color: qualityScore >= 80 ? '#047857' : '#b45309', fontWeight: 600 }}>Quality Score</div>
+                <div style={{ fontSize: '0.75rem', color: qualityScore >= 80 ? '#047857' : '#b45309', fontWeight: 600 }}>Quality Score ⓘ</div>
               </div>
             )}
           </div>
@@ -256,7 +309,7 @@ const TripViewerPage = () => {
 
         {/* Tabs */}
         <div style={{ background: 'white', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.04)', marginBottom: '1.5rem' }}>
-          <div style={{ display: 'flex', borderBottom: '1px solid #e2e8f0', overflowX: 'auto' }}>
+          <div style={{ display: 'flex', borderBottom: '1px solid #e2e8f0', overflowX: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
             {TABS.map(t => (
               <button
                 key={t.key}
@@ -278,6 +331,27 @@ const TripViewerPage = () => {
         {/* ITINERARY TAB */}
         {activeTab === 'itinerary' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {/* Pending bookings nudge banner */}
+            {bookings.some(b => b.status === 'pending') && (
+              <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '14px', padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span style={{ fontSize: '1.2rem' }}>📋</span>
+                  <div>
+                    <div style={{ fontWeight: 700, color: '#92400e', fontSize: '0.9rem' }}>
+                      {bookings.filter(b => b.status === 'pending').length} booking{bookings.filter(b => b.status === 'pending').length > 1 ? 's' : ''} awaiting your approval
+                    </div>
+                    <div style={{ fontSize: '0.8rem', color: '#b45309' }}>Review and approve before executing</div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setActiveTab('bookings')}
+                  style={{ padding: '0.5rem 1.1rem', background: '#f59e0b', color: 'white', border: 'none', borderRadius: '8px', fontFamily: 'inherit', fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem', whiteSpace: 'nowrap' }}
+                >
+                  Review Bookings →
+                </button>
+              </div>
+            )}
+
             {days.length === 0 ? (
               <div style={{ background: 'white', borderRadius: '16px', padding: '3rem', textAlign: 'center', color: '#64748b' }}>
                 No itinerary data available.
@@ -319,6 +393,13 @@ const TripViewerPage = () => {
                             ₹{Number(day.day_total).toLocaleString('en-IN')}
                           </span>
                         )}
+                        <Link
+                          to={`/trip/${id}/briefing/${dayNum}`}
+                          onClick={e => e.stopPropagation()}
+                          style={{ fontSize: '0.75rem', fontWeight: 600, color: '#0284c7', background: '#f0f9ff', padding: '4px 10px', borderRadius: '8px', textDecoration: 'none', whiteSpace: 'nowrap' }}
+                        >
+                          Day Brief
+                        </Link>
                         {isExpanded ? <ChevronUp size={20} color="#94a3b8" /> : <ChevronDown size={20} color="#94a3b8" />}
                       </div>
                     </div>
@@ -438,15 +519,47 @@ const TripViewerPage = () => {
         {/* BOOKINGS TAB */}
         {activeTab === 'bookings' && (
           <div>
+            {/* Workflow explainer */}
+            <div style={{ background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: '14px', padding: '1rem 1.25rem', marginBottom: '1.25rem', display: 'flex', gap: '1rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+              {[
+                { step: '1', label: 'Review', desc: 'Check each booking below' },
+                { step: '2', label: 'Approve', desc: 'Click Approve on items you want' },
+                { step: '3', label: 'Confirm & Book', desc: 'Hit the button to execute all at once' },
+              ].map((s) => (
+                <div key={s.step} style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start', minWidth: '140px' }}>
+                  <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: '#0ea5e9', color: 'white', fontWeight: 700, fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{s.step}</div>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: '0.82rem', color: '#0c4a6e' }}>{s.label}</div>
+                    <div style={{ fontSize: '0.77rem', color: '#0369a1' }}>{s.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
               <h2 style={{ fontWeight: 700, color: '#1e293b', fontSize: '1.2rem' }}>Booking Plan</h2>
               <button
                 onClick={handleExecuteAll}
                 style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0.75rem 1.5rem', background: '#1e293b', color: 'white', border: 'none', borderRadius: '50px', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer', fontSize: '0.9rem' }}
               >
-                <Check size={16} /> Execute All Approved
+                <Check size={16} /> Confirm & Book All Approved
               </button>
             </div>
+
+            {/* Status summary bar */}
+            {bookings.length > 0 && (() => {
+              const counts = bookings.reduce((acc, b) => { acc[b.status] = (acc[b.status] || 0) + 1; return acc; }, {});
+              const pills = Object.entries(counts).map(([status, count]) => ({ status, count }));
+              return (
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
+                  {pills.map(({ status, count }) => (
+                    <span key={status} style={{ padding: '4px 12px', borderRadius: '999px', fontSize: '0.8rem', fontWeight: 700, background: (BOOKING_STATUS_COLORS[status] || '#94a3b8') + '18', color: BOOKING_STATUS_COLORS[status] || '#94a3b8', textTransform: 'capitalize' }}>
+                      {count} {status}
+                    </span>
+                  ))}
+                </div>
+              );
+            })()}
 
             {bookings.length === 0 ? (
               <div style={{ background: 'white', borderRadius: '16px', padding: '3rem', textAlign: 'center', color: '#64748b' }}>
@@ -455,40 +568,56 @@ const TripViewerPage = () => {
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                {bookings.map((b) => (
-                  <div key={b.id} style={{ background: 'white', borderRadius: '16px', padding: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.75rem' }}>
-                      <div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-                          <span style={{ fontWeight: 700, color: '#1e293b' }}>{b.booking_type?.replace('_', ' ').toUpperCase() || 'BOOKING'}</span>
-                          <span style={{
-                            fontSize: '0.75rem', fontWeight: 600, padding: '3px 10px', borderRadius: '999px',
-                            background: (BOOKING_STATUS_COLORS[b.status] || '#94a3b8') + '20',
-                            color: BOOKING_STATUS_COLORS[b.status] || '#94a3b8',
-                            textTransform: 'capitalize',
-                          }}>
-                            {b.status}
-                          </span>
-                          {b.self_arranged && <span style={{ fontSize: '0.75rem', background: '#f0f9ff', color: '#0284c7', padding: '3px 8px', borderRadius: '999px', fontWeight: 600 }}>Self-arranged</span>}
+                {bookings.map((b) => {
+                  const typeIcon = BOOKING_TYPE_ICONS[b.booking_type] || '📌';
+                  const itemName = b.item_name || b.provider_name || b.booking_type?.replace(/_/g, ' ');
+                  const cost = b.cost_inr || b.estimated_cost;
+                  return (
+                    <div key={b.id} style={{ background: 'white', borderRadius: '16px', padding: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)', borderLeft: `4px solid ${BOOKING_STATUS_COLORS[b.status] || '#e2e8f0'}` }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.75rem' }}>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+                            <span style={{ fontSize: '1.3rem', lineHeight: 1 }}>{typeIcon}</span>
+                            <span style={{ fontWeight: 700, color: '#1e293b', fontSize: '0.95rem' }}>{itemName}</span>
+                            <span style={{
+                              fontSize: '0.75rem', fontWeight: 600, padding: '3px 10px', borderRadius: '999px',
+                              background: (BOOKING_STATUS_COLORS[b.status] || '#94a3b8') + '20',
+                              color: BOOKING_STATUS_COLORS[b.status] || '#94a3b8',
+                              textTransform: 'capitalize',
+                            }}>
+                              {b.status}
+                            </span>
+                            {b.self_arranged && (
+                              <span title="You'll handle this booking yourself" style={{ fontSize: '0.75rem', background: '#f0f9ff', color: '#0284c7', padding: '3px 8px', borderRadius: '999px', fontWeight: 600, cursor: 'help' }}>Self-arranged ⓘ</span>
+                            )}
+                          </div>
+                          {b.partner_name && <div style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '4px' }}>via {b.partner_name}</div>}
+                          {b.notes && <div style={{ fontSize: '0.82rem', color: '#94a3b8', marginBottom: '4px' }}>{b.notes}</div>}
+                          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                            {cost > 0 && <span style={{ fontSize: '1rem', fontWeight: 700, color: '#1e293b' }}>₹{Number(cost).toLocaleString('en-IN')}</span>}
+                            {b.booking_url && (
+                              <a href={b.booking_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.82rem', color: '#0284c7', fontWeight: 600 }}>View booking ↗</a>
+                            )}
+                            {b.booking_ref && (
+                              <span style={{ fontSize: '0.78rem', color: '#94a3b8' }}>Ref: {b.booking_ref}</span>
+                            )}
+                          </div>
                         </div>
-                        {b.provider_name && <div style={{ fontSize: '0.9rem', color: '#475569' }}>{b.provider_name}</div>}
-                        {b.details && <div style={{ fontSize: '0.85rem', color: '#94a3b8', marginTop: '4px' }}>{typeof b.details === 'string' ? b.details : JSON.stringify(b.details)}</div>}
-                        {b.estimated_cost && <div style={{ fontSize: '0.9rem', fontWeight: 600, color: '#1e293b', marginTop: '4px' }}>₹{Number(b.estimated_cost).toLocaleString('en-IN')}</div>}
-                      </div>
-                      <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
-                        {b.status === 'pending' && (
-                          <>
-                            <button onClick={() => handleApproveBooking(b.id)} style={{ padding: '0.5rem 1rem', background: '#f0fdf4', color: '#065f46', border: '1px solid #bbf7d0', borderRadius: '8px', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem' }}>Approve</button>
-                            <button onClick={() => rejectBooking(b.id).then(loadBookings)} style={{ padding: '0.5rem 1rem', background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: '8px', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem' }}>Reject</button>
-                          </>
-                        )}
-                        {(b.status === 'approved' || b.status === 'executed') && (
-                          <button onClick={() => cancelBooking(b.id).then(loadBookings)} style={{ padding: '0.5rem 1rem', background: '#f8fafc', color: '#64748b', border: '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem' }}>Cancel</button>
-                        )}
+                        <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
+                          {b.status === 'pending' && (
+                            <>
+                              <button onClick={() => handleApproveBooking(b.id)} style={{ padding: '0.5rem 1rem', background: '#f0fdf4', color: '#065f46', border: '1px solid #bbf7d0', borderRadius: '8px', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem' }}>Approve</button>
+                              <button onClick={() => rejectBooking(b.id).then(loadBookings)} style={{ padding: '0.5rem 1rem', background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: '8px', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem' }}>Reject</button>
+                            </>
+                          )}
+                          {(b.status === 'approved' || b.status === 'executed') && (
+                            <button onClick={() => cancelBooking(b.id).then(loadBookings)} style={{ padding: '0.5rem 1rem', background: '#f8fafc', color: '#64748b', border: '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem' }}>Cancel</button>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
@@ -646,6 +775,152 @@ const TripViewerPage = () => {
               >
                 {savingNotes ? 'Saving...' : 'Save Notes'}
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* SUMMARY TAB */}
+        {activeTab === 'summary' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+
+            {/* Post-trip summary */}
+            {tripSummary ? (
+              <>
+                {/* Spend overview */}
+                <div style={{ background: 'white', borderRadius: '16px', padding: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                  <h3 style={{ fontWeight: 700, color: '#1e293b', marginBottom: '1.25rem', fontSize: '1rem' }}>Trip Summary</h3>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>
+                    {[
+                      { label: 'Days', value: tripSummary.num_days },
+                      { label: 'Activities', value: tripSummary.total_activities },
+                      { label: 'Planned Budget', value: tripSummary.planned_budget ? `₹${Number(tripSummary.planned_budget).toLocaleString('en-IN')}` : '—' },
+                      { label: 'Actual Spend', value: tripSummary.actual_spend ? `₹${Number(tripSummary.actual_spend).toLocaleString('en-IN')}` : '—' },
+                    ].map((m, i) => (
+                      <div key={i} style={{ background: '#f8fafc', borderRadius: '12px', padding: '1rem', textAlign: 'center' }}>
+                        <div style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.4rem' }}>{m.label}</div>
+                        <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#1e293b' }}>{m.value ?? '—'}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {tripSummary.highlights?.length > 0 && (
+                    <div>
+                      <div style={{ fontWeight: 600, color: '#475569', fontSize: '0.85rem', marginBottom: '0.5rem' }}>Highlights</div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                        {tripSummary.highlights.map((h, i) => (
+                          <span key={i} style={{ background: '#fef3c7', color: '#d97706', padding: '4px 10px', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600 }}>
+                            {typeof h === 'string' ? h : h.name || JSON.stringify(h)}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {tripSummary.top_activity_types?.length > 0 && (
+                    <div style={{ marginTop: '1rem' }}>
+                      <div style={{ fontWeight: 600, color: '#475569', fontSize: '0.85rem', marginBottom: '0.5rem' }}>What you loved doing</div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                        {tripSummary.top_activity_types.map((t, i) => (
+                          <span key={i} style={{ background: '#f0f9ff', color: '#0284c7', padding: '4px 10px', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, textTransform: 'capitalize' }}>{t}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Smart insights from summary */}
+                {tripSummary.smart_insights?.length > 0 && (
+                  <div style={{ background: 'white', borderRadius: '16px', padding: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                    <h3 style={{ fontWeight: 700, color: '#1e293b', marginBottom: '1rem', fontSize: '1rem' }}>Insights</h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      {tripSummary.smart_insights.map((s, i) => (
+                        <div key={i} style={{ display: 'flex', gap: '8px', fontSize: '0.9rem', color: '#475569' }}>
+                          <span style={{ color: '#4ade80', flexShrink: 0 }}>•</span>
+                          {typeof s === 'string' ? s : s.text || JSON.stringify(s)}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div style={{ background: 'white', borderRadius: '16px', padding: '2rem', textAlign: 'center', color: '#94a3b8', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                <TrendingUp size={36} style={{ margin: '0 auto 0.75rem', opacity: 0.3 }} />
+                <p style={{ fontSize: '0.9rem' }}>Summary will be available after your trip ends.</p>
+              </div>
+            )}
+
+            {/* Review form */}
+            <div style={{ background: 'white', borderRadius: '16px', padding: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+              <h3 style={{ fontWeight: 700, color: '#1e293b', marginBottom: '0.25rem', fontSize: '1rem' }}>
+                {existingReview ? 'Your Review' : 'Rate This Trip'}
+              </h3>
+              <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginBottom: '1.25rem' }}>
+                {existingReview ? 'Update your review below.' : 'Share your experience to help improve future recommendations.'}
+              </p>
+
+              <form onSubmit={handleSubmitReview}>
+                {/* Star rating */}
+                <div style={{ marginBottom: '1.25rem' }}>
+                  <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                    {[1, 2, 3, 4, 5].map(n => (
+                      <button
+                        key={n}
+                        type="button"
+                        onClick={() => setReviewForm(p => ({ ...p, rating: n }))}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', fontSize: '1.8rem', lineHeight: 1, color: n <= reviewForm.rating ? '#f59e0b' : '#e2e8f0', transition: 'color 0.15s' }}
+                      >
+                        ★
+                      </button>
+                    ))}
+                  </div>
+                  {reviewForm.rating > 0 && (
+                    <div style={{ fontSize: '0.82rem', color: '#f59e0b', fontWeight: 600 }}>{RATING_LABELS[reviewForm.rating]}</div>
+                  )}
+                </div>
+
+                {/* Tags */}
+                <div style={{ marginBottom: '1.25rem' }}>
+                  <div style={{ fontWeight: 600, fontSize: '0.85rem', color: '#475569', marginBottom: '0.5rem' }}>Tags (up to 5)</div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+                    {REVIEW_TAGS.map(tag => (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => toggleReviewTag(tag)}
+                        style={{
+                          padding: '4px 12px', borderRadius: '999px', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+                          background: reviewForm.tags.includes(tag) ? '#1e293b' : '#f1f5f9',
+                          color: reviewForm.tags.includes(tag) ? 'white' : '#64748b',
+                          border: 'none',
+                        }}
+                      >
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Comment */}
+                <div style={{ marginBottom: '1.25rem' }}>
+                  <textarea
+                    value={reviewForm.comment}
+                    onChange={e => setReviewForm(p => ({ ...p, comment: e.target.value }))}
+                    placeholder="Share what made this trip special (optional)..."
+                    maxLength={2000}
+                    rows={4}
+                    style={{ width: '100%', padding: '0.75rem 1rem', border: '1.5px solid #e2e8f0', borderRadius: '12px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', resize: 'vertical', lineHeight: 1.6, color: '#1e293b', boxSizing: 'border-box' }}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={submittingReview || !reviewForm.rating}
+                  style={{ padding: '0.75rem 2rem', background: submittingReview || !reviewForm.rating ? '#94a3b8' : '#1e293b', color: 'white', border: 'none', borderRadius: '10px', fontFamily: 'inherit', fontWeight: 600, cursor: submittingReview || !reviewForm.rating ? 'not-allowed' : 'pointer', fontSize: '0.9rem' }}
+                >
+                  {submittingReview ? 'Submitting...' : existingReview ? 'Update Review' : 'Submit Review'}
+                </button>
+              </form>
             </div>
           </div>
         )}
