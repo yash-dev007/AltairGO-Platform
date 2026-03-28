@@ -219,6 +219,11 @@ const TripViewerPage = () => {
   const qualityScore = trip.quality_score;
   const insights = itinerary?.smart_insights || [];
   const packingTips = itinerary?.packing_tips || [];
+  const localEvents = itinerary?.local_events || [];
+  const preTripInfo = itinerary?.pre_trip_info || null;
+  const transportGuide = itinerary?.daily_transport_guide || [];
+  const weatherAlerts = itinerary?.weather_alerts || {};
+  const docChecklist = itinerary?.document_checklist || [];
 
   const TABS = [
     { key: 'itinerary', label: 'Itinerary', icon: <Calendar size={16} /> },
@@ -352,6 +357,25 @@ const TripViewerPage = () => {
               </div>
             )}
 
+            {/* Local Events banner */}
+            {localEvents.length > 0 && (
+              <div style={{ background: 'linear-gradient(135deg, #fdf2f8, #fce7f3)', border: '1px solid #f9a8d4', borderRadius: '14px', padding: '1rem 1.25rem' }}>
+                <div style={{ fontWeight: 700, color: '#9d174d', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  🎉 Local Events During Your Trip
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                  {localEvents.map((ev, i) => (
+                    <div key={i} style={{ fontSize: '0.85rem', color: '#831843' }}>
+                      <span style={{ fontWeight: 600 }}>{ev.name}</span>
+                      {ev.start_date && <span style={{ color: '#9d174d' }}> · {ev.start_date}{ev.end_date && ev.end_date !== ev.start_date ? ` – ${ev.end_date}` : ''}</span>}
+                      {ev.description && <span style={{ color: '#a21caf' }}> — {ev.description}</span>}
+                      {ev.tips && <span style={{ color: '#86198f', fontStyle: 'italic' }}> 💡 {ev.tips}</span>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {days.length === 0 ? (
               <div style={{ background: 'white', borderRadius: '16px', padding: '3rem', textAlign: 'center', color: '#64748b' }}>
                 No itinerary data available.
@@ -363,9 +387,21 @@ const TripViewerPage = () => {
                 const activities = day.activities || [];
                 const pacing = day.pacing_level || 'moderate';
                 const theme = day.theme || day.location;
+                const dayAlert = day.weather_alert || weatherAlerts[`day_${dayNum}`] || weatherAlerts[dayNum];
+                const dayTransport = transportGuide.find(t => t.day === dayNum);
 
                 return (
                   <div key={dayNum} style={{ background: 'white', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                    {/* Weather alert banner for this day */}
+                    {dayAlert && (
+                      <div style={{ padding: '0.6rem 1.25rem', background: dayAlert.severity === 'extreme' ? '#fef2f2' : '#fffbeb', borderBottom: `1px solid ${dayAlert.severity === 'extreme' ? '#fecaca' : '#fde68a'}`, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span>{dayAlert.severity === 'extreme' ? '🌩️' : '⚠️'}</span>
+                        <span style={{ fontSize: '0.82rem', fontWeight: 600, color: dayAlert.severity === 'extreme' ? '#991b1b' : '#92400e' }}>
+                          {dayAlert.alert_type || 'Weather alert'}: {dayAlert.description}
+                          {dayAlert.probability_pct ? ` (${dayAlert.probability_pct}% chance)` : ''}
+                        </span>
+                      </div>
+                    )}
                     <div
                       onClick={() => toggleDay(dayNum)}
                       style={{ padding: '1.25rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', userSelect: 'none' }}
@@ -460,6 +496,20 @@ const TripViewerPage = () => {
                                   </p>
                                 )}
 
+                                {act.local_secret && (
+                                  <div style={{ marginTop: '6px', padding: '6px 10px', background: '#fefce8', borderRadius: '8px', borderLeft: '3px solid #f59e0b' }}>
+                                    <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#92400e' }}>💡 Local tip: </span>
+                                    <span style={{ fontSize: '0.78rem', color: '#78350f' }}>{act.local_secret}</span>
+                                  </div>
+                                )}
+
+                                {act.how_to_reach && (
+                                  <div style={{ marginTop: '4px', fontSize: '0.78rem', color: '#64748b', display: 'flex', gap: '4px', alignItems: 'flex-start' }}>
+                                    <span style={{ flexShrink: 0 }}>🧭</span>
+                                    <span>{act.how_to_reach}</span>
+                                  </div>
+                                )}
+
                                 <div style={{ display: 'flex', gap: '0.75rem', marginTop: '6px', flexWrap: 'wrap' }}>
                                   {act.avg_visit_duration_hours && (
                                     <span style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '3px' }}>
@@ -490,6 +540,18 @@ const TripViewerPage = () => {
                             </div>
                           </div>
                         )}
+
+                        {/* Daily transport guide */}
+                        {dayTransport && (
+                          <div style={{ padding: '0.75rem 1.5rem', background: '#f0fdf4', borderTop: '1px solid #bbf7d0', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <span>🚗</span>
+                            <div style={{ flex: 1, fontSize: '0.82rem', color: '#166534' }}>
+                              <span style={{ fontWeight: 700 }}>{dayTransport.mode}</span>
+                              {dayTransport.estimated_cost_inr ? <span> · ₹{Number(dayTransport.estimated_cost_inr).toLocaleString('en-IN')}</span> : ''}
+                              {dayTransport.notes ? <span style={{ color: '#4ade80' }}> — {dayTransport.notes}</span> : ''}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -511,6 +573,90 @@ const TripViewerPage = () => {
                     </li>
                   ))}
                 </ul>
+              </div>
+            )}
+
+            {/* Document Checklist */}
+            {docChecklist.length > 0 && (
+              <div style={{ background: 'white', borderRadius: '16px', padding: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                <h3 style={{ fontWeight: 700, color: '#1e293b', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  📋 Document Checklist
+                </h3>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                  {docChecklist.map((doc, i) => (
+                    <span key={i} style={{ padding: '4px 12px', borderRadius: '20px', fontSize: '0.82rem', fontWeight: 600, background: doc.required ? '#fef3c7' : '#f1f5f9', color: doc.required ? '#92400e' : '#475569', border: `1px solid ${doc.required ? '#fde68a' : '#e2e8f0'}` }}>
+                      {doc.required ? '* ' : ''}{doc.item || doc}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Pre-Trip Info */}
+            {preTripInfo && (
+              <div style={{ background: 'white', borderRadius: '16px', padding: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                <h3 style={{ fontWeight: 700, color: '#1e293b', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  🌍 Pre-Trip Information
+                </h3>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1rem' }}>
+                  {preTripInfo.connectivity_guide && (
+                    <div style={{ padding: '1rem', background: '#f8fafc', borderRadius: '12px' }}>
+                      <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#64748b', marginBottom: '4px' }}>📶 CONNECTIVITY</div>
+                      <div style={{ fontSize: '0.85rem', color: '#334155' }}>{preTripInfo.connectivity_guide}</div>
+                    </div>
+                  )}
+                  {preTripInfo.currency_tips && (
+                    <div style={{ padding: '1rem', background: '#f8fafc', borderRadius: '12px' }}>
+                      <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#64748b', marginBottom: '4px' }}>💰 CURRENCY</div>
+                      <div style={{ fontSize: '0.85rem', color: '#334155' }}>{preTripInfo.currency_tips}</div>
+                    </div>
+                  )}
+                  {preTripInfo.dress_code_general && (
+                    <div style={{ padding: '1rem', background: '#f8fafc', borderRadius: '12px' }}>
+                      <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#64748b', marginBottom: '4px' }}>👗 DRESS CODE</div>
+                      <div style={{ fontSize: '0.85rem', color: '#334155' }}>{preTripInfo.dress_code_general}</div>
+                    </div>
+                  )}
+                  {preTripInfo.water_safety && (
+                    <div style={{ padding: '1rem', background: '#f8fafc', borderRadius: '12px' }}>
+                      <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#64748b', marginBottom: '4px' }}>💧 WATER</div>
+                      <div style={{ fontSize: '0.85rem', color: '#334155' }}>{preTripInfo.water_safety}</div>
+                    </div>
+                  )}
+                  {preTripInfo.emergency_contacts && typeof preTripInfo.emergency_contacts === 'object' && (
+                    <div style={{ padding: '1rem', background: '#fef2f2', borderRadius: '12px' }}>
+                      <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#991b1b', marginBottom: '4px' }}>🚨 EMERGENCY</div>
+                      {Object.entries(preTripInfo.emergency_contacts).slice(0, 3).map(([k, v]) => (
+                        <div key={k} style={{ fontSize: '0.82rem', color: '#7f1d1d' }}><span style={{ fontWeight: 600 }}>{k}:</span> {v}</div>
+                      ))}
+                    </div>
+                  )}
+                  {preTripInfo.tipping_guide && typeof preTripInfo.tipping_guide === 'object' && (
+                    <div style={{ padding: '1rem', background: '#f8fafc', borderRadius: '12px' }}>
+                      <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#64748b', marginBottom: '4px' }}>💸 TIPPING</div>
+                      {Object.entries(preTripInfo.tipping_guide).slice(0, 3).map(([k, v]) => (
+                        <div key={k} style={{ fontSize: '0.82rem', color: '#334155' }}><span style={{ fontWeight: 600, textTransform: 'capitalize' }}>{k}:</span> {v}</div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Smart Insights */}
+            {insights.length > 0 && (
+              <div style={{ background: 'linear-gradient(135deg, #eff6ff, #f0f9ff)', borderRadius: '16px', padding: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)', border: '1px solid #bae6fd' }}>
+                <h3 style={{ fontWeight: 700, color: '#1e293b', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  ✨ Smart Insights
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                  {insights.map((insight, i) => (
+                    <div key={i} style={{ display: 'flex', gap: '10px', fontSize: '0.9rem', color: '#1e40af' }}>
+                      <span style={{ color: '#3b82f6', flexShrink: 0 }}>💡</span>
+                      <span>{typeof insight === 'string' ? insight : insight.tip || JSON.stringify(insight)}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>

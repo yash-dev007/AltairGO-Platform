@@ -13,7 +13,12 @@ const MESSAGES = [
   'Optimizing your daily routes...',
   'Calculating real-time budget breakdowns...',
   'Checking weather and local events...',
-  'Adding Gemini AI polish to descriptions...',
+  'Crafting AI-powered descriptions for each spot...',
+  'Adding local secrets and insider tips...',
+  'Generating your personalized trip title...',
+  'Building smart travel insights...',
+  'Packing tips tailored to your destination...',
+  'Cross-checking itinerary quality...',
   'Finalizing your personalized itinerary...',
   'Almost ready! Putting on the finishing touches...',
 ];
@@ -59,8 +64,13 @@ const GeneratingPage = () => {
   useEffect(() => {
     const msgInterval = setInterval(() => {
       setMessageIndex(i => (i + 1) % MESSAGES.length);
-      setProgress(p => Math.min(p + 10, 90));
-    }, 2500);
+      // Slow progress after 60% so the bar doesn't pin at 90% for 80+ seconds with local AI
+      setProgress(p => {
+        if (p < 60) return Math.min(p + 8, 60);
+        if (p < 85) return Math.min(p + 2, 85);
+        return p;
+      });
+    }, 3500);
 
     // ── Try SSE stream first ──────────────────────────────────────────────────
     if (typeof EventSource !== 'undefined') {
@@ -232,7 +242,7 @@ const GeneratingPage = () => {
         </div>
 
         <p style={{ marginTop: '2rem', color: 'rgba(255,255,255,0.35)', fontSize: '0.85rem' }}>
-          This usually takes 15-30 seconds
+          This usually takes 30–120 seconds depending on server load
         </p>
       </div>
     </div>
