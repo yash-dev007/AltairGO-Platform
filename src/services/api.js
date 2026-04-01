@@ -18,8 +18,16 @@ async function req(path, opts = {}) {
   });
 
   if (res.status === 401) {
-    localStorage.removeItem(admin ? 'ag_admin_token' : 'ag_token');
-    window.dispatchEvent(new Event('ag:unauthorized'));
+    if (admin) {
+      // Admin token expired — only clear admin token, never touch user session
+      localStorage.removeItem('ag_admin_token');
+    } else if (auth) {
+      // Authenticated user request got 401 — session expired, log out
+      localStorage.removeItem('ag_token');
+      window.dispatchEvent(new Event('ag:unauthorized'));
+    }
+    // auth:false calls (public endpoints, login attempts, admin verify-key) return
+    // 401 as normal business logic — never touch any stored token
   }
 
   const data = await res.json().catch(() => ({}));

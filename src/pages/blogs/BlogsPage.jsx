@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from '../../components/Blogs/Blogs.module.css';
 import { getBlogs } from '../../services/api';
 import { BlogCardSkeleton } from '../../components/Skeleton/Skeleton';
 
 const BlogsPage = () => {
+  const navigate = useNavigate();
   const [blogsData, setBlogsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(false);
@@ -32,7 +33,7 @@ const BlogsPage = () => {
           {loading ? (
             [1, 2, 3, 4, 5, 6].map(i => <BlogCardSkeleton key={i} />)
           ) : blogsData.length > 0 ? blogsData.map((blog) => (
-            <article key={blog.id} className={styles.card}>
+            <article key={blog.id} className={styles.card} onClick={() => navigate(`/blogs/${blog.id}`)} style={{ cursor: 'pointer' }}>
               <div className={styles.imageContainer}>
                 {blog.image ? (
                   <img
@@ -52,7 +53,7 @@ const BlogsPage = () => {
                 </div>
                 <h3 className={styles.title}>{blog.title}</h3>
                 <p className={styles.excerpt}>{blog.excerpt}</p>
-                <Link to={`/blogs/${blog.id}`} className={styles.readMore}>
+                <Link to={`/blogs/${blog.id}`} className={styles.readMore} onClick={(e) => e.stopPropagation()}>
                   Read Article <span>→</span>
                 </Link>
               </div>

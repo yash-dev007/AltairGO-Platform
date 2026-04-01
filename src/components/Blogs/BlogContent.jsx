@@ -7,15 +7,7 @@ import styles from './BlogContent.module.css';
 const BlogContent = ({ blog }) => {
   return (
     <article className={styles.wrapper}>
-      {/* Back nav */}
-      <div className={styles.backRow}>
-        <Link to="/blogs" className={styles.backBtn}>
-          <ArrowLeft size={16} />
-          All Stories
-        </Link>
-      </div>
-
-      {/* Hero */}
+      {/* Hero — back button floats on top of the image */}
       <div className={styles.hero}>
         {blog.image ? (
           <img
@@ -28,6 +20,11 @@ const BlogContent = ({ blog }) => {
           <div className={styles.heroFallback} />
         )}
         <div className={styles.heroOverlay} />
+        {/* Back button floats over the hero image — no space above hero */}
+        <Link to="/blogs" className={styles.backBtn}>
+          <ArrowLeft size={16} />
+          All Stories
+        </Link>
         <div className={styles.heroContent}>
           {blog.category && (
             <span className={styles.categoryBadge}>{blog.category}</span>

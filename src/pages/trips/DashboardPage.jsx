@@ -108,7 +108,7 @@ const DashboardPage = () => {
     setLoading(true);
     try {
       const data = await getUserTrips(page);
-      const items = Array.isArray(data) ? data : (data.trips || []);
+      const items = Array.isArray(data) ? data : (data.items || data.trips || []);
       setTrips(prev => page === 1 ? items : [...prev, ...items]);
       setHasMore(items.length >= 12);
     } catch {

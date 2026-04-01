@@ -5,18 +5,34 @@ import { User, Mail, AlertTriangle } from 'lucide-react';
 import { getProfile, updateProfile, deleteAccount } from '../../services/api.js';
 import toast from 'react-hot-toast';
 
+const TRAVEL_STYLES = ['budget', 'mid', 'luxury'];
+const TRAVELER_TYPES = ['solo', 'couple', 'family', 'group'];
+const DIETARY_OPTIONS = ['none', 'vegetarian', 'vegan', 'halal', 'jain', 'gluten-free'];
+const INTEREST_OPTIONS = ['adventure', 'beach', 'history', 'food', 'wildlife', 'spiritual', 'photography', 'shopping', 'nightlife', 'wellness'];
+
 const ProfilePage = () => {
   const { user, logout, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [form, setForm] = useState({ name: '', email: '' });
+  const [prefs, setPrefs] = useState({ preferred_style: '', traveler_type: '', dietary_restrictions: 'none', interests: [] });
   const [saving, setSaving] = useState(false);
+  const [savingPrefs, setSavingPrefs] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) { navigate('/login'); return; }
     if (user) setForm({ name: user.name || '', email: user.email || '' });
-    getProfile().then(setProfile).catch(() => {});
+    getProfile().then(data => {
+      setProfile(data);
+      const p = data?.preferences || {};
+      setPrefs({
+        preferred_style: p.preferred_style || '',
+        traveler_type: p.traveler_type || '',
+        dietary_restrictions: p.dietary_restrictions || 'none',
+        interests: Array.isArray(p.interests) ? p.interests : [],
+      });
+    }).catch(() => {});
   }, [user, authLoading]);
 
   const handleSave = async (e) => {
@@ -30,6 +46,27 @@ const ProfilePage = () => {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleSavePrefs = async () => {
+    setSavingPrefs(true);
+    try {
+      await updateProfile({ preferences: prefs });
+      toast.success('Preferences saved!');
+    } catch {
+      toast.error('Could not save preferences');
+    } finally {
+      setSavingPrefs(false);
+    }
+  };
+
+  const toggleInterest = (interest) => {
+    setPrefs(p => ({
+      ...p,
+      interests: p.interests.includes(interest)
+        ? p.interests.filter(i => i !== interest)
+        : [...p.interests, interest],
+    }));
   };
 
   const handleDelete = async () => {
@@ -85,6 +122,70 @@ const ProfilePage = () => {
               {saving ? 'Saving...' : 'Save Changes'}
             </button>
           </form>
+        </div>
+
+        {/* Travel Preferences */}
+        <div style={{ background: 'white', borderRadius: '20px', padding: '2rem', boxShadow: '0 4px 20px rgba(0,0,0,0.06)', marginBottom: '2rem' }}>
+          <h2 style={{ fontWeight: 700, color: '#1e293b', marginBottom: '1.5rem', fontSize: '1.1rem' }}>Travel Preferences</h2>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            {/* Travel Style */}
+            <div>
+              <label style={{ display: 'block', fontWeight: 600, color: '#475569', marginBottom: '0.6rem', fontSize: '0.9rem' }}>Travel Style</label>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                {TRAVEL_STYLES.map(s => (
+                  <button key={s} onClick={() => setPrefs(p => ({ ...p, preferred_style: p.preferred_style === s ? '' : s }))}
+                    style={{ padding: '0.45rem 1rem', borderRadius: '999px', border: '1.5px solid', borderColor: prefs.preferred_style === s ? '#1e293b' : '#e2e8f0', background: prefs.preferred_style === s ? '#1e293b' : 'white', color: prefs.preferred_style === s ? 'white' : '#64748b', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer', textTransform: 'capitalize' }}>
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Traveler Type */}
+            <div>
+              <label style={{ display: 'block', fontWeight: 600, color: '#475569', marginBottom: '0.6rem', fontSize: '0.9rem' }}>I Usually Travel</label>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                {TRAVELER_TYPES.map(t => (
+                  <button key={t} onClick={() => setPrefs(p => ({ ...p, traveler_type: p.traveler_type === t ? '' : t }))}
+                    style={{ padding: '0.45rem 1rem', borderRadius: '999px', border: '1.5px solid', borderColor: prefs.traveler_type === t ? '#1e293b' : '#e2e8f0', background: prefs.traveler_type === t ? '#1e293b' : 'white', color: prefs.traveler_type === t ? 'white' : '#64748b', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer', textTransform: 'capitalize' }}>
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Dietary */}
+            <div>
+              <label style={{ display: 'block', fontWeight: 600, color: '#475569', marginBottom: '0.6rem', fontSize: '0.9rem' }}>Dietary Preference</label>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                {DIETARY_OPTIONS.map(d => (
+                  <button key={d} onClick={() => setPrefs(p => ({ ...p, dietary_restrictions: d }))}
+                    style={{ padding: '0.45rem 1rem', borderRadius: '999px', border: '1.5px solid', borderColor: prefs.dietary_restrictions === d ? '#1e293b' : '#e2e8f0', background: prefs.dietary_restrictions === d ? '#1e293b' : 'white', color: prefs.dietary_restrictions === d ? 'white' : '#64748b', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer', textTransform: 'capitalize' }}>
+                    {d}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Interests */}
+            <div>
+              <label style={{ display: 'block', fontWeight: 600, color: '#475569', marginBottom: '0.6rem', fontSize: '0.9rem' }}>Interests</label>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                {INTEREST_OPTIONS.map(i => (
+                  <button key={i} onClick={() => toggleInterest(i)}
+                    style={{ padding: '0.45rem 1rem', borderRadius: '999px', border: '1.5px solid', borderColor: prefs.interests.includes(i) ? '#4f46e5' : '#e2e8f0', background: prefs.interests.includes(i) ? '#4f46e5' : 'white', color: prefs.interests.includes(i) ? 'white' : '#64748b', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer', textTransform: 'capitalize' }}>
+                    {i}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <button onClick={handleSavePrefs} disabled={savingPrefs}
+              style={{ padding: '0.9rem', background: '#4f46e5', color: 'white', border: 'none', borderRadius: '12px', fontFamily: 'inherit', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', alignSelf: 'flex-start', minWidth: '160px' }}>
+              {savingPrefs ? 'Saving...' : 'Save Preferences'}
+            </button>
+          </div>
         </div>
 
         {/* Stats */}

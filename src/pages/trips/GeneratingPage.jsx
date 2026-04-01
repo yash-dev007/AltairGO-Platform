@@ -51,8 +51,9 @@ const GeneratingPage = () => {
         duration: stateData.duration || itinerary?.itinerary?.length || 0,
       };
       const saved = await saveTrip(savePayload);
-      if (saved.id) {
-        setTimeout(() => navigate(`/trip/${saved.id}`), 500);
+      const tripId = saved.id || saved.trip_id;
+      if (tripId) {
+        setTimeout(() => navigate(`/trip/${tripId}`), 500);
         return;
       }
     } catch {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { ChevronRight, ChevronLeft, MapPin, Search, X, Plus, Minus, Sparkles, Check, Calendar, Users, DollarSign, Heart } from 'lucide-react';
@@ -48,6 +48,8 @@ const TripPlannerPage = () => {
   const [selectedCountry, setSelectedCountry] = useState('India');
   const [searchLoading, setSearchLoading] = useState(false);
   const [recommendLoading, setRecommendLoading] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
+  const recommendInFlight = useRef(false);
 
   // Step 2: When
   const [startDate, setStartDate] = useState('');
@@ -79,6 +81,9 @@ const TripPlannerPage = () => {
     if (searchParams.get('destination')) {
       setSelectedDests([{ name: searchParams.get('destination'), id: 'custom' }]);
     }
+    // Mark mounted after first paint so autoFocus doesn't immediately trigger recommend
+    const t = setTimeout(() => setHasMounted(true), 500);
+    return () => clearTimeout(t);
   }, []);
 
   // Debounced search
@@ -97,14 +102,20 @@ const TripPlannerPage = () => {
   }, [searchQuery]);
 
   const handleRecommend = async () => {
+    if (recommendInFlight.current) return;
+    recommendInFlight.current = true;
     setRecommendLoading(true);
     try {
       const data = await recommend({ limit: 4, budget_category: budget < 10000 ? 'budget' : budget < 40000 ? 'mid' : 'luxury' });
       const items = Array.isArray(data) ? data : (data.destinations || []);
       setSearchResults(items.slice(0, 6));
       toast.success('Showing AI recommendations!');
-    } catch { toast.error('Could not get recommendations'); }
-    finally { setRecommendLoading(false); }
+    } catch {
+      toast.error('Could not get recommendations');
+    } finally {
+      recommendInFlight.current = false;
+      setRecommendLoading(false);
+    }
   };
 
   const addDest = (dest) => {
@@ -142,7 +153,7 @@ const TripPlannerPage = () => {
   const travelMonth = startDate ? new Date(startDate).toLocaleString('en', { month: 'long' }) : 'January';
 
   const handleGenerate = async () => {
-    if (selectedDests.length === 0) { toast.error('Please select at least one destination'); setStep(1); return; }
+    if (selectedDests.length === 0) { toast.dismiss(); toast.error('Please select at least one destination'); setStep(1); return; }
     if (!selectedCountry) { toast.error('Please select a country'); return; }
 
     setGenerating(true);
@@ -235,8 +246,9 @@ const TripPlannerPage = () => {
                   placeholder="Search — Goa, Manali, Rajasthan..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' && searchResults.length > 0) addDest(searchResults[0]); }}
                   style={{ width: '100%', padding: '0.95rem 1rem 0.95rem 2.75rem', border: '1.5px solid #e2e8f0', borderRadius: '14px', fontFamily: 'inherit', fontSize: '0.95rem', outline: 'none' }}
-                  onFocus={() => { if (searchQuery.length < 2) handleRecommend(); }}
+                  onFocus={() => { if (hasMounted && searchQuery.length < 2 && searchResults.length === 0) handleRecommend(); }}
                   autoFocus
                 />
               </div>
@@ -645,7 +657,11 @@ const TripPlannerPage = () => {
             {step < 5 && (
               <button
                 onClick={() => {
-                  if (step === 1 && selectedDests.length === 0) { toast.error('Please select at least one destination'); return; }
+                  if (step === 1 && selectedDests.length === 0) {
+                    toast.dismiss();
+                    toast.error('Please select at least one destination');
+                    return;
+                  }
                   setStep(s => s + 1);
                 }}
                 style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0.75rem 1.75rem', border: 'none', borderRadius: '50px', background: '#1e293b', color: 'white', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer', fontSize: '0.95rem' }}

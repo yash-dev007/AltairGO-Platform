@@ -7,7 +7,17 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:booking": "playwright test tests/01_booking_flow.spec.js",
+    "test:editor": "playwright test tests/02_trip_editor.spec.js",
+    "test:discover": "playwright test tests/03_discover.spec.js",
+    "test:tools": "playwright test tests/04_trip_tools.spec.js",
+    "test:admin": "playwright test tests/05_admin.spec.js",
+    "test:mobile": "playwright test tests/06_mobile.spec.js --project=mobile",
+    "test:e2e:report": "playwright show-report"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -24,6 +34,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
+    "@playwright/test": "^1.58.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.0",

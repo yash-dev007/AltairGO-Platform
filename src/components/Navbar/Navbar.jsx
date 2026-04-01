@@ -38,6 +38,18 @@ const Navbar = () => {
     }, 300);
   };
 
+  const handleSearchKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      if (searchResults.length > 0) {
+        navigate(`/destination/${searchResults[0].id}`);
+      } else if (searchQuery.trim().length >= 2) {
+        navigate(`/discover?q=${encodeURIComponent(searchQuery.trim())}`);
+      }
+      setShowResults(false);
+      setSearchQuery('');
+    }
+  };
+
   const handleLogout = () => {
     logout();
     setIsOpen(false);
@@ -86,6 +98,7 @@ const Navbar = () => {
               className={styles.searchInput}
               value={searchQuery}
               onChange={handleSearchChange}
+              onKeyDown={handleSearchKeyDown}
               onFocus={() => { if (searchQuery.length >= 2) setShowResults(true); }}
               onBlur={() => setTimeout(() => setShowResults(false), 200)}
             />

@@ -4,33 +4,37 @@
   background: var(--background);
 }
 
-/* Back button */
-.backRow {
-  max-width: 860px;
-  margin: 0 auto;
-  padding: 1.5rem var(--spacing-lg) 0;
-}
-
+/* Back button — floats over the hero image */
 .backBtn {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.5rem;
+  z-index: 10;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  color: var(--primary-light);
+  color: rgba(255, 255, 255, 0.92);
   font-size: var(--text-sm);
-  font-weight: 500;
+  font-weight: 600;
   text-decoration: none;
-  transition: color 0.2s ease;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .backBtn:hover {
-  color: var(--accent);
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
 }
 
-/* Hero */
+/* Hero — starts at the very top, back button overlaid inside */
 .hero {
   position: relative;
   height: 480px;
-  margin: 1.5rem auto 0;
+  margin: 0;
   max-width: 100%;
   overflow: hidden;
   background: linear-gradient(135deg, #1e293b 0%, #334155 100%);

@@ -51,11 +51,13 @@ export const AuthProvider = ({ children }) => {
       if (res.ok) {
         const userData = await res.json();
         setUser(userData);
-      } else {
+      } else if (res.status === 401) {
+        // Token is invalid or expired — clear session
         logout();
       }
+      // Any other status (5xx, etc.) — keep session, might be a transient server error
     } catch {
-      logout();
+      // Network error (server down, timeout) — keep session, do not log user out
     } finally {
       setLoading(false);
     }

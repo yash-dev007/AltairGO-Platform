@@ -67,9 +67,12 @@ const TripViewerPage = () => {
     try {
       const data = await getTrip(id);
       setTrip(data);
-      setNotes(data.user_notes || '');
+      setNotes(data.user_notes?.trip || '');
       // Silently pre-load bookings so we can show pending-bookings banner on itinerary tab
-      getTripBookings(id).then(d => setBookings(d.bookings || d || [])).catch(() => {});
+      getTripBookings(id).then(d => {
+        const flat = d.bookings || (Array.isArray(d) ? d : Object.values(d.by_type || {}).flat());
+        setBookings(flat);
+      }).catch(() => {});
     } catch (err) {
       setError(err.message);
     } finally {
@@ -92,7 +95,8 @@ const TripViewerPage = () => {
   const loadBookings = async () => {
     try {
       const data = await getTripBookings(id);
-      setBookings(data.bookings || data || []);
+      const flat = data.bookings || (Array.isArray(data) ? data : Object.values(data.by_type || {}).flat());
+      setBookings(flat);
     } catch { toast.error('Could not load bookings'); }
   };
 
@@ -106,6 +110,10 @@ const TripViewerPage = () => {
   const loadReadiness = async () => {
     try {
       const data = await getTripReadiness(id);
+      // Normalize: backend returns readiness_score, frontend uses score
+      if (data && data.readiness_score !== undefined && data.score === undefined) {
+        data.score = data.readiness_score;
+      }
       setReadiness(data);
     } catch { toast.error('Could not load readiness'); }
   };
@@ -182,7 +190,7 @@ const TripViewerPage = () => {
     if (savingNotes) return;
     setSavingNotes(true);
     try {
-      await updateTripNotes(id, { notes });
+      await updateTripNotes(id, { trip: notes });
       toast.success('Notes saved');
     } catch { toast.error('Could not save notes'); }
     finally { setSavingNotes(false); }
@@ -221,7 +229,7 @@ const TripViewerPage = () => {
   const packingTips = itinerary?.packing_tips || [];
   const localEvents = itinerary?.local_events || [];
   const preTripInfo = itinerary?.pre_trip_info || null;
-  const transportGuide = itinerary?.daily_transport_guide || [];
+  const transportGuide = Array.isArray(itinerary?.daily_transport_guide) ? itinerary.daily_transport_guide : [];
   const weatherAlerts = itinerary?.weather_alerts || {};
   const docChecklist = itinerary?.document_checklist || [];
 
@@ -684,12 +692,14 @@ const TripViewerPage = () => {
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
               <h2 style={{ fontWeight: 700, color: '#1e293b', fontSize: '1.2rem' }}>Booking Plan</h2>
-              <button
-                onClick={handleExecuteAll}
-                style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0.75rem 1.5rem', background: '#1e293b', color: 'white', border: 'none', borderRadius: '50px', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer', fontSize: '0.9rem' }}
-              >
-                <Check size={16} /> Confirm & Book All Approved
-              </button>
+              {bookings.some(b => b.status === 'approved') && (
+                <button
+                  onClick={handleExecuteAll}
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0.75rem 1.5rem', background: '#1e293b', color: 'white', border: 'none', borderRadius: '50px', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer', fontSize: '0.9rem' }}
+                >
+                  <Check size={16} /> Confirm & Book All Approved
+                </button>
+              )}
             </div>
 
             {/* Status summary bar */}
@@ -756,7 +766,7 @@ const TripViewerPage = () => {
                               <button onClick={() => rejectBooking(b.id).then(loadBookings)} style={{ padding: '0.5rem 1rem', background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: '8px', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem' }}>Reject</button>
                             </>
                           )}
-                          {(b.status === 'approved' || b.status === 'executed') && (
+                          {(b.status === 'approved' || b.status === 'executed' || b.status === 'booked') && (
                             <button onClick={() => cancelBooking(b.id).then(loadBookings)} style={{ padding: '0.5rem 1rem', background: '#f8fafc', color: '#64748b', border: '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem' }}>Cancel</button>
                           )}
                         </div>

@@ -1,17 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Sparkles, BrainCircuit, CreditCard, CloudSun, CalendarDays, Pencil, ArrowRight, Star, CheckCircle } from 'lucide-react';
+import {
+  MapPin, Sparkles, BrainCircuit, CreditCard, CloudSun, CalendarDays,
+  Pencil, ArrowRight, CheckCircle, ChevronLeft, ChevronRight,
+} from 'lucide-react';
 import DestinationCard from '../components/DestinationCard/DestinationCard.jsx';
 import { getDestinations, getBlogs } from '../services/api.js';
 import styles from './Home.module.css';
-
-const getCardVariant = (index) => {
-  const i = index % 10;
-  if (i === 0) return 'large';
-  if (i === 3 || i === 7) return 'tall';
-  if (i === 4 || i === 8) return 'wide';
-  return 'default';
-};
+import blogStyles from '../components/Blogs/Blogs.module.css';
 
 const FEATURES = [
   { icon: <BrainCircuit size={28} />, title: 'AI-Powered Engine', desc: 'Gemini 2.0 Flash generates personalized day-by-day itineraries in seconds with smart activity scheduling.' },
@@ -52,13 +48,22 @@ const Home = () => {
   const [blogsLoading, setBlogsLoading] = useState(true);
   const [statsVisible, setStatsVisible] = useState(false);
   const statsRef = useRef(null);
+  const carouselRef = useRef(null);
 
   const tripsCount = useCountUp(10000, 2000, statsVisible);
   const destsCount = useCountUp(200, 2000, statsVisible);
   const satisfactionCount = useCountUp(98, 1500, statsVisible);
 
+  const scrollCarousel = (dir) => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const slide = el.querySelector(`.${styles.carouselSlide}`);
+    const cardWidth = slide ? slide.offsetWidth + 20 : 336;
+    el.scrollBy({ left: dir * cardWidth, behavior: 'smooth' });
+  };
+
   useEffect(() => {
-    getDestinations({ limit: 6 })
+    getDestinations({ limit: 8 })
       .then((data) => setDestinations(Array.isArray(data) ? data : (data.destinations || [])))
       .catch(() => setDestinations([]))
       .finally(() => setLoading(false));
@@ -80,18 +85,22 @@ const Home = () => {
 
   return (
     <div style={{ paddingTop: '70px' }}>
-      {/* Hero */}
+
+      {/* ── Hero ─────────────────────────────────────────────────── */}
       <section className={styles.heroSection}>
         <div className={styles.heroContent}>
+          <div className={styles.heroBadge}>
+            <Sparkles size={13} />
+            AI-Powered Travel Planning
+          </div>
           <h1 className={styles.heroTitle}>
             Explore Exotic<br />
             <span>Destinations</span> with AI
           </h1>
-
           <p className={styles.heroSubtitle}>
-            Tell us where, when, and how much — our AI builds a complete day-by-day itinerary with hotel costs, activity schedules, and budget breakdowns in under 30 seconds.
+            Tell us where, when, and how much — our AI builds a complete day-by-day
+            itinerary with hotel costs, activity schedules, and budget breakdowns in under 30 seconds.
           </p>
-
           <div className={styles.heroActions}>
             <Link to="/planner" className={styles.primaryBtn}>
               Plan My Trip Free <ArrowRight size={18} />
@@ -103,7 +112,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Stats */}
+      {/* ── Stats ────────────────────────────────────────────────── */}
       <section ref={statsRef} className={styles.statsSection}>
         <div className={styles.statsContainer}>
           {[
@@ -119,10 +128,11 @@ const Home = () => {
         </div>
       </section>
 
-      {/* How It Works */}
+      {/* ── How It Works ─────────────────────────────────────────── */}
       <section className={`${styles.sectionPadding} ${styles.lightBg}`}>
         <div className={styles.container}>
           <div className={styles.sectionHeader}>
+            <span className={styles.sectionBadge}>Simple Process</span>
             <h2>How It Works</h2>
             <p>From idea to itinerary in four simple steps</p>
           </div>
@@ -138,19 +148,66 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Features */}
+      {/* ── Popular Destinations (Swipe Carousel) ────────────────── */}
       <section className={`${styles.sectionPadding} ${styles.whiteBg}`}>
         <div className={styles.container}>
+          <div className={styles.destinationsHeader}>
+            <div>
+              <span className={styles.sectionBadge}>Handpicked for You</span>
+              <h2 className={styles.sectionTitle}>Popular Destinations</h2>
+              <p className={styles.sectionSubtitle}>Discover India's most loved travel spots</p>
+            </div>
+            <Link to="/discover" className={styles.viewAllBtn}>
+              View All <ArrowRight size={16} />
+            </Link>
+          </div>
+        </div>
+
+        {/* Carousel bleeds to edges */}
+        <div className={styles.carouselOuter}>
+          <button
+            className={`${styles.carouselBtn} ${styles.carouselPrev}`}
+            onClick={() => scrollCarousel(-1)}
+            aria-label="Previous destinations"
+          >
+            <ChevronLeft size={20} />
+          </button>
+
+          <div className={styles.carouselTrack} ref={carouselRef}>
+            {loading
+              ? Array(5).fill(0).map((_, i) => (
+                  <div key={i} className={`${styles.carouselSlide} ${styles.carouselSkeleton}`} />
+                ))
+              : destinations.map((dest) => (
+                  <div key={dest.id} className={styles.carouselSlide}>
+                    <DestinationCard dest={dest} variant="default" />
+                  </div>
+                ))
+            }
+          </div>
+
+          <button
+            className={`${styles.carouselBtn} ${styles.carouselNext}`}
+            onClick={() => scrollCarousel(1)}
+            aria-label="Next destinations"
+          >
+            <ChevronRight size={20} />
+          </button>
+        </div>
+      </section>
+
+      {/* ── Features ─────────────────────────────────────────────── */}
+      <section className={`${styles.sectionPadding} ${styles.lightBg}`}>
+        <div className={styles.container}>
           <div className={styles.sectionHeader}>
+            <span className={styles.sectionBadge}>Platform Capabilities</span>
             <h2>Everything You Need</h2>
             <p>Powered by cutting-edge AI and real-world data</p>
           </div>
           <div className={styles.featuresGrid}>
             {FEATURES.map((f, i) => (
               <div key={i} className={styles.featureCard}>
-                <div className={styles.featureIcon}>
-                  {f.icon}
-                </div>
+                <div className={styles.featureIcon}>{f.icon}</div>
                 <h3 className={styles.stepTitle}>{f.title}</h3>
                 <p className={styles.stepDesc}>{f.desc}</p>
               </div>
@@ -159,101 +216,77 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Popular Destinations */}
-      <section className={`${styles.sectionPadding} ${styles.lightBg}`}>
-        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-          <div className={styles.destinationsHeader}>
-            <div>
-              <h2 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: 800, color: '#1e293b', letterSpacing: '-0.03em', marginBottom: '0.5rem' }}>
-                Popular Destinations
-              </h2>
-              <p style={{ color: '#64748b', fontSize: '1rem' }}>Handpicked spots loved by travelers</p>
-            </div>
-            <Link to="/discover" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#1e293b', fontWeight: 600, textDecoration: 'none', fontSize: '0.95rem', border: '1px solid #e2e8f0', padding: '0.6rem 1.25rem', borderRadius: '50px', background: 'white' }}>
-              View All <ArrowRight size={16} />
-            </Link>
-          </div>
-
-          {loading ? (
-            <div className={styles.destinationsGrid}>
-              {Array(6).fill(0).map((_, i) => (
-                <div key={i} style={{
-                  background: '#e2e8f0',
-                  borderRadius: '24px',
-                  minHeight: '280px',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  gridColumn: window.innerWidth > 768 && i === 0 ? 'span 2' : 'span 1',
-                  gridRow: window.innerWidth > 768 && i === 0 ? 'span 2' : 'span 1',
-                }}>
-                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)', animation: 'shimmer 1.5s infinite', transform: 'translateX(-100%)' }} />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className={styles.destinationsGrid}>
-              {destinations.map((dest, i) => (
-                <DestinationCard key={dest.id} dest={dest} variant={getCardVariant(i)} />
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Latest Blogs */}
+      {/* ── Latest Travel Stories ─────────────────────────────────── */}
       <section className={styles.blogsSection}>
         <div className={styles.container}>
           <div className={styles.destinationsHeader}>
             <div>
-              <h2 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: 800, color: '#1e293b', letterSpacing: '-0.03em', marginBottom: '0.5rem' }}>
-                Latest Travel Stories
-              </h2>
-              <p style={{ color: '#64748b', fontSize: '1rem' }}>Insider guides and travel inspiration</p>
+              <span className={styles.sectionBadge}>Travel Inspiration</span>
+              <h2 className={styles.sectionTitle}>Latest Travel Stories</h2>
+              <p className={styles.sectionSubtitle}>Insider guides and travel inspiration</p>
             </div>
-            <Link to="/blogs" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#1e293b', fontWeight: 600, textDecoration: 'none', fontSize: '0.95rem', border: '1px solid #e2e8f0', padding: '0.6rem 1.25rem', borderRadius: '50px', background: 'white' }}>
+            <Link to="/blogs" className={styles.viewAllBtn}>
               View All Blogs <ArrowRight size={16} />
             </Link>
           </div>
 
-          <div className={styles.blogsGrid}>
-            {blogsLoading ? (
-              Array(3).fill(0).map((_, i) => (
-                <div key={i} className={styles.blogCard} style={{ height: '400px', background: '#f1f5f9', position: 'relative', overflow: 'hidden' }}>
-                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)', animation: 'shimmer 1.5s infinite', transform: 'translateX(-100%)' }} />
-                </div>
-              ))
-            ) : blogs.length > 0 ? (
-              blogs.map((blog) => (
-                <article key={blog.id} className={styles.blogCard}>
-                  <div className={styles.blogImageContainer}>
-                    {blog.image && <img src={blog.image} alt={blog.title} className={styles.blogImage} />}
-                    {blog.category && <span className={styles.blogCategory}>{blog.category}</span>}
-                  </div>
-                  <div className={styles.blogBody}>
-                    <div className={styles.blogMeta}>
-                      <span>{blog.date}</span>
-                      <span>•</span>
-                      <span>{blog.readTime}</span>
+          {/* Use the same grid + card styles as the /blogs page */}
+          <div className={blogStyles.grid} style={{ marginTop: '2.5rem' }}>
+            {blogsLoading
+              ? Array(3).fill(0).map((_, i) => (
+                  <div key={i} className={blogStyles.card} style={{ minHeight: '340px' }}>
+                    <div className={styles.skeletonPulse} style={{ height: '200px' }} />
+                    <div style={{ padding: '1.5rem' }}>
+                      <div className={styles.skeletonPulse} style={{ height: '12px', width: '40%', marginBottom: '1rem', borderRadius: '6px' }} />
+                      <div className={styles.skeletonPulse} style={{ height: '18px', marginBottom: '0.5rem', borderRadius: '6px' }} />
+                      <div className={styles.skeletonPulse} style={{ height: '18px', width: '70%', borderRadius: '6px' }} />
                     </div>
-                    <h3 className={styles.blogTitle}>{blog.title}</h3>
-                    <p className={styles.blogExcerpt}>{blog.excerpt}</p>
-                    <Link to={`/blogs/${blog.id}`} className={styles.blogLink}>
-                      Read Full Story <ArrowRight size={14} />
-                    </Link>
                   </div>
-                </article>
-              ))
-            ) : (
-              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem', color: '#64748b' }}>
-                No travel stories found.
-              </div>
-            )}
+                ))
+              : blogs.length > 0
+                ? blogs.slice(0, 3).map((blog) => (
+                    <Link
+                      key={blog.id}
+                      to={`/blogs/${blog.id}`}
+                      className={blogStyles.card}
+                      style={{ textDecoration: 'none', color: 'inherit' }}
+                    >
+                      <div className={blogStyles.imageContainer}>
+                        {blog.image && (
+                          <img
+                            src={blog.image}
+                            alt={blog.title}
+                            className={blogStyles.image}
+                            onError={(e) => { e.target.style.display = 'none'; }}
+                          />
+                        )}
+                        {blog.category && <span className={blogStyles.category}>{blog.category}</span>}
+                      </div>
+                      <div className={blogStyles.content}>
+                        <div className={blogStyles.meta}>
+                          <span>{blog.date}</span>
+                          <span>•</span>
+                          <span>{blog.readTime}</span>
+                        </div>
+                        <h3 className={blogStyles.title}>{blog.title}</h3>
+                        <p className={blogStyles.excerpt}>{blog.excerpt}</p>
+                        <span className={blogStyles.readMore}>
+                          Read Article <span>→</span>
+                        </span>
+                      </div>
+                    </Link>
+                  ))
+                : (
+                    <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem', color: '#64748b' }}>
+                      No travel stories yet. Check back soon!
+                    </div>
+                  )
+            }
           </div>
         </div>
       </section>
 
-
-      {/* CTA Banner */}
+      {/* ── CTA Banner ───────────────────────────────────────────── */}
       <section className={styles.ctaSection}>
         <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '300px', height: '300px', borderRadius: '50%', background: 'rgba(101,163,13,0.1)' }} />
         <div style={{ position: 'absolute', bottom: '-60px', left: '-40px', width: '250px', height: '250px', borderRadius: '50%', background: 'rgba(74,222,128,0.08)' }} />
@@ -265,7 +298,7 @@ const Home = () => {
             Join 10,000+ travelers who plan smarter with AltairGO. No credit card required.
           </p>
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link to="/planner" className={`${styles.primaryBtn} ${styles.ctaPrimary}`} style={{ background: '#4ade80' }}>
+            <Link to="/planner" className={styles.primaryBtn} style={{ background: '#4ade80', color: '#0f172a' }}>
               <Sparkles size={18} /> Generate My Itinerary
             </Link>
             <Link to="/register" className={styles.secondaryBtn}>
@@ -281,6 +314,7 @@ const Home = () => {
           </div>
         </div>
       </section>
+
     </div>
   );
 };

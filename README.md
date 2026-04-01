@@ -1,8 +1,28 @@
+<div align="center">
+
+<img src="https://img.shields.io/badge/AltairGO-Platform-4F46E5?style=for-the-badge&logo=react&logoColor=white" alt="AltairGO Platform" />
+
 # AltairGO Platform
 
-> Traveler-facing React frontend for AltairGO Travel Intelligence.
+**Traveler-facing React frontend for AltairGO Travel Intelligence — AI itinerary planning, full booking management, and destination discovery.**
 
-AltairGO Platform is a production-grade React SPA that delivers AI-powered trip planning, itinerary management, destination discovery, and travel briefings. It connects to the [AltairGO Engine](https://github.com/yash-dev007) Flask backend for all data and AI operations.
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev)
+[![React Router](https://img.shields.io/badge/React%20Router-v7-CA4245?style=flat-square&logo=reactrouter&logoColor=white)](https://reactrouter.com)
+[![Tailwind](https://img.shields.io/badge/Tailwind-v4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Playwright](https://img.shields.io/badge/Playwright-E2E-45BA4B?style=flat-square&logo=playwright&logoColor=white)](https://playwright.dev)
+
+<br/>
+
+[Features](#-features) &bull; [Getting Started](#-getting-started) &bull; [Routes](#-routing-overview) &bull; [Testing](#-testing) &bull; [Design System](#-design-system)
+
+</div>
+
+---
+
+## Overview
+
+AltairGO Platform is a production-grade React SPA connecting to the [AltairGO Engine](https://github.com/yash-dev007/AltairGO-Engine) Flask backend. It covers the full traveler journey: discover destinations, generate AI itineraries via SSE, manage bookings, track expenses, and review trips.
 
 ---
 
@@ -10,31 +30,96 @@ AltairGO Platform is a production-grade React SPA that delivers AI-powered trip 
 
 | Tool | Version | Purpose |
 |------|---------|---------|
-| React | 19.2 | UI framework |
-| Vite | 8.0 | Build tool + dev server (port 5174) |
+| React | 19 | UI framework |
+| Vite | 8 | Build tool + dev server |
 | React Router | v7 | Client-side routing |
 | Framer Motion | 12 | Page transitions + animations |
-| Lucide React | 0.577 | Icon library |
-| Recharts | 3 | Charts (expenses, best-time) |
+| Recharts | 3 | Charts (expenses, best-time widget) |
 | @dnd-kit | 6/10/3 | Drag-and-drop activity reorder |
-| react-hot-toast | 2.6 | User notifications |
+| Lucide React | 0.577 | Icon library |
+| react-hot-toast | 2.6 | Toast notifications |
 | CSS Modules | — | Scoped per-component styles |
 
 ---
 
 ## Features
 
-- **Trip Planning Wizard** — 5-step flow with progressive disclosure: destination search + AI recommendations, dates/duration, budget slider with live ₹/person/day hint, interests chips (8 options) + collapsible advanced options (dietary, fitness, accessibility, special occasion)
-- **AI Itinerary Generation** — Real-time **SSE stream** via `EventSource` for live status updates; falls back to polling; auto-saves on completion
-- **Itinerary Viewer** — **6-tab** view: itinerary (pending bookings banner + day briefing links), bookings (3-step explainer + status pills), expenses, readiness checklist, notes, post-trip summary
-- **Booking Management** — Type emoji icons, left color-coded border, booking_url links, booking refs, "Confirm & Book All Approved" CTA
-- **Post-trip Summary & Reviews** — Planned vs actual spend, activity type highlights, star rating + tag chip review form
-- **Destination Discovery** — Bento grid with filters, AI recommendations, **semantic AI search** (`q=` via text embeddings)
-- **Destination Details** — 4-tab deep-dive: overview, best time to visit, attractions, budget
-- **Daily Briefing** — Day-of carry list, weather, crowd warnings, SOS contacts
-- **Trip Sharing** — Public read-only trip view via share token
-- **Admin Dashboard** — Stats, job triggers, SSE live feed, engine config, **Feature Flags CRUD** with traffic %, data source health
-- **Auth** — JWT-based login/register with auto token refresh
+### Trip Planning
+- **5-step planner wizard** — destination search + AI recommendations, dates/duration, budget slider (live ₹/person/day hint), interests chips, advanced options (dietary, fitness, accessibility)
+- **AI itinerary generation** — real-time SSE stream via `EventSource`; auto-saves on completion; 2s polling fallback
+
+### Itinerary Viewer (6 tabs)
+- **Itinerary** — pending bookings banner, day briefing links, collapsible activity cards
+- **Bookings** — 3-step explainer, status pills, booking refs, "Confirm & Book All Approved" CTA, approve/reject/cancel per booking
+- **Expenses** — planned vs actual spend per category with Recharts bar chart
+- **Readiness** — 0–100% checklist (documents, bookings, packing, health)
+- **Notes** — per-trip and per-day notes with auto-save
+- **Post-trip** — summary stats, highlights, star + tag chip review form
+
+### Destination Discovery
+- Bento grid with season/budget/category filters
+- AI semantic search (`q=` via text embeddings)
+- Destination detail: 4-tab deep-dive (overview, best time, attractions, budget)
+- Best-time widget — 12-month score matrix with Excellent/Good/Fair/Avoid verdicts
+- Side-by-side destination comparison with winner
+
+### Other
+- **Trip sharing** — public read-only view via share token
+- **Daily briefing** — day-of carry list, weather, crowd warnings, SOS contacts
+- **Admin dashboard** — stats, job triggers, SSE live feed, engine config, feature flags CRUD
+- **JWT auth** — auto token refresh; `ag:unauthorized` CustomEvent auto-logout
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- **AltairGO Engine** running on `http://127.0.0.1:5000`
+
+### Install & Run
+
+```bash
+npm install
+npm run dev
+# → http://localhost:5173
+```
+
+The Vite dev server proxies `/api/*`, `/auth/*`, and all engine routes to `http://127.0.0.1:5000` automatically.
+
+### Optional: Custom backend URL
+
+```env
+# .env.local
+VITE_API_URL=http://127.0.0.1:5000
+```
+
+### Build for Production
+
+```bash
+npm run build   # output → dist/
+```
+
+---
+
+## Routing Overview
+
+| Path | Page | Auth |
+|------|------|------|
+| `/` | Home | Public |
+| `/discover` | Destinations bento grid | Public |
+| `/destination/:id` | Destination detail (4 tabs) | Public |
+| `/login` | Login | Public |
+| `/register` | Register | Public |
+| `/trip/shared/:token` | Shared trip (read-only) | Public |
+| `/planner` | Trip planner wizard | Protected |
+| `/planner/generating/:jobId` | SSE generation progress | Protected |
+| `/trips` | My trips dashboard | Protected |
+| `/trip/:id` | Trip viewer (6 tabs) | Protected |
+| `/trip/:id/briefing/:day` | Daily briefing | Protected |
+| `/profile` | User profile | Protected |
+| `/admin` | Admin dashboard | Admin only |
 
 ---
 
@@ -44,18 +129,14 @@ AltairGO Platform is a production-grade React SPA that delivers AI-powered trip 
 src/
 ├── App.jsx                  # All routes + ProtectedRoute + AdminRoute
 ├── index.css                # Design system — CSS variables + keyframes
-├── config.js                # API base URL config
 ├── context/
-│   └── AuthContext.jsx      # Unified auth state
+│   └── AuthContext.jsx      # JWT auth state + auto-refresh + logout event
 ├── services/
 │   └── api.js               # 50+ named API functions
 ├── components/
 │   ├── Navbar/
-│   ├── Footer/
 │   ├── DestinationCard/     # Bento card (large/wide/tall/default sizes)
-│   ├── Skeleton/
-│   ├── LoadingOverlay.jsx
-│   └── ErrorBoundary.jsx
+│   └── ...                  # Footer, Skeleton, LoadingOverlay, ErrorBoundary
 └── pages/
     ├── Home.jsx
     ├── auth/                # Login + Register
@@ -68,85 +149,91 @@ src/
 
 ---
 
-## Getting Started
+## Testing
 
-### Prerequisites
-
-- Node.js 18+
-- **AltairGO Engine** Flask backend running on port 5000
-
-### Install & Run
+### Unit Tests
 
 ```bash
-# 1. Install dependencies
-npm install
-
-# 2. Start the dev server
-npm run dev
-# → http://localhost:5174
+python -m pytest ../AltairGO-Engine/backend/tests/ -q  # 188 passed (backend)
 ```
 
-The Vite dev server proxies all `/api/*`, `/auth/*`, and engine routes to `http://127.0.0.1:5000` automatically — no extra config needed.
+### E2E Tests (Playwright)
 
-### Optional: Custom backend URL
+Full browser-level E2E suite — 334 tests across 6 spec files. **Requires both backend + frontend running.**
 
 ```bash
-# .env.local
-VITE_API_URL=http://127.0.0.1:5000
+# Individual suites
+npm run test:booking    # P1 — booking flow (create, approve, execute, cancel)
+npm run test:editor     # P2 — trip editor (hotel swap, activity CRUD, notes)
+npm run test:discover   # P3 — discover (recommend, best-time, compare, estimate)
+npm run test:tools      # P4 — trip tools (readiness, briefing, swap, review)
+npm run test:admin      # P5 — admin panel (auth, stats, flags, engine config)
+npm run test:mobile     # P6 — mobile (375px viewport, no overflow, all flows)
+
+# All tests
+npm run test:e2e
+
+# Interactive UI mode
+npm run test:e2e:ui
 ```
 
-If `VITE_API_URL` is not set, the Vite proxy handles all API calls.
+| Suite | Priority | Coverage |
+|-------|----------|----------|
+| `01_booking_flow.spec.js` | P1 | Full booking lifecycle + edge cases |
+| `02_trip_editor.spec.js` | P2 | Hotel swap, activity CRUD, notes |
+| `03_discover.spec.js` | P3 | Recommend, best-time, compare, estimate |
+| `04_trip_tools.spec.js` | P4 | Readiness, briefing, activity swap, review |
+| `05_admin.spec.js` | P5 | Admin CRUD, feature flags, engine settings |
+| `06_mobile.spec.js` | P6 | Pixel 5 viewport — all pages no overflow |
 
-### Build for Production
+**Debug scripts** (headless: false, with screenshots):
 
 ```bash
-npm run build
-# Output → dist/
+node tests/p1_booking_debug.cjs     # P1 — 13/13 PASS
+node tests/p2_trip_editor.cjs       # P2 — 29 PASS, 4 warnings
+node tests/p3_discover_debug.cjs    # P3 — 57 PASS, 0 FAIL
 ```
 
----
-
-## Routing Overview
-
-| Path | Page | Auth |
-|------|------|------|
-| `/` | Home | Public |
-| `/discover` | Destinations | Public |
-| `/destination/:id` | Destination Details | Public |
-| `/login` | Login | Public |
-| `/register` | Register | Public |
-| `/trip/shared/:token` | Shared Trip | Public |
-| `/planner` | Trip Planner | Protected |
-| `/planner/generating/:jobId` | Generating | Protected |
-| `/trips` | My Trips Dashboard | Protected |
-| `/trip/:id` | Trip Viewer (6 tabs) | Protected |
-| `/trip/:id/briefing/:day` | Daily Briefing | Protected |
-| `/profile` | Profile | Protected |
-| `/admin` | Admin Dashboard | Admin |
+Screenshots output to `test-results/`.
 
 ---
 
 ## Design System
 
-All styles use CSS custom properties from `src/index.css`. Key tokens:
+Tokens defined in `src/index.css`:
 
 | Token | Value | Use |
 |-------|-------|-----|
-| `--primary` | `#1E293B` | Main text, primary buttons |
-| `--accent` | `#65A30D` | CTAs, highlights |
+| `--primary` | `#4F46E5` | Main CTA, active states |
+| `--accent` | `#F59E0B` | Highlights, badges |
+| `--background` | `#F8FAFC` | Page background |
 | `--surface` | `#F1F5F9` | Section backgrounds |
 | `--border` | `#E2E8F0` | Dividers |
 
-Font: **Poppins** (300–700) via Google Fonts.
+Font: **Poppins** (300–700) via Google Fonts. Currency: `₹{n.toLocaleString('en-IN')}`.
 
 ---
 
-## Related Projects
+## API Integration Notes
+
+All API calls go through `src/services/api.js`. Key field names to know:
+
+| Endpoint | Gotcha |
+|----------|--------|
+| `PUT /api/trip/<id>/notes` | Body must be `{ trip: "...", days: {...} }` — not `{ notes: "..." }` |
+| `GET /get-trip/<id>` | `user_notes` is `{ trip: "...", days: {...} }` — extract `.trip` for display |
+| `PUT /api/trip/<id>/day/<n>/activity/edit` | Use `cost_override` (not `cost`), `user_note` (not `notes`) |
+| `GET /api/user/trips` | Response is `{ items: [...] }` — not `{ trips: [...] }` |
+| `GET /api/discover/best-time/<id>` | Monthly scores are under `monthly_guide` key |
+| `GET /api/discover/recommend` | Results are under `recommendations` key |
+
+---
+
+## Related
 
 | Project | Role |
 |---------|------|
-| **AltairGO-Engine-main** | Flask backend — API, DB, Celery, Gemini AI |
-| **AltairGo-Intelligence** | Original UI reference (read-only) |
+| [AltairGO-Engine](https://github.com/yash-dev007/AltairGO-Engine) | Flask backend — API, DB, Celery, Gemini AI |
 
 ---
 
