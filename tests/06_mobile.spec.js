@@ -88,10 +88,9 @@ test.describe('Mobile Navigation', () => {
 
   test('AltairGO logo visible in mobile navbar', async ({ page }) => {
     await page.goto('/', { waitUntil: 'domcontentloaded' });
+    // Scope to navigation link only (img is nested inside the link, avoid double-match)
     await expect(
-      page.locator('img[alt*="AltairGO"], img[alt*="altairgo"], img[alt*="Altair"]')
-        .or(page.getByRole('link', { name: /altairgo|altair/i }))
-        .or(page.locator('nav [class*="logo"]'))
+      page.getByRole('navigation').getByRole('link', { name: 'AltairGO Logo' }).first()
     ).toBeVisible({ timeout: 8_000 });
   });
 });
@@ -165,11 +164,12 @@ test.describe('Mobile Trip Planner Wizard', () => {
 
   test('Step 1: destination search input usable', async ({ page }) => {
     await page.goto('/planner', { waitUntil: 'domcontentloaded' });
-    const searchInput = page.getByPlaceholder(/destination|search|where/i);
-    await expect(searchInput.first()).toBeVisible({ timeout: 10_000 });
-    await searchInput.first().fill('Jaipur');
+    // Use exact placeholder to avoid matching hidden navbar search input
+    const searchInput = page.getByPlaceholder('Search — Goa, Manali, Rajasthan...');
+    await expect(searchInput).toBeVisible({ timeout: 10_000 });
+    await searchInput.fill('Jaipur');
     // Typing should work without overflow
-    await expect(searchInput.first()).toHaveValue(/jaipur/i);
+    await expect(searchInput).toHaveValue(/jaipur/i);
   });
 
   test('Step navigation buttons visible and tappable', async ({ page }) => {
@@ -285,7 +285,8 @@ test.describe('Mobile Trip Viewer', () => {
   test('Itinerary tab: day card visible on 375px', async ({ page }) => {
     await page.goto(`/trip/${tripId}`, { waitUntil: 'domcontentloaded' });
     await page.getByText('Itinerary', { exact: true }).first().click();
-    await expect(page.locator('[class*="day"], [class*="card"]').first()).toBeVisible({ timeout: 10_000 });
+    // TripViewerPage uses inline styles, no CSS class names — match day headings by text
+    await expect(page.getByText(/Day \d+/i).first()).toBeVisible({ timeout: 10_000 });
   });
 
   test('Bookings tab accessible on mobile', async ({ page }) => {
@@ -313,7 +314,8 @@ test.describe('Mobile Trip Viewer', () => {
   test('Readiness tab score visible on mobile', async ({ page }) => {
     await page.goto(`/trip/${tripId}`, { waitUntil: 'domcontentloaded' });
     await page.getByText('Readiness', { exact: true }).first().click();
-    await expect(page.getByText(/\d+%|\d+\/100|readiness/i)).toBeVisible({ timeout: 10_000 });
+    // Wait for actual score number (e.g. "72%") — avoids matching tab button or loading text
+    await expect(page.getByText(/^\d+%$/).first()).toBeVisible({ timeout: 15_000 });
   });
 
   test('Expenses tab: add expense button tappable', async ({ page }) => {
