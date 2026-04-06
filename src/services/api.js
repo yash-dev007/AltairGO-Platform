@@ -67,8 +67,6 @@ export const getBlogs = (params = {}) => {
 };
 export const getBlog = (id) => req(`/blogs/${id}`, { auth: false });
 export const createDestinationRequest = (data) => req('/api/destination-requests', { body: data });
-export const calculateBudget = (data) => req('/api/budget-calculator', { body: data, auth: false });
-
 // Discovery
 export const recommend = (params = {}) => {
   const { signal, ...rest } = params;
@@ -76,7 +74,6 @@ export const recommend = (params = {}) => {
   return req(`/api/discover/recommend${qs ? '?' + qs : ''}`, { auth: false, signal });
 };
 export const getBestTime = (id) => req(`/api/discover/best-time/${id}`, { auth: false });
-export const isGoodTime = (dest_id, month) => req(`/api/discover/is-good-time?dest_id=${dest_id}&month=${month}`, { auth: false });
 export const estimateBudget = (data) => req('/api/discover/estimate-budget', { body: data, auth: false });
 export const compareDestinations = (data) => req('/api/discover/compare', { body: data, auth: false });
 

@@ -79,30 +79,38 @@ const LoginPage = () => {
           )}
 
           <form onSubmit={handleSubmit} className={styles.form}>
-            <div className={styles.inputGroup}>
-              <Mail size={18} className={styles.inputIcon} />
-              <input
-                type="email"
-                placeholder="Email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={styles.input}
-                required
-                autoComplete="email"
-              />
+            <div className={styles.fieldGroup}>
+              <label htmlFor="login-email" className={styles.fieldLabel}>Email address</label>
+              <div className={styles.inputGroup}>
+                <Mail size={18} className={styles.inputIcon} />
+                <input
+                  id="login-email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className={styles.input}
+                  required
+                  autoComplete="email"
+                />
+              </div>
             </div>
 
-            <div className={styles.inputGroup}>
-              <Lock size={18} className={styles.inputIcon} />
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={styles.input}
-                required
-                autoComplete="current-password"
-              />
+            <div className={styles.fieldGroup}>
+              <label htmlFor="login-password" className={styles.fieldLabel}>Password</label>
+              <div className={styles.inputGroup}>
+                <Lock size={18} className={styles.inputIcon} />
+                <input
+                  id="login-password"
+                  type="password"
+                  placeholder="Your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className={styles.input}
+                  required
+                  autoComplete="current-password"
+                />
+              </div>
             </div>
 
             <button type="submit" className={styles.submitBtn} disabled={loading}>

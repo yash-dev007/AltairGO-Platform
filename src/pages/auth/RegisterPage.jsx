@@ -96,61 +96,77 @@ const RegisterPage = () => {
           )}
 
           <form onSubmit={handleSubmit} className={styles.form}>
-            <div className={styles.inputGroup}>
-              <User size={18} className={styles.inputIcon} />
-              <input
-                type="text"
-                placeholder="Full name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className={styles.input}
-                required
-                autoComplete="name"
-              />
+            <div className={styles.fieldGroup}>
+              <label htmlFor="reg-name" className={styles.fieldLabel}>Full name</label>
+              <div className={styles.inputGroup}>
+                <User size={18} className={styles.inputIcon} />
+                <input
+                  id="reg-name"
+                  type="text"
+                  placeholder="Jane Smith"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className={styles.input}
+                  required
+                  autoComplete="name"
+                />
+              </div>
             </div>
 
-            <div className={styles.inputGroup}>
-              <Mail size={18} className={styles.inputIcon} />
-              <input
-                type="email"
-                placeholder="Email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={styles.input}
-                required
-                autoComplete="email"
-              />
+            <div className={styles.fieldGroup}>
+              <label htmlFor="reg-email" className={styles.fieldLabel}>Email address</label>
+              <div className={styles.inputGroup}>
+                <Mail size={18} className={styles.inputIcon} />
+                <input
+                  id="reg-email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className={styles.input}
+                  required
+                  autoComplete="email"
+                />
+              </div>
             </div>
 
-            <div className={styles.inputGroup}>
-              <Lock size={18} className={styles.inputIcon} />
-              <input
-                type="password"
-                placeholder="Password (min. 12 characters)"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={styles.input}
-                required
-                autoComplete="new-password"
-              />
-              {password && (
-                <div className={styles.strengthBar}>
-                  <div className={styles.strengthFill} style={{ width: strength.pct, background: strength.color }} />
-                </div>
-              )}
+            <div className={styles.fieldGroup}>
+              <label htmlFor="reg-password" className={styles.fieldLabel}>Password</label>
+              <div className={styles.inputGroup}>
+                <Lock size={18} className={styles.inputIcon} />
+                <input
+                  id="reg-password"
+                  type="password"
+                  placeholder="Min. 12 characters"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className={styles.input}
+                  required
+                  autoComplete="new-password"
+                />
+                {password && (
+                  <div className={styles.strengthBar}>
+                    <div className={styles.strengthFill} style={{ width: strength.pct, background: strength.color }} />
+                  </div>
+                )}
+              </div>
             </div>
 
-            <div className={styles.inputGroup}>
-              <Lock size={18} className={styles.inputIcon} />
-              <input
-                type="password"
-                placeholder="Confirm password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className={styles.input}
-                required
-                autoComplete="new-password"
-              />
+            <div className={styles.fieldGroup}>
+              <label htmlFor="reg-confirm" className={styles.fieldLabel}>Confirm password</label>
+              <div className={styles.inputGroup}>
+                <Lock size={18} className={styles.inputIcon} />
+                <input
+                  id="reg-confirm"
+                  type="password"
+                  placeholder="Repeat your password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className={styles.input}
+                  required
+                  autoComplete="new-password"
+                />
+              </div>
             </div>
 
             <button type="submit" className={styles.submitBtn} disabled={loading}>

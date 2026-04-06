@@ -11,14 +11,11 @@ const BlogsPage = () => {
   const [fetchError, setFetchError] = useState(false);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     getBlogs()
       .then(data => setBlogsData(Array.isArray(data) ? data : (data.blogs || [])))
       .catch(() => setFetchError(true))
       .finally(() => setLoading(false));
-  }, []);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
   }, []);
 
   return (

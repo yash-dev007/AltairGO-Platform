@@ -51,12 +51,20 @@ const PageLoader = () => (
   </div>
 );
 
+// 404 Page
+const NotFoundPage = () => (
+  <div style={{ minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem', padding: '2rem', textAlign: 'center' }}>
+    <h1 style={{ fontSize: '4rem', fontWeight: 800, color: '#1e293b', margin: 0 }}>404</h1>
+    <p style={{ fontSize: '1.2rem', color: '#64748b', margin: 0 }}>Page not found</p>
+    <a href="/" style={{ marginTop: '1rem', background: '#1e293b', color: 'white', padding: '0.75rem 2rem', borderRadius: '999px', textDecoration: 'none', fontWeight: 600 }}>Go Home</a>
+  </div>
+);
+
 function AppLayout() {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith('/admin');
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
   const isGenerating = location.pathname.startsWith('/planner/generating');
-  const isShared = location.pathname.startsWith('/trip/shared');
   const shouldHideLayout = isAdmin || isAuthPage || isGenerating;
 
   return (
@@ -71,6 +79,7 @@ function AppLayout() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/trip/shared/:token" element={<SharedTripPage />} />
+          <Route path="/trip/preview" element={<Navigate to="/planner" replace />} />
           <Route path="/planner/generating/:jobId" element={<GeneratingPage />} />
           <Route path="/blogs" element={<BlogsPage />} />
           <Route path="/blogs/:id" element={<BlogDetails />} />
@@ -89,11 +98,10 @@ function AppLayout() {
           <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
 
           {/* Fallback */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
-      {!shouldHideLayout && !isShared && <Footer />}
-      {isShared && <Footer />}
+      {!shouldHideLayout && <Footer />}
     </>
   );
 }

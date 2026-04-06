@@ -1,5 +1,13 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useRef, useContext } from 'react';
 import { API_BASE_URL } from '../config';
+
+// Decode JWT payload without a library
+function jwtExpiry(token) {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+    return payload.exp ? payload.exp * 1000 : null; // ms
+  } catch { return null; }
+}
 
 const AuthContext = createContext({
   user: null,
@@ -24,9 +32,41 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(() => safeLS.get('ag_token'));
   const [isAdmin, setIsAdmin] = useState(() => !!safeLS.get('ag_admin_token'));
   const [loading, setLoading] = useState(true);
+  const refreshTimerRef = useRef(null);
+
+  const scheduleRefresh = (accessToken) => {
+    clearTimeout(refreshTimerRef.current);
+    const expiry = jwtExpiry(accessToken);
+    if (!expiry) return;
+    // Refresh 3 minutes before expiry (but at least 10s from now)
+    const delay = Math.max(expiry - Date.now() - 3 * 60 * 1000, 10_000);
+    refreshTimerRef.current = setTimeout(async () => {
+      const refreshToken = safeLS.get('ag_refresh_token');
+      if (!refreshToken) return;
+      try {
+        const res = await fetch(`${API_BASE_URL}/auth/refresh`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${refreshToken}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.token) {
+            setToken(data.token);
+            safeLS.set('ag_token', data.token);
+            if (data.refresh_token) safeLS.set('ag_refresh_token', data.refresh_token);
+            scheduleRefresh(data.token);
+          }
+        } else {
+          // Refresh token expired — log out silently
+          window.dispatchEvent(new Event('ag:unauthorized'));
+        }
+      } catch { /* network error — will retry on next token use */ }
+    }, delay);
+  };
 
   useEffect(() => {
     const handleUnauth = () => {
+      clearTimeout(refreshTimerRef.current);
       setToken(null);
       setUser(null);
       safeLS.del('ag_token');
@@ -38,9 +78,11 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       fetchUser(token);
+      scheduleRefresh(token);
     } else {
       setLoading(false);
     }
+    return () => clearTimeout(refreshTimerRef.current);
   }, [token]);
 
   const fetchUser = async (authToken) => {
@@ -75,6 +117,7 @@ export const AuthProvider = ({ children }) => {
     setUser(data.user);
     safeLS.set('ag_token', data.token);
     if (data.refresh_token) safeLS.set('ag_refresh_token', data.refresh_token);
+    scheduleRefresh(data.token);
     return data;
   };
 

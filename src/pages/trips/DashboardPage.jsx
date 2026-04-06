@@ -166,6 +166,30 @@ const DashboardPage = () => {
           </div>
         </div>
 
+        {/* Stats strip */}
+        {!loading && trips.length > 0 && (() => {
+          const totalSpent = trips.reduce((sum, t) => {
+            const ij = t.itinerary_json ? (typeof t.itinerary_json === 'string' ? (() => { try { return JSON.parse(t.itinerary_json); } catch { return {}; } })() : t.itinerary_json) : {};
+            return sum + (t.total_cost || t.budget || ij.total_cost || 0);
+          }, 0);
+          const destinations = new Set(trips.map(t => t.destination || t.origin_city).filter(Boolean)).size;
+          const stats = [
+            { label: 'Trips Saved', value: trips.length },
+            { label: 'Total Invested', value: `₹${Number(totalSpent).toLocaleString('en-IN')}` },
+            { label: 'Destinations', value: destinations || trips.length },
+          ];
+          return (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '2.5rem' }}>
+              {stats.map(s => (
+                <div key={s.label} style={{ background: 'white', borderRadius: '16px', padding: '1.25rem 1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)', border: '1px solid #f1f5f9', textAlign: 'center' }}>
+                  <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#1e293b', lineHeight: 1 }}>{s.value}</div>
+                  <div style={{ fontSize: '0.78rem', color: '#94a3b8', fontWeight: 600, marginTop: '0.3rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+          );
+        })()}
+
         {loading && trips.length === 0 ? (
           <DashboardSkeleton count={6} />
         ) : trips.length > 0 ? (
