@@ -1,28 +1,30 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
   MapPin, Sparkles, BrainCircuit, CreditCard, CloudSun, CalendarDays,
   Pencil, ArrowRight, CheckCircle, ChevronLeft, ChevronRight,
 } from 'lucide-react';
+import { Button, Card, Badge, Skeleton } from '../components/ui/index.js';
+import { fadeUp, staggerContainer, viewportOnce } from '../design-system/animations.js';
 import DestinationCard from '../components/DestinationCard/DestinationCard.jsx';
 import { getDestinations, getBlogs } from '../services/api.js';
-import styles from './Home.module.css';
 import blogStyles from '../components/Blogs/Blogs.module.css';
 
 const FEATURES = [
-  { icon: <BrainCircuit size={28} />, title: 'AI-Powered Engine', desc: 'Gemini 2.0 Flash generates personalized day-by-day itineraries in seconds with smart activity scheduling.' },
-  { icon: <CreditCard size={28} />, title: 'Budget Intelligence', desc: 'Real-time cost estimates, tier-based budget splits, and automatic demotion logic ensure you never overspend.' },
-  { icon: <MapPin size={28} />, title: 'Smart Booking', desc: 'Hotels, flights, activity tickets, restaurant reservations and airport transfers — all in one plan.' },
-  { icon: <CloudSun size={28} />, title: 'Weather Alerts', desc: 'Rainy day alternatives automatically suggested. Never let bad weather ruin your plans.' },
-  { icon: <CalendarDays size={28} />, title: 'Local Events', desc: 'Festivals, fairs, and local happenings integrated into your schedule. Experience culture, not just sights.' },
-  { icon: <Pencil size={28} />, title: 'Trip Editor', desc: 'Add/remove activities, swap hotels, reorder days, and customize every detail of your itinerary.' },
+  { icon: <BrainCircuit size={24} />, title: 'AI Itinerary', desc: 'Gemini 2.0 Flash generates personalized day-by-day itineraries in seconds.' },
+  { icon: <CreditCard size={24} />, title: 'Real Costs', desc: 'Live hotel prices, tier-based splits, and auto-demotion so you never overspend.' },
+  { icon: <MapPin size={24} />, title: 'Smart Booking', desc: 'Hotels, flights, activities and transfers — all in one seamless plan.' },
+  { icon: <CloudSun size={24} />, title: 'Live Weather', desc: 'Rainy-day alternatives suggested automatically. Bad weather, great plan.' },
+  { icon: <CalendarDays size={24} />, title: 'Local Events', desc: 'Festivals and local happenings woven into your schedule automatically.' },
+  { icon: <Pencil size={24} />, title: 'Trip Editor', desc: 'Swap hotels, reorder days, add activities — full control over every detail.' },
 ];
 
 const STEPS = [
-  { num: '01', title: 'Pick a Destination', desc: 'Browse 200+ curated destinations or let AI recommend the perfect spot based on your style and budget.' },
-  { num: '02', title: 'Set Your Preferences', desc: 'Choose dates, budget, number of travelers, dietary needs, and interests — takes under 2 minutes.' },
-  { num: '03', title: 'AI Builds Your Plan', desc: 'Our engine generates a complete day-by-day itinerary with activities, hotels, real costs and schedules.' },
-  { num: '04', title: 'Book Everything', desc: 'Approve hotel, flights, and activity bookings with one click. Track expenses and get day-of briefings.' },
+  { num: '01', title: 'Tell Us Your Dream Trip', desc: 'Pick a destination, dates, budget, and travel style. Takes under 2 minutes.' },
+  { num: '02', title: 'AI Builds Your Itinerary', desc: 'Our engine generates a complete day-by-day plan with activities, hotels, and real costs.' },
+  { num: '03', title: 'Customise Every Detail', desc: 'Swap hotels, reorder days, add or remove activities with our live trip editor.' },
+  { num: '04', title: 'Track, Book, and Go', desc: 'Approve bookings with one click and get day-of weather and crowd briefings.' },
 ];
 
 function useCountUp(target, duration = 2000, start = false) {
@@ -32,16 +34,16 @@ function useCountUp(target, duration = 2000, start = false) {
     let startTime = null;
     const animate = (ts) => {
       if (!startTime) startTime = ts;
-      const progression = Math.min((ts - startTime) / duration, 1);
-      setCount(Math.floor(progression * target));
-      if (progression < 1) requestAnimationFrame(animate);
+      const p = Math.min((ts - startTime) / duration, 1);
+      setCount(Math.floor(p * target));
+      if (p < 1) requestAnimationFrame(animate);
     };
     requestAnimationFrame(animate);
   }, [target, duration, start]);
   return count;
 }
 
-const Home = () => {
+export default function Home() {
   const [destinations, setDestinations] = useState([]);
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -57,26 +59,24 @@ const Home = () => {
   const scrollCarousel = (dir) => {
     const el = carouselRef.current;
     if (!el) return;
-    const slide = el.querySelector(`.${styles.carouselSlide}`);
-    const cardWidth = slide ? slide.offsetWidth + 20 : 336;
-    el.scrollBy({ left: dir * cardWidth, behavior: 'smooth' });
+    el.scrollBy({ left: dir * 320, behavior: 'smooth' });
   };
 
   useEffect(() => {
     getDestinations({ limit: 8 })
-      .then((data) => setDestinations(Array.isArray(data) ? data : (data.destinations || [])))
+      .then((d) => setDestinations(Array.isArray(d) ? d : (d.destinations || [])))
       .catch(() => setDestinations([]))
       .finally(() => setLoading(false));
 
     getBlogs({ limit: 3 })
-      .then((data) => setBlogs(Array.isArray(data) ? data : (data.blogs || [])))
+      .then((d) => setBlogs(Array.isArray(d) ? d : (d.blogs || [])))
       .catch(() => setBlogs([]))
       .finally(() => setBlogsLoading(false));
   }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setStatsVisible(true); },
+      ([e]) => { if (e.isIntersecting) setStatsVisible(true); },
       { threshold: 0.3 }
     );
     if (statsRef.current) observer.observe(statsRef.current);
@@ -84,200 +84,252 @@ const Home = () => {
   }, []);
 
   return (
-    <div style={{ paddingTop: '70px' }}>
+    <div style={{ paddingTop: 'var(--navbar-height, 64px)', overflowX: 'hidden' }}>
 
-      {/* ── Hero ─────────────────────────────────────────────────── */}
-      <section className={styles.heroSection}>
-        <div className={styles.heroContent}>
-          <div className={styles.heroBadge}>
-            <Sparkles size={13} />
-            AI-Powered Travel Planning
-          </div>
-          <h1 className={styles.heroTitle}>
-            Explore Exotic<br />
-            <span>Destinations</span> with AI
-          </h1>
-          <p className={styles.heroSubtitle}>
-            Tell us where, when, and how much — our AI builds a complete day-by-day
-            itinerary with hotel costs, activity schedules, and budget breakdowns in under 30 seconds.
-          </p>
-          <div className={styles.heroActions}>
-            <Link to="/planner" className={styles.primaryBtn}>
-              Plan My Trip Free <ArrowRight size={18} />
+      {/* ── Hero ────────���────────────────────────────────────────────── */}
+      <section style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, var(--color-primary) 0%, #7C3AED 60%, #1E1B4B 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+        overflow: 'hidden',
+        padding: 'var(--space-16) var(--space-6)',
+      }}>
+        {/* Decorative orbs */}
+        <div style={{ position: 'absolute', top: '10%', left: '5%', width: '400px', height: '400px', borderRadius: '50%', background: 'rgba(255,255,255,0.04)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', bottom: '10%', right: '5%', width: '300px', height: '300px', borderRadius: '50%', background: 'rgba(124,58,237,0.3)', pointerEvents: 'none' }} />
+
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+          style={{ textAlign: 'center', maxWidth: '800px', position: 'relative', zIndex: 1 }}
+        >
+          <motion.div variants={fadeUp}>
+            <Badge variant="info" style={{ background: 'rgba(255,255,255,0.15)', color: '#fff', border: '1px solid rgba(255,255,255,0.25)', marginBottom: 'var(--space-6)' }}>
+              <Sparkles size={12} style={{ marginRight: '6px' }} /> AI-Powered Travel Planning
+            </Badge>
+          </motion.div>
+
+          <motion.h1 variants={fadeUp} style={{
+            fontSize: 'clamp(2.5rem, 6vw, 4rem)',
+            fontWeight: 800,
+            color: '#fff',
+            lineHeight: 1.15,
+            marginBottom: 'var(--space-6)',
+            letterSpacing: '-0.02em',
+          }}>
+            Plan Your Perfect<br />
+            <span style={{ color: 'var(--color-accent-light)' }}>India Trip</span> with AI
+          </motion.h1>
+
+          <motion.p variants={fadeUp} style={{
+            fontSize: 'var(--font-size-lg)',
+            color: 'rgba(255,255,255,0.8)',
+            maxWidth: '560px',
+            margin: '0 auto var(--space-10)',
+            lineHeight: 1.7,
+          }}>
+            AI-powered itineraries with real costs, real routes, and real India — generated in under 30 seconds.
+          </motion.p>
+
+          <motion.div variants={fadeUp} style={{ display: 'flex', gap: 'var(--space-4)', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link to="/planner">
+              <Button variant="secondary" size="lg" style={{ fontWeight: 700, minWidth: '200px' }}>
+                Start Planning <ArrowRight size={18} />
+              </Button>
             </Link>
-            <Link to="/discover" className={styles.secondaryBtn}>
-              Explore Destinations
+            <Link to="/discover">
+              <Button variant="ghost" size="lg" style={{ color: '#fff', border: '1px solid rgba(255,255,255,0.35)', minWidth: '180px' }}>
+                Explore Destinations
+              </Button>
             </Link>
-          </div>
-        </div>
+          </motion.div>
+
+          <motion.div variants={fadeUp} style={{ display: 'flex', gap: 'var(--space-6)', justifyContent: 'center', marginTop: 'var(--space-10)', flexWrap: 'wrap' }}>
+            {['No credit card', 'AI-powered', '200+ destinations', 'Free forever'].map((t) => (
+              <span key={t} style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'rgba(255,255,255,0.7)', fontSize: 'var(--font-size-sm)' }}>
+                <CheckCircle size={14} /> {t}
+              </span>
+            ))}
+          </motion.div>
+        </motion.div>
       </section>
 
-      {/* ── Stats ────────────────────────────────────────────────── */}
-      <section ref={statsRef} className={styles.statsSection}>
-        <div className={styles.statsContainer}>
+      {/* ── Stats ──────────────���──────────────────────────────────────── */}
+      <section ref={statsRef} style={{ background: 'var(--color-bg-elevated)', borderBottom: '1px solid var(--color-border)' }}>
+        <div style={{ maxWidth: '960px', margin: '0 auto', padding: 'var(--space-12) var(--space-6)', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-8)', textAlign: 'center' }}>
           {[
             { value: tripsCount.toLocaleString() + '+', label: 'Trips Generated' },
             { value: destsCount + '+', label: 'Destinations' },
             { value: satisfactionCount + '%', label: 'Satisfaction Rate' },
           ].map((s, i) => (
-            <div key={i} className={styles.statItem}>
-              <h2>{s.value}</h2>
-              <p>{s.label}</p>
+            <div key={i}>
+              <div style={{ fontSize: 'clamp(2rem, 4vw, 2.75rem)', fontWeight: 800, color: 'var(--color-primary)', lineHeight: 1 }}>{s.value}</div>
+              <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)', marginTop: 'var(--space-2)', fontWeight: 500 }}>{s.label}</div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── How It Works ─────────────────────────────────────────── */}
-      <section className={`${styles.sectionPadding} ${styles.lightBg}`}>
-        <div className={styles.container}>
-          <div className={styles.sectionHeader}>
-            <span className={styles.sectionBadge}>Simple Process</span>
-            <h2>How It Works</h2>
-            <p>From idea to itinerary in four simple steps</p>
-          </div>
-          <div className={styles.stepsGrid}>
+      {/* ── How It Works ──────────────────────────��───────────────────── */}
+      <section style={{ background: 'var(--color-bg)', padding: 'var(--space-20) var(--space-6)' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={viewportOnce} style={{ textAlign: 'center', marginBottom: 'var(--space-12)' }}>
+            <motion.div variants={fadeUp}>
+              <Badge variant="primary" size="sm" style={{ marginBottom: 'var(--space-4)' }}>Simple Process</Badge>
+            </motion.div>
+            <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(1.75rem, 3vw, 2.25rem)', fontWeight: 800, color: 'var(--color-text)', marginBottom: 'var(--space-3)' }}>
+              How It Works
+            </motion.h2>
+            <motion.p variants={fadeUp} style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-lg)' }}>
+              From idea to full itinerary in four simple steps
+            </motion.p>
+          </motion.div>
+
+          <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={viewportOnce}
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 'var(--space-6)' }}
+          >
             {STEPS.map((step) => (
-              <div key={step.num} className={styles.stepCard}>
-                <div className={styles.stepNum}>{step.num}</div>
-                <h3 className={styles.stepTitle}>{step.title}</h3>
-                <p className={styles.stepDesc}>{step.desc}</p>
-              </div>
+              <motion.div key={step.num} variants={fadeUp}>
+                <Card variant="default" padding="lg" style={{ height: '100%' }}>
+                  <div style={{
+                    width: '48px', height: '48px', borderRadius: 'var(--radius-lg)',
+                    background: 'var(--color-primary-subtle)', color: 'var(--color-primary)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontWeight: 800, fontSize: 'var(--font-size-sm)', marginBottom: 'var(--space-4)',
+                  }}>{step.num}</div>
+                  <h3 style={{ fontSize: 'var(--font-size-base)', fontWeight: 700, color: 'var(--color-text)', marginBottom: 'var(--space-2)' }}>{step.title}</h3>
+                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)', lineHeight: 1.65 }}>{step.desc}</p>
+                </Card>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* ── Popular Destinations (Swipe Carousel) ────────────────── */}
-      <section className={`${styles.sectionPadding} ${styles.whiteBg}`}>
-        <div className={styles.container}>
-          <div className={styles.destinationsHeader}>
+      {/* ── Popular Destinations (Carousel) ───────────────────────────── */}
+      <section style={{ background: 'var(--color-bg-elevated)', padding: 'var(--space-20) 0' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 var(--space-6)', marginBottom: 'var(--space-8)' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'var(--space-4)' }}>
             <div>
-              <span className={styles.sectionBadge}>Handpicked for You</span>
-              <h2 className={styles.sectionTitle}>Popular Destinations</h2>
-              <p className={styles.sectionSubtitle}>Discover India's most loved travel spots</p>
+              <Badge variant="primary" size="sm" style={{ marginBottom: 'var(--space-3)' }}>Handpicked for You</Badge>
+              <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 800, color: 'var(--color-text)', margin: '0 0 var(--space-1)' }}>Popular Destinations</h2>
+              <p style={{ color: 'var(--color-text-muted)', margin: 0 }}>Discover India's most loved travel spots</p>
             </div>
-            <Link to="/discover" className={styles.viewAllBtn}>
+            <Link to="/discover" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--color-primary)', fontWeight: 600, fontSize: 'var(--font-size-sm)', textDecoration: 'none' }}>
               View All <ArrowRight size={16} />
             </Link>
           </div>
         </div>
 
-        {/* Carousel bleeds to edges */}
-        <div className={styles.carouselOuter}>
-          <button
-            className={`${styles.carouselBtn} ${styles.carouselPrev}`}
-            onClick={() => scrollCarousel(-1)}
-            aria-label="Previous destinations"
-          >
+        <div style={{ position: 'relative' }}>
+          <button onClick={() => scrollCarousel(-1)} aria-label="Previous" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', zIndex: 2, background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: 'var(--shadow-md)' }}>
             <ChevronLeft size={20} />
           </button>
 
-          <div className={styles.carouselTrack} ref={carouselRef}>
+          <div ref={carouselRef} style={{ display: 'flex', gap: 'var(--space-5)', overflowX: 'auto', scrollSnapType: 'x mandatory', padding: '0 var(--space-6) var(--space-4)', scrollbarWidth: 'none' }}>
             {loading
               ? Array(5).fill(0).map((_, i) => (
-                  <div key={i} className={`${styles.carouselSlide} ${styles.carouselSkeleton}`} />
+                  <div key={i} style={{ minWidth: '300px', scrollSnapAlign: 'start', flexShrink: 0 }}>
+                    <Skeleton height="220px" borderRadius="var(--radius-xl)" />
+                    <div style={{ marginTop: 'var(--space-3)' }}><Skeleton height="1rem" width="60%" /><div style={{ marginTop: '6px' }}><Skeleton height="0.75rem" width="40%" /></div></div>
+                  </div>
                 ))
               : destinations.map((dest) => (
-                  <div key={dest.id} className={styles.carouselSlide}>
+                  <div key={dest.id} style={{ minWidth: '300px', scrollSnapAlign: 'start', flexShrink: 0 }}>
                     <DestinationCard dest={dest} variant="default" />
                   </div>
                 ))
             }
           </div>
 
-          <button
-            className={`${styles.carouselBtn} ${styles.carouselNext}`}
-            onClick={() => scrollCarousel(1)}
-            aria-label="Next destinations"
-          >
+          <button onClick={() => scrollCarousel(1)} aria-label="Next" style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', zIndex: 2, background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: 'var(--shadow-md)' }}>
             <ChevronRight size={20} />
           </button>
         </div>
       </section>
 
-      {/* ── Features ─────────────────────────────────────────────── */}
-      <section className={`${styles.sectionPadding} ${styles.lightBg}`}>
-        <div className={styles.container}>
-          <div className={styles.sectionHeader}>
-            <span className={styles.sectionBadge}>Platform Capabilities</span>
-            <h2>Everything You Need</h2>
-            <p>Powered by cutting-edge AI and real-world data</p>
-          </div>
-          <div className={styles.featuresGrid}>
+      {/* ── Features ──────────────────────────���───────────────────────── */}
+      <section style={{ background: 'var(--color-bg)', padding: 'var(--space-20) var(--space-6)' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={viewportOnce} style={{ textAlign: 'center', marginBottom: 'var(--space-12)' }}>
+            <motion.div variants={fadeUp}>
+              <Badge variant="primary" size="sm" style={{ marginBottom: 'var(--space-4)' }}>Platform Capabilities</Badge>
+            </motion.div>
+            <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(1.75rem, 3vw, 2.25rem)', fontWeight: 800, color: 'var(--color-text)', marginBottom: 'var(--space-3)' }}>
+              Everything You Need
+            </motion.h2>
+            <motion.p variants={fadeUp} style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-lg)' }}>
+              Powered by cutting-edge AI and real-world data
+            </motion.p>
+          </motion.div>
+
+          <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={viewportOnce}
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'var(--space-5)' }}
+          >
             {FEATURES.map((f, i) => (
-              <div key={i} className={styles.featureCard}>
-                <div className={styles.featureIcon}>{f.icon}</div>
-                <h3 className={styles.stepTitle}>{f.title}</h3>
-                <p className={styles.stepDesc}>{f.desc}</p>
-              </div>
+              <motion.div key={i} variants={fadeUp}>
+                <Card variant="default" padding="lg" hover style={{ height: '100%' }}>
+                  <div style={{ width: '44px', height: '44px', borderRadius: 'var(--radius-lg)', background: 'var(--color-primary-subtle)', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 'var(--space-4)' }}>
+                    {f.icon}
+                  </div>
+                  <h3 style={{ fontSize: 'var(--font-size-base)', fontWeight: 700, color: 'var(--color-text)', marginBottom: 'var(--space-2)' }}>{f.title}</h3>
+                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)', lineHeight: 1.65, margin: 0 }}>{f.desc}</p>
+                </Card>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* ── Latest Travel Stories ─────────────────────────────────── */}
-      <section className={styles.blogsSection}>
-        <div className={styles.container}>
-          <div className={styles.destinationsHeader}>
+      {/* ── Latest Travel Stories ─────────────────��────────────────────── */}
+      <section style={{ background: 'var(--color-bg-elevated)', padding: 'var(--space-20) var(--space-6)' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'var(--space-4)', marginBottom: 'var(--space-10)' }}>
             <div>
-              <span className={styles.sectionBadge}>Travel Inspiration</span>
-              <h2 className={styles.sectionTitle}>Latest Travel Stories</h2>
-              <p className={styles.sectionSubtitle}>Insider guides and travel inspiration</p>
+              <Badge variant="primary" size="sm" style={{ marginBottom: 'var(--space-3)' }}>Travel Inspiration</Badge>
+              <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 800, color: 'var(--color-text)', margin: '0 0 var(--space-1)' }}>Latest Travel Stories</h2>
+              <p style={{ color: 'var(--color-text-muted)', margin: 0 }}>Insider guides and travel inspiration</p>
             </div>
-            <Link to="/blogs" className={styles.viewAllBtn}>
+            <Link to="/blogs" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--color-primary)', fontWeight: 600, fontSize: 'var(--font-size-sm)', textDecoration: 'none' }}>
               View All Blogs <ArrowRight size={16} />
             </Link>
           </div>
 
-          {/* Use the same grid + card styles as the /blogs page */}
-          <div className={blogStyles.grid} style={{ marginTop: '2.5rem' }}>
+          <div className={blogStyles.grid}>
             {blogsLoading
               ? Array(3).fill(0).map((_, i) => (
-                  <div key={i} className={blogStyles.card} style={{ minHeight: '340px' }}>
-                    <div className={styles.skeletonPulse} style={{ height: '200px' }} />
-                    <div style={{ padding: '1.5rem' }}>
-                      <div className={styles.skeletonPulse} style={{ height: '12px', width: '40%', marginBottom: '1rem', borderRadius: '6px' }} />
-                      <div className={styles.skeletonPulse} style={{ height: '18px', marginBottom: '0.5rem', borderRadius: '6px' }} />
-                      <div className={styles.skeletonPulse} style={{ height: '18px', width: '70%', borderRadius: '6px' }} />
+                  <Card key={i} variant="default" padding="none">
+                    <Skeleton height="200px" borderRadius="var(--radius-xl) var(--radius-xl) 0 0" />
+                    <div style={{ padding: 'var(--space-5)' }}>
+                      <Skeleton height="0.75rem" width="40%" style={{ marginBottom: 'var(--space-3)' }} />
+                      <Skeleton height="1.1rem" style={{ marginBottom: '6px' }} />
+                      <Skeleton height="1.1rem" width="70%" />
                     </div>
-                  </div>
+                  </Card>
                 ))
               : blogs.length > 0
                 ? blogs.slice(0, 3).map((blog) => (
-                    <Link
-                      key={blog.id}
-                      to={`/blogs/${blog.id}`}
-                      className={blogStyles.card}
-                      style={{ textDecoration: 'none', color: 'inherit' }}
-                    >
+                    <Link key={blog.id} to={`/blogs/${blog.id}`} className={blogStyles.card} style={{ textDecoration: 'none', color: 'inherit' }}>
                       <div className={blogStyles.imageContainer}>
-                        {blog.image && (
-                          <img
-                            src={blog.image}
-                            alt={blog.title}
-                            className={blogStyles.image}
-                            onError={(e) => { e.target.style.display = 'none'; }}
-                          />
-                        )}
+                        {blog.image && <img src={blog.image} alt={blog.title} className={blogStyles.image} onError={(e) => { e.target.style.display = 'none'; }} />}
                         {blog.category && <span className={blogStyles.category}>{blog.category}</span>}
                       </div>
                       <div className={blogStyles.content}>
                         <div className={blogStyles.meta}>
-                          <span>{blog.date}</span>
-                          <span>•</span>
-                          <span>{blog.readTime}</span>
+                          <span>{blog.date}</span><span>•</span><span>{blog.readTime}</span>
                         </div>
                         <h3 className={blogStyles.title}>{blog.title}</h3>
                         <p className={blogStyles.excerpt}>{blog.excerpt}</p>
-                        <span className={blogStyles.readMore}>
-                          Read Article <span>→</span>
-                        </span>
+                        <span className={blogStyles.readMore}>Read Article <span>→</span></span>
                       </div>
                     </Link>
                   ))
                 : (
-                    <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem', color: '#64748b' }}>
+                    <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: 'var(--space-16)', color: 'var(--color-text-muted)' }}>
                       No travel stories yet. Check back soon!
                     </div>
                   )
@@ -286,37 +338,39 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ── CTA Banner ───────────────────────────────────────────── */}
-      <section className={styles.ctaSection}>
-        <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '300px', height: '300px', borderRadius: '50%', background: 'rgba(101,163,13,0.1)' }} />
-        <div style={{ position: 'absolute', bottom: '-60px', left: '-40px', width: '250px', height: '250px', borderRadius: '50%', background: 'rgba(74,222,128,0.08)' }} />
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontWeight: 800, marginBottom: '1rem', letterSpacing: '-0.02em' }}>
+      {/* ── CTA Banner ───────────────────────────────��────────────────── */}
+      <section style={{
+        background: 'linear-gradient(135deg, var(--color-primary) 0%, #7C3AED 100%)',
+        padding: 'var(--space-20) var(--space-6)',
+        textAlign: 'center',
+        position: 'relative',
+        overflow: 'hidden',
+      }}>
+        <div style={{ position: 'absolute', top: '-60px', left: '-60px', width: '300px', height: '300px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', bottom: '-80px', right: '-40px', width: '400px', height: '400px', borderRadius: '50%', background: 'rgba(0,0,0,0.1)', pointerEvents: 'none' }} />
+
+        <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={viewportOnce} style={{ position: 'relative', zIndex: 1, maxWidth: '640px', margin: '0 auto' }}>
+          <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: 800, color: '#fff', marginBottom: 'var(--space-4)' }}>
             Start Planning for Free
-          </h2>
-          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '1.05rem', maxWidth: '500px', margin: '0 auto 2rem', lineHeight: 1.6 }}>
-            Join 10,000+ travelers who plan smarter with AltairGO. No credit card required.
-          </p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link to="/planner" className={styles.primaryBtn} style={{ background: '#4ade80', color: '#0f172a' }}>
-              <Sparkles size={18} /> Generate My Itinerary
+          </motion.h2>
+          <motion.p variants={fadeUp} style={{ color: 'rgba(255,255,255,0.8)', fontSize: 'var(--font-size-lg)', marginBottom: 'var(--space-8)' }}>
+            Join 10,000+ travellers who plan smarter with AltairGO. No credit card required.
+          </motion.p>
+          <motion.div variants={fadeUp} style={{ display: 'flex', gap: 'var(--space-4)', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link to="/planner">
+              <Button variant="secondary" size="lg" style={{ fontWeight: 700 }}>
+                <Sparkles size={18} /> Generate My Itinerary
+              </Button>
             </Link>
-            <Link to="/register" className={styles.secondaryBtn}>
-              Create Free Account
+            <Link to="/register">
+              <Button variant="ghost" size="lg" style={{ color: '#fff', border: '1px solid rgba(255,255,255,0.35)' }}>
+                Create Free Account
+              </Button>
             </Link>
-          </div>
-          <div className={styles.ctaBadge}>
-            {['No credit card', 'AI-powered', '200+ destinations', 'Free forever'].map((t) => (
-              <div key={t} className={styles.ctaBadgeItem}>
-                <CheckCircle size={14} color="#4ade80" /> {t}
-              </div>
-            ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
     </div>
   );
-};
-
-export default Home;
+}
