@@ -86,74 +86,90 @@ export default function Home() {
   return (
     <div style={{ paddingTop: 'var(--navbar-height, 64px)', overflowX: 'hidden' }}>
 
-      {/* ── Hero ────────���────────────────────────────────────────────── */}
+      {/* ── Hero ────────────────────────────────────────────────────── */}
       <section style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, var(--color-primary) 0%, #7C3AED 60%, #1E1B4B 100%)',
+        margin: '16px 40px 0',
+        borderRadius: '40px',
+        minHeight: '88vh',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
-        position: 'relative',
+        justifyContent: 'flex-start',
+        color: 'white',
+        padding: '2rem 64px',
+        background: `linear-gradient(rgba(0,0,0,0.08), rgba(0,0,0,0.42)),
+          url(https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2800&auto=format&fit=crop)`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        boxShadow: '0 24px 60px rgba(0,0,0,0.18)',
         overflow: 'hidden',
-        padding: 'var(--space-16) var(--space-6)',
+        position: 'relative',
       }}>
-        {/* Decorative orbs */}
-        <div style={{ position: 'absolute', top: '10%', left: '5%', width: '400px', height: '400px', borderRadius: '50%', background: 'rgba(255,255,255,0.04)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', bottom: '10%', right: '5%', width: '300px', height: '300px', borderRadius: '50%', background: 'rgba(124,58,237,0.3)', pointerEvents: 'none' }} />
-
         <motion.div
           variants={staggerContainer}
           initial="hidden"
           animate="visible"
-          style={{ textAlign: 'center', maxWidth: '800px', position: 'relative', zIndex: 1 }}
+          style={{ maxWidth: '700px', zIndex: 10, display: 'flex', flexDirection: 'column', gap: '1.25rem', alignItems: 'flex-start' }}
         >
           <motion.div variants={fadeUp}>
-            <Badge variant="info" style={{ background: 'rgba(255,255,255,0.15)', color: '#fff', border: '1px solid rgba(255,255,255,0.25)', marginBottom: 'var(--space-6)' }}>
-              <Sparkles size={12} style={{ marginRight: '6px' }} /> AI-Powered Travel Planning
-            </Badge>
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: '6px',
+              background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(8px)',
+              border: '1px solid rgba(255,255,255,0.25)', color: '#fff',
+              fontSize: '0.8rem', fontWeight: 600, letterSpacing: '0.04em',
+              textTransform: 'uppercase', padding: '0.4rem 1rem',
+              borderRadius: 'var(--radius-full)',
+            }}>
+              <Sparkles size={12} /> AI-Powered Travel Planning
+            </span>
           </motion.div>
 
           <motion.h1 variants={fadeUp} style={{
-            fontSize: 'clamp(2.5rem, 6vw, 4rem)',
             fontWeight: 800,
-            color: '#fff',
-            lineHeight: 1.15,
-            marginBottom: 'var(--space-6)',
-            letterSpacing: '-0.02em',
+            fontSize: 'clamp(2.5rem, 6vw, 4.25rem)',
+            lineHeight: 1.08,
+            letterSpacing: '-0.03em',
+            textShadow: '0 8px 32px rgba(0,0,0,0.25)',
+            margin: 0,
           }}>
-            Plan Your Perfect<br />
-            <span style={{ color: 'var(--color-accent-light)' }}>India Trip</span> with AI
+            Explore Exotic<br />
+            <span style={{ color: '#84cc16' }}>Destinations</span> with AI
           </motion.h1>
 
           <motion.p variants={fadeUp} style={{
-            fontSize: 'var(--font-size-lg)',
-            color: 'rgba(255,255,255,0.8)',
-            maxWidth: '560px',
-            margin: '0 auto var(--space-10)',
-            lineHeight: 1.7,
+            fontSize: 'clamp(0.95rem, 1.8vw, 1.1rem)',
+            fontWeight: 300,
+            maxWidth: '460px',
+            lineHeight: 1.65,
+            opacity: 0.88,
+            margin: 0,
           }}>
-            AI-powered itineraries with real costs, real routes, and real India — generated in under 30 seconds.
+            Know what's worth visiting, when to go, and how to avoid crowds &amp; high prices — all in one place.
           </motion.p>
 
-          <motion.div variants={fadeUp} style={{ display: 'flex', gap: 'var(--space-4)', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link to="/planner">
-              <Button variant="secondary" size="lg" style={{ fontWeight: 700, minWidth: '200px' }}>
-                Start Planning <ArrowRight size={18} />
-              </Button>
+          <motion.div variants={fadeUp} style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginTop: '0.25rem' }}>
+            <Link to="/planner" style={{
+              background: 'var(--color-bg-elevated)', color: 'var(--color-primary-dark)',
+              padding: '0.9rem 2rem', borderRadius: 'var(--radius-full)',
+              fontWeight: 700, fontSize: '0.95rem', textDecoration: 'none',
+              display: 'inline-flex', alignItems: 'center', gap: '8px',
+              transition: 'all 0.2s',
+            }}
+              onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = 'var(--shadow-lg)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
+            >
+              Plan Your Trip <ArrowRight size={18} />
             </Link>
-            <Link to="/discover">
-              <Button variant="ghost" size="lg" style={{ color: '#fff', border: '1px solid rgba(255,255,255,0.35)', minWidth: '180px' }}>
-                Explore Destinations
-              </Button>
+            <Link to="/discover" style={{
+              background: 'transparent', border: '2px solid rgba(255,255,255,0.7)',
+              color: 'white', padding: '0.9rem 2rem', borderRadius: 'var(--radius-full)',
+              fontWeight: 600, fontSize: '0.95rem', textDecoration: 'none',
+              backdropFilter: 'blur(4px)', transition: 'all 0.2s',
+            }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.12)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.transform = ''; }}
+            >
+              Explore Destinations
             </Link>
-          </motion.div>
-
-          <motion.div variants={fadeUp} style={{ display: 'flex', gap: 'var(--space-6)', justifyContent: 'center', marginTop: 'var(--space-10)', flexWrap: 'wrap' }}>
-            {['No credit card', 'AI-powered', '200+ destinations', 'Free forever'].map((t) => (
-              <span key={t} style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'rgba(255,255,255,0.7)', fontSize: 'var(--font-size-sm)' }}>
-                <CheckCircle size={14} /> {t}
-              </span>
-            ))}
           </motion.div>
         </motion.div>
       </section>
