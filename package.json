@@ -15,6 +15,7 @@
     "test:editor": "playwright test tests/02_trip_editor.spec.js",
     "test:discover": "playwright test tests/03_discover.spec.js",
     "test:tools": "playwright test tests/04_trip_tools.spec.js",
+    "test:tools:debug": "node tests/p4_trip_tools_debug.cjs",
     "test:admin": "playwright test tests/05_admin.spec.js",
     "test:mobile": "playwright test tests/06_mobile.spec.js --project=mobile",
     "test:e2e:report": "playwright show-report"

@@ -1,0 +1,7 @@
+/* ============================================================
+   AltairGO Design System — barrel import
+   Import this single file to pull in all design tokens.
+   ============================================================ */
+
+@import './tokens.css';
+@import './typography.css';

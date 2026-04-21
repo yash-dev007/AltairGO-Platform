@@ -203,7 +203,7 @@ const TripPlannerPage = () => {
   ];
 
   return (
-    <div style={{ paddingTop: '70px', minHeight: '100vh', background: 'var(--color-bg)' }}>
+    <div style={{ paddingTop: 'var(--navbar-offset, 88px)', minHeight: '100vh', background: 'var(--color-bg)' }}>
       <div style={{ maxWidth: '800px', margin: '0 auto', padding: '3rem 1.5rem' }}>
 
         {/* Progress Steps */}
@@ -216,17 +216,17 @@ const TripPlannerPage = () => {
               >
                 <div style={{
                   width: '36px', height: '36px', borderRadius: '50%',
-                  background: step >= s.num ? '#171F30' : 'var(--color-border)',
+                  background: step >= s.num ? 'var(--color-primary)' : 'var(--color-border)',
                   color: step >= s.num ? 'white' : 'var(--color-text-subtle)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontWeight: 700, fontSize: '0.85rem', transition: 'all 0.3s',
                 }}>
                   {step > s.num ? <Check size={16} /> : s.num}
                 </div>
-                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: step >= s.num ? '#171F30' : 'var(--color-text-subtle)', whiteSpace: 'nowrap' }}>{s.label}</span>
+                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: step >= s.num ? 'var(--color-primary)' : 'var(--color-text-subtle)', whiteSpace: 'nowrap' }}>{s.label}</span>
               </div>
               {i < STEPS.length - 1 && (
-                <div style={{ flex: 1, height: '2px', background: step > s.num ? '#171F30' : 'var(--color-border)', margin: '0 8px', marginBottom: '22px', transition: 'background 0.3s' }} />
+                <div style={{ flex: 1, height: '2px', background: step > s.num ? 'var(--color-primary)' : 'var(--color-border)', margin: '0 8px', marginBottom: '22px', transition: 'background 0.3s' }} />
               )}
             </React.Fragment>
           ))}
@@ -283,7 +283,7 @@ const TripPlannerPage = () => {
                 size="sm"
                 loading={recommendLoading}
                 onClick={handleRecommend}
-                style={{ marginBottom: '1.5rem', border: '1px solid rgba(23,31,48,0.15)', background: 'rgba(23,31,48,0.06)', color: '#171F30' }}
+                style={{ marginBottom: '1.5rem', border: '1px solid rgba(23,31,48,0.15)', background: 'rgba(23,31,48,0.06)', color: 'var(--color-primary)' }}
               >
                 <Sparkles size={16} /> {recommendLoading ? 'Loading...' : 'Recommend me destinations!'}
               </Button>
@@ -293,7 +293,7 @@ const TripPlannerPage = () => {
                   <div style={{ fontWeight: 600, color: 'var(--color-text)', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Selected destinations:</div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                     {selectedDests.map(d => (
-                      <div key={d.id || d.name} style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#171F30', color: 'white', padding: '0.4rem 0.75rem 0.4rem 0.9rem', borderRadius: '50px', fontSize: '0.9rem', fontWeight: 500 }}>
+                      <div key={d.id || d.name} style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'var(--color-primary)', color: 'white', padding: '0.4rem 0.75rem 0.4rem 0.9rem', borderRadius: '50px', fontSize: '0.9rem', fontWeight: 500 }}>
                         <MapPin size={12} /> {d.name}
                         <button onClick={() => removeDest(d.id || d.name)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.7)', cursor: 'pointer', display: 'flex', padding: 0 }}>
                           <X size={14} />
@@ -325,7 +325,7 @@ const TripPlannerPage = () => {
 
               <div style={{ marginBottom: '2rem' }}>
                 <label style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 600, color: 'var(--color-text)', marginBottom: '1rem', fontSize: '0.9rem' }}>
-                  Duration <span style={{ color: '#171F30', fontSize: '1.1rem' }}>{duration} days</span>
+                  Duration <span style={{ color: 'var(--color-primary)', fontSize: '1.1rem' }}>{duration} days</span>
                 </label>
                 <input
                   type="range"
@@ -333,7 +333,7 @@ const TripPlannerPage = () => {
                   max={21}
                   value={duration}
                   onChange={(e) => setDuration(Number(e.target.value))}
-                  style={{ width: '100%', accentColor: '#171F30' }}
+                  style={{ width: '100%', accentColor: 'var(--color-primary)' }}
                 />
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--color-text-subtle)', marginTop: '0.5rem' }}>
                   <span>1 day</span><span>21 days</span>
@@ -345,7 +345,7 @@ const TripPlannerPage = () => {
                   <button
                     key={d}
                     onClick={() => setDuration(d)}
-                    style={{ padding: '0.75rem', border: `1.5px solid ${duration === d ? '#171F30' : 'var(--color-border)'}`, borderRadius: 'var(--radius-lg)', background: duration === d ? '#171F30' : 'var(--color-bg-elevated)', color: duration === d ? 'white' : 'var(--color-text-muted)', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', fontSize: '0.9rem' }}
+                    style={{ padding: '0.75rem', border: `1.5px solid ${duration === d ? 'var(--color-primary)' : 'var(--color-border)'}`, borderRadius: 'var(--radius-lg)', background: duration === d ? 'var(--color-primary)' : 'var(--color-bg-elevated)', color: duration === d ? 'white' : 'var(--color-text-muted)', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', fontSize: '0.9rem' }}
                   >
                     {d} days
                   </button>
@@ -365,7 +365,7 @@ const TripPlannerPage = () => {
                   <span>Total Budget</span>
                   <span style={{ fontSize: '1.1rem', color: 'var(--color-text)' }}>
                     ₹{Number(budget).toLocaleString('en-IN')}
-                    <span style={{ fontSize: '0.8rem', marginLeft: '8px', color: '#171F30', background: 'var(--color-success-subtle)', padding: '2px 8px', borderRadius: '999px' }}>
+                    <span style={{ fontSize: '0.8rem', marginLeft: '8px', color: 'var(--color-primary)', background: 'var(--color-success-subtle)', padding: '2px 8px', borderRadius: '999px' }}>
                       {getBudgetLabel(budget, duration, travelers)}
                     </span>
                   </span>
@@ -387,7 +387,7 @@ const TripPlannerPage = () => {
                   step={1000}
                   value={budget}
                   onChange={(e) => setBudget(Number(e.target.value))}
-                  style={{ width: '100%', accentColor: '#171F30' }}
+                  style={{ width: '100%', accentColor: 'var(--color-primary)' }}
                 />
 
                 {/* Live budget hint */}
@@ -422,7 +422,7 @@ const TripPlannerPage = () => {
                     <button
                       key={s}
                       onClick={() => toggleStyle(s)}
-                      style={{ padding: '0.5rem 1.1rem', border: `1.5px solid ${selectedStyles.includes(s) ? '#171F30' : 'var(--color-border)'}`, borderRadius: 'var(--radius-full)', background: selectedStyles.includes(s) ? '#171F30' : 'var(--color-bg-elevated)', color: selectedStyles.includes(s) ? 'white' : 'var(--color-text-muted)', fontFamily: 'inherit', fontWeight: 500, cursor: 'pointer', transition: 'all 0.2s', fontSize: '0.9rem', textTransform: 'capitalize' }}
+                      style={{ padding: '0.5rem 1.1rem', border: `1.5px solid ${selectedStyles.includes(s) ? 'var(--color-primary)' : 'var(--color-border)'}`, borderRadius: 'var(--radius-full)', background: selectedStyles.includes(s) ? 'var(--color-primary)' : 'var(--color-bg-elevated)', color: selectedStyles.includes(s) ? 'white' : 'var(--color-text-muted)', fontFamily: 'inherit', fontWeight: 500, cursor: 'pointer', transition: 'all 0.2s', fontSize: '0.9rem', textTransform: 'capitalize' }}
                     >
                       {s}
                     </button>
@@ -462,7 +462,7 @@ const TripPlannerPage = () => {
                     <button
                       key={t.value}
                       onClick={() => setTravelerType(t.value)}
-                      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', padding: '0.75rem 1.25rem', border: `2px solid ${travelerType === t.value ? '#171F30' : 'var(--color-border)'}`, borderRadius: '14px', background: travelerType === t.value ? '#171F30' : 'var(--color-bg-elevated)', color: travelerType === t.value ? 'white' : '#475569', fontFamily: 'inherit', cursor: 'pointer', transition: 'all 0.2s', minWidth: '80px' }}
+                      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', padding: '0.75rem 1.25rem', border: `2px solid ${travelerType === t.value ? 'var(--color-primary)' : 'var(--color-border)'}`, borderRadius: '14px', background: travelerType === t.value ? 'var(--color-primary)' : 'var(--color-bg-elevated)', color: travelerType === t.value ? 'white' : '#475569', fontFamily: 'inherit', cursor: 'pointer', transition: 'all 0.2s', minWidth: '80px' }}
                     >
                       <span style={{ fontSize: '1.5rem' }}>{t.emoji}</span>
                       <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>{t.label}</span>
@@ -507,9 +507,9 @@ const TripPlannerPage = () => {
                       style={{
                         display: 'flex', alignItems: 'center', gap: '6px',
                         padding: '0.5rem 1rem',
-                        border: `1.5px solid ${selectedInterests.includes(i.value) ? '#171F30' : 'var(--color-border)'}`,
+                        border: `1.5px solid ${selectedInterests.includes(i.value) ? 'var(--color-primary)' : 'var(--color-border)'}`,
                         borderRadius: '999px',
-                        background: selectedInterests.includes(i.value) ? '#171F30' : 'var(--color-bg-elevated)',
+                        background: selectedInterests.includes(i.value) ? 'var(--color-primary)' : 'var(--color-bg-elevated)',
                         color: selectedInterests.includes(i.value) ? 'white' : '#475569',
                         fontFamily: 'inherit', fontWeight: 500, cursor: 'pointer', fontSize: '0.88rem',
                         transition: 'all 0.15s',
@@ -539,7 +539,7 @@ const TripPlannerPage = () => {
                       <label style={{ display: 'block', fontWeight: 600, color: 'var(--color-text)', marginBottom: '0.6rem', fontSize: '0.88rem' }}>Dietary preference</label>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
                         {DIETARY.map(d => (
-                          <button key={d} onClick={() => setDietary(d)} style={{ padding: '0.35rem 0.9rem', border: `1.5px solid ${dietary === d ? '#171F30' : 'var(--color-border)'}`, borderRadius: 'var(--radius-full)', background: dietary === d ? '#171F30' : 'var(--color-bg-elevated)', color: dietary === d ? 'white' : 'var(--color-text-muted)', fontFamily: 'inherit', fontWeight: 500, cursor: 'pointer', textTransform: 'capitalize', fontSize: '0.83rem' }}>
+                          <button key={d} onClick={() => setDietary(d)} style={{ padding: '0.35rem 0.9rem', border: `1.5px solid ${dietary === d ? 'var(--color-primary)' : 'var(--color-border)'}`, borderRadius: 'var(--radius-full)', background: dietary === d ? 'var(--color-primary)' : 'var(--color-bg-elevated)', color: dietary === d ? 'white' : 'var(--color-text-muted)', fontFamily: 'inherit', fontWeight: 500, cursor: 'pointer', textTransform: 'capitalize', fontSize: '0.83rem' }}>
                             {d === 'none' ? 'No restriction' : d}
                           </button>
                         ))}
@@ -551,7 +551,7 @@ const TripPlannerPage = () => {
                       <label style={{ display: 'block', fontWeight: 600, color: 'var(--color-text)', marginBottom: '0.6rem', fontSize: '0.88rem' }}>Activity intensity</label>
                       <div style={{ display: 'flex', gap: '0.6rem' }}>
                         {[{ v: 'low', l: 'Easy going' }, { v: 'moderate', l: 'Moderate' }, { v: 'high', l: 'Very active' }].map(f => (
-                          <button key={f.v} onClick={() => setFitnessLevel(f.v)} style={{ flex: 1, padding: '0.65rem', border: `1.5px solid ${fitnessLevel === f.v ? '#171F30' : 'var(--color-border)'}`, borderRadius: 'var(--radius-lg)', background: fitnessLevel === f.v ? '#171F30' : 'var(--color-bg-elevated)', color: fitnessLevel === f.v ? 'white' : 'var(--color-text-muted)', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer', fontSize: '0.85rem' }}>
+                          <button key={f.v} onClick={() => setFitnessLevel(f.v)} style={{ flex: 1, padding: '0.65rem', border: `1.5px solid ${fitnessLevel === f.v ? 'var(--color-primary)' : 'var(--color-border)'}`, borderRadius: 'var(--radius-lg)', background: fitnessLevel === f.v ? 'var(--color-primary)' : 'var(--color-bg-elevated)', color: fitnessLevel === f.v ? 'white' : 'var(--color-text-muted)', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer', fontSize: '0.85rem' }}>
                             {f.l}
                           </button>
                         ))}
@@ -567,7 +567,7 @@ const TripPlannerPage = () => {
                       <button
                         type="button"
                         onClick={() => setAccessibility(v => !v)}
-                        style={{ width: '48px', height: '26px', borderRadius: '13px', border: 'none', cursor: 'pointer', background: accessibility ? '#171F30' : 'var(--color-border)', position: 'relative', transition: 'background 0.2s', flexShrink: 0 }}
+                        style={{ width: '48px', height: '26px', borderRadius: '13px', border: 'none', cursor: 'pointer', background: accessibility ? 'var(--color-primary)' : 'var(--color-border)', position: 'relative', transition: 'background 0.2s', flexShrink: 0 }}
                       >
                         <span style={{ position: 'absolute', top: '4px', left: accessibility ? '26px' : '4px', width: '18px', height: '18px', borderRadius: '50%', background: 'white', transition: 'left 0.2s' }} />
                       </button>
@@ -622,7 +622,7 @@ const TripPlannerPage = () => {
                 loading={generating}
                 disabled={generating || selectedDests.length === 0}
                 onClick={handleGenerate}
-                style={{ width: '100%', background: '#171F30', boxShadow: '0 8px 24px rgba(23,31,48,0.3)', fontWeight: 700, fontSize: '1.05rem' }}
+                style={{ width: '100%', background: 'var(--color-primary)', boxShadow: 'var(--shadow-primary)', fontWeight: 700, fontSize: '1.05rem' }}
               >
                 <Sparkles size={20} />
                 {generating ? 'Starting generation...' : 'Generate My AI Trip Plan'}
@@ -649,7 +649,7 @@ const TripPlannerPage = () => {
               <Button
                 variant="primary"
                 size="md"
-                style={{ background: '#171F30' }}
+                style={{ background: 'var(--color-primary)' }}
                 onClick={() => {
                   if (step === 1 && selectedDests.length === 0) {
                     toast.dismiss();

@@ -30,7 +30,7 @@ const DailyBriefingPage = () => {
   );
 
   return (
-    <div style={{ paddingTop: '70px', minHeight: '100vh', background: '#f8fafc' }}>
+    <div style={{ paddingTop: 'var(--navbar-offset, 88px)', minHeight: '100vh', background: '#f8fafc' }}>
       <div style={{ maxWidth: '700px', margin: '0 auto', padding: '2rem 1.5rem' }}>
         <Link to={`/trip/${id}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#64748b', textDecoration: 'none', fontWeight: 500, marginBottom: '2rem', fontSize: '0.9rem' }}>
           <ArrowLeft size={16} /> Back to Trip
@@ -54,12 +54,12 @@ const DailyBriefingPage = () => {
 
         {/* Weather Alerts */}
         {briefing.weather_alerts && briefing.weather_alerts.length > 0 && (
-          <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '16px', padding: '1.5rem', marginBottom: '1.5rem' }}>
-            <h3 style={{ fontWeight: 700, color: '#92400e', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ background: '#E8F8F2', border: '1px solid #9FDFC3', borderRadius: '16px', padding: '1.5rem', marginBottom: '1.5rem' }}>
+            <h3 style={{ fontWeight: 700, color: '#088A52', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <CloudRain size={18} /> Weather Alerts
             </h3>
             {briefing.weather_alerts.map((a, i) => (
-              <div key={i} style={{ color: '#d97706', marginBottom: '0.4rem' }}>• {a.message || a}</div>
+              <div key={i} style={{ color: '#0BA060', marginBottom: '0.4rem' }}>• {a.message || a}</div>
             ))}
           </div>
         )}
@@ -91,25 +91,25 @@ const DailyBriefingPage = () => {
         )}
 
         {/* Today's Bookings */}
-        {briefing.todays_bookings && briefing.todays_bookings.length > 0 && (
+        {briefing.confirmed_bookings_today && briefing.confirmed_bookings_today.length > 0 && (
           <div style={{ background: 'white', borderRadius: '16px', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
             <h3 style={{ fontWeight: 700, color: '#1e293b', marginBottom: '1rem' }}>Today's Confirmed Bookings</h3>
-            {briefing.todays_bookings.map((b, i) => (
-              <div key={i} style={{ padding: '0.75rem 0', borderBottom: i < briefing.todays_bookings.length - 1 ? '1px solid #f1f5f9' : 'none' }}>
+            {briefing.confirmed_bookings_today.map((b, i) => (
+              <div key={i} style={{ padding: '0.75rem 0', borderBottom: i < briefing.confirmed_bookings_today.length - 1 ? '1px solid #f1f5f9' : 'none' }}>
                 <div style={{ fontWeight: 600, color: '#1e293b', fontSize: '0.9rem' }}>{b.type || b.booking_type}</div>
-                <div style={{ fontSize: '0.8rem', color: '#64748b' }}>{b.details || b.provider_name}</div>
+                <div style={{ fontSize: '0.8rem', color: '#64748b' }}>{b.item_name || b.details || b.provider_name}</div>
               </div>
             ))}
           </div>
         )}
 
         {/* Local Events */}
-        {briefing.local_events && briefing.local_events.length > 0 && (
+        {briefing.local_events_today && briefing.local_events_today.length > 0 && (
           <div style={{ background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: '16px', padding: '1.5rem', marginBottom: '1.5rem' }}>
             <h3 style={{ fontWeight: 700, color: '#0c4a6e', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Info size={18} /> Local Events Today
             </h3>
-            {briefing.local_events.map((e, i) => (
+            {briefing.local_events_today.map((e, i) => (
               <div key={i} style={{ marginBottom: '0.5rem', color: '#0369a1' }}>• {e.name || e}</div>
             ))}
           </div>

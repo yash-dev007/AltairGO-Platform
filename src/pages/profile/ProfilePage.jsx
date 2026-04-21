@@ -83,7 +83,7 @@ const ProfilePage = () => {
   if (authLoading || !user) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}><div className="global-spinner" /></div>;
 
   return (
-    <div style={{ paddingTop: '70px', minHeight: '100vh', background: '#f8fafc' }}>
+    <div style={{ paddingTop: 'var(--navbar-offset, 88px)', minHeight: '100vh', background: '#f8fafc' }}>
       <div style={{ maxWidth: '600px', margin: '0 auto', padding: '3rem 1.5rem' }}>
         <h1 style={{ fontSize: '2rem', fontWeight: 800, color: '#1e293b', marginBottom: '2.5rem' }}>My Profile</h1>
 

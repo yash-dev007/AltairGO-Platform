@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//d/Projects/AltairGO-Engine-main/**)",
+      "Bash(.venv/Scripts/python.exe -m backend.scripts.enrich_destinations)",
+      "Bash(.venv/Scripts/python.exe -c \"import backend.scripts.enrich_destinations; print\\(''OK, destinations:'', len\\(backend.scripts.enrich_destinations.DESTINATIONS\\)\\)\")",
+      "WebFetch(domain:api.anthropic.com)"
+    ]
+  }
+}

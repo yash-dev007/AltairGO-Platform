@@ -44,6 +44,10 @@ AltairGO Platform is a production-grade React SPA connecting to the [AltairGO En
 
 ## Features
 
+### Landing Page & Aesthetic
+- **Fluid Animations**: Configured Framer Motion staggered entrance and viewport scroll-triggered transitions across Heroes, Destinations, Capabilities, and Journal modules for a premium feel.
+- **Premium Design System**: Built with modern CSS features including glassmorphic pills, deeply responsive grids dropping down fluidly for mobile, cohesive light/dark gradients using `oklch` and custom properties scoped uniquely via CSS Modules.
+
 ### Trip Planning
 - **5-step planner wizard** — destination search + AI recommendations, dates/duration, budget slider (live ₹/person/day hint), interests chips, advanced options (dietary, fitness, accessibility)
 - **AI itinerary generation** — real-time SSE stream via `EventSource`; auto-saves on completion; 2s polling fallback

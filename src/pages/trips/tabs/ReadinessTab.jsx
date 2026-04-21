@@ -11,7 +11,7 @@ export default function ReadinessTab({ readiness }) {
     );
   }
 
-  const scoreColor = readiness.score >= 80 ? '#10b981' : readiness.score >= 50 ? '#f59e0b' : '#ef4444';
+  const scoreColor = readiness.score >= 80 ? '#10b981' : readiness.score >= 50 ? '#0BA060' : '#ef4444';
 
   return (
     <div>
@@ -32,7 +32,7 @@ export default function ReadinessTab({ readiness }) {
             {readiness.checklist.map((item, i) => (
               <div key={i} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
                 <div style={{ flexShrink: 0, marginTop: '2px' }}>
-                  {item.status === 'done' ? <Check size={18} color="#10b981" /> : <AlertCircle size={18} color="#f59e0b" />}
+                  {item.status === 'done' ? <Check size={18} color="#10b981" /> : <AlertCircle size={18} color="#0BA060" />}
                 </div>
                 <div>
                   <div style={{ fontWeight: 600, color: '#1e293b', fontSize: '0.9rem' }}>{item.label}</div>

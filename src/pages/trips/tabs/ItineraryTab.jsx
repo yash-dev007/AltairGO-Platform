@@ -5,7 +5,7 @@ import {
   Package, Plus, Pencil, Trash2, RefreshCw, Coffee,
 } from 'lucide-react';
 
-const PACING_COLORS = { intense: '#ef4444', moderate: '#f59e0b', relaxed: '#10b981' };
+const PACING_COLORS = { intense: '#ef4444', moderate: '#0BA060', relaxed: '#10b981' };
 
 const ActivityIcon = ({ type }) => {
   const t = (type || '').toLowerCase();
@@ -39,19 +39,19 @@ export default function ItineraryTab({
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       {/* Pending bookings nudge banner */}
       {pendingBookings.length > 0 && (
-        <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '14px', padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+        <div style={{ background: '#E8F8F2', border: '1px solid #9FDFC3', borderRadius: '14px', padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span style={{ fontSize: '1.2rem' }}>📋</span>
             <div>
-              <div style={{ fontWeight: 700, color: '#92400e', fontSize: '0.9rem' }}>
+              <div style={{ fontWeight: 700, color: '#088A52', fontSize: '0.9rem' }}>
                 {pendingBookings.length} booking{pendingBookings.length > 1 ? 's' : ''} awaiting your approval
               </div>
-              <div style={{ fontSize: '0.8rem', color: '#b45309' }}>Review and approve before executing</div>
+              <div style={{ fontSize: '0.8rem', color: '#0BA060' }}>Review and approve before executing</div>
             </div>
           </div>
           <button
             onClick={onOpenBookingsTab}
-            style={{ padding: '0.5rem 1.1rem', background: '#f59e0b', color: 'white', border: 'none', borderRadius: '8px', fontFamily: 'inherit', fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem', whiteSpace: 'nowrap' }}
+            style={{ padding: '0.5rem 1.1rem', background: '#0BA060', color: 'white', border: 'none', borderRadius: '8px', fontFamily: 'inherit', fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem', whiteSpace: 'nowrap' }}
           >
             Review Bookings →
           </button>
@@ -95,9 +95,9 @@ export default function ItineraryTab({
             <div key={dayNum} style={{ background: 'white', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
               {/* Weather alert banner for this day */}
               {dayAlert && (
-                <div style={{ padding: '0.6rem 1.25rem', background: dayAlert.severity === 'extreme' ? '#fef2f2' : '#fffbeb', borderBottom: `1px solid ${dayAlert.severity === 'extreme' ? '#fecaca' : '#fde68a'}`, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{ padding: '0.6rem 1.25rem', background: dayAlert.severity === 'extreme' ? '#fef2f2' : '#E8F8F2', borderBottom: `1px solid ${dayAlert.severity === 'extreme' ? '#fecaca' : '#9FDFC3'}`, display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span>{dayAlert.severity === 'extreme' ? '🌩️' : '⚠️'}</span>
-                  <span style={{ fontSize: '0.82rem', fontWeight: 600, color: dayAlert.severity === 'extreme' ? '#991b1b' : '#92400e' }}>
+                  <span style={{ fontSize: '0.82rem', fontWeight: 600, color: dayAlert.severity === 'extreme' ? '#991b1b' : '#088A52' }}>
                     {dayAlert.alert_type || 'Weather alert'}: {dayAlert.description}
                     {dayAlert.probability_pct ? ` (${dayAlert.probability_pct}% chance)` : ''}
                   </span>
@@ -149,9 +149,9 @@ export default function ItineraryTab({
                     return (
                       <div
                         key={ai}
-                        style={{ padding: '1rem 1.5rem', borderBottom: ai < activities.length - 1 ? '1px solid #f8fafc' : 'none', display: 'flex', gap: '1rem', alignItems: 'flex-start', background: isMeal ? '#fffbeb' : 'white', transition: 'background 0.15s' }}
+                        style={{ padding: '1rem 1.5rem', borderBottom: ai < activities.length - 1 ? '1px solid #f8fafc' : 'none', display: 'flex', gap: '1rem', alignItems: 'flex-start', background: isMeal ? '#E8F8F2' : 'white', transition: 'background 0.15s' }}
                         onMouseEnter={(e) => { if (!isMeal) e.currentTarget.style.background = '#f8fafc'; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = isMeal ? '#fffbeb' : 'white'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = isMeal ? '#E8F8F2' : 'white'; }}
                       >
                         {/* Time chip */}
                         <div style={{ minWidth: '70px', fontSize: '0.8rem', fontWeight: 700, color: '#64748b', paddingTop: '2px', fontVariantNumeric: 'tabular-nums' }}>
@@ -159,7 +159,7 @@ export default function ItineraryTab({
                         </div>
 
                         {/* Icon */}
-                        <div style={{ width: '34px', height: '34px', borderRadius: '10px', background: isMeal ? '#fef3c7' : '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: isMeal ? '#d97706' : '#64748b', flexShrink: 0 }}>
+                        <div style={{ width: '34px', height: '34px', borderRadius: '10px', background: isMeal ? '#E8F8F2' : '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: isMeal ? '#0BA060' : '#64748b', flexShrink: 0 }}>
                           {isMeal ? <Coffee size={16} /> : <ActivityIcon type={act.type} />}
                         </div>
 
@@ -174,7 +174,7 @@ export default function ItineraryTab({
                                 </span>
                               )}
                               {act.is_photo_spot && (
-                                <span style={{ fontSize: '0.7rem', background: '#fef3c7', color: '#d97706', padding: '2px 6px', borderRadius: '6px', fontWeight: 600 }}>📸</span>
+                                <span style={{ fontSize: '0.7rem', background: '#E8F8F2', color: '#088A52', padding: '2px 6px', borderRadius: '6px', fontWeight: 600 }}>📸</span>
                               )}
                               {act.difficulty_level && act.difficulty_level !== 'easy' && (
                                 <span style={{ fontSize: '0.7rem', background: '#fee2e2', color: '#dc2626', padding: '2px 6px', borderRadius: '6px', fontWeight: 600, textTransform: 'capitalize' }}>{act.difficulty_level}</span>
@@ -211,9 +211,9 @@ export default function ItineraryTab({
                           )}
 
                           {act.local_secret && (
-                            <div style={{ marginTop: '6px', padding: '6px 10px', background: '#fefce8', borderRadius: '8px', borderLeft: '3px solid #f59e0b' }}>
-                              <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#92400e' }}>💡 Local tip: </span>
-                              <span style={{ fontSize: '0.78rem', color: '#78350f' }}>{act.local_secret}</span>
+                            <div style={{ marginTop: '6px', padding: '6px 10px', background: '#E8F8F2', borderRadius: '8px', borderLeft: '3px solid #0BA060' }}>
+                              <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#088A52' }}>💡 Local tip: </span>
+                              <span style={{ fontSize: '0.78rem', color: '#0BA060' }}>{act.local_secret}</span>
                             </div>
                           )}
 
@@ -314,7 +314,7 @@ export default function ItineraryTab({
           </h3>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
             {docChecklist.map((doc, i) => (
-              <span key={i} style={{ padding: '4px 12px', borderRadius: '20px', fontSize: '0.82rem', fontWeight: 600, background: doc.required ? '#fef3c7' : '#f1f5f9', color: doc.required ? '#92400e' : '#475569', border: `1px solid ${doc.required ? '#fde68a' : '#e2e8f0'}` }}>
+              <span key={i} style={{ padding: '4px 12px', borderRadius: '20px', fontSize: '0.82rem', fontWeight: 600, background: doc.required ? '#E8F8F2' : '#f1f5f9', color: doc.required ? '#088A52' : '#475569', border: `1px solid ${doc.required ? '#9FDFC3' : '#e2e8f0'}` }}>
                 {doc.required ? '* ' : ''}{doc.item || doc}
               </span>
             ))}

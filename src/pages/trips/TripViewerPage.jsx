@@ -406,7 +406,7 @@ const TripViewerPage = () => {
 
   return (
     <>
-    <div style={{ paddingTop: '70px', minHeight: '100vh', background: '#f8fafc' }}>
+    <div style={{ paddingTop: 'var(--navbar-offset, 88px)', minHeight: '100vh', background: '#f8fafc' }}>
       {/* Header */}
       <div style={{ background: 'white', borderBottom: '1px solid #e2e8f0', padding: '1.25rem 2rem' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
@@ -457,10 +457,10 @@ const TripViewerPage = () => {
             {qualityScore && (
               <div
                 title="Quality score (0–100) measures itinerary diversity, budget fit, activity spread, and pacing balance."
-                style={{ background: qualityScore >= 80 ? '#f0fdf4' : '#fffbeb', border: `1px solid ${qualityScore >= 80 ? '#bbf7d0' : '#fde68a'}`, borderRadius: '12px', padding: '0.75rem 1.25rem', textAlign: 'center', cursor: 'help' }}
+                style={{ background: qualityScore >= 80 ? '#f0fdf4' : '#E8F8F2', border: `1px solid ${qualityScore >= 80 ? '#bbf7d0' : '#9FDFC3'}`, borderRadius: '12px', padding: '0.75rem 1.25rem', textAlign: 'center', cursor: 'help' }}
               >
-                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: qualityScore >= 80 ? '#065f46' : '#92400e' }}>{qualityScore}</div>
-                <div style={{ fontSize: '0.75rem', color: qualityScore >= 80 ? '#047857' : '#b45309', fontWeight: 600 }}>Quality Score ⓘ</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: qualityScore >= 80 ? '#065f46' : '#088A52' }}>{qualityScore}</div>
+                <div style={{ fontSize: '0.75rem', color: qualityScore >= 80 ? '#047857' : '#088A52', fontWeight: 600 }}>Quality Score ⓘ</div>
               </div>
             )}
           </div>

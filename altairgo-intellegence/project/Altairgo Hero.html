@@ -1,0 +1,1116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>ALTAIRGO INTELLIGENCE — Trip Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Geist', system-ui, sans-serif;
+    background: var(--page-bg);
+    color: var(--ink);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.01em;
+  }
+  :root {
+    /* warm, airy base */
+    --page-bg: #faf7f2;
+    --ink: #1a1814;
+    --ink-soft: #5a564f;
+    --ink-muted: #8a867d;
+    --line: #e7e2d8;
+    --card: #ffffff;
+    /* accent: peach → coral (replacing the reference green) */
+    --a1: oklch(92% 0.06 45);
+    --a2: oklch(84% 0.11 40);
+    --a3: oklch(74% 0.15 32);
+    --pill: #0f0d0a;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  .mono { font-family: var(--mono); font-size: 11px; letter-spacing: 0.02em; color: var(--ink-muted); text-transform: lowercase; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react">
+
+const { useState, useEffect, useRef, useMemo } = React;
+
+/* ---------- Tweakable defaults ---------- */
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accentHue": 150,
+  "headline": "The smarter way to plan your trips",
+  "headlineItalic": "trips",
+  "gradientIntensity": 0.3,
+  "cardVariant": 1
+} /*EDITMODE-END*/;
+
+/* ---------- Icons (minimal inline strokes) ---------- */
+const I = {
+  chev: (p) => <svg width="10" height="10" viewBox="0 0 10 10" {...p}><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>,
+  arrow: (p) => <svg width="12" height="12" viewBox="0 0 12 12" {...p}><path d="M2.5 6h7M6 2.5L9.5 6L6 9.5" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>,
+  plus: (p) => <svg width="12" height="12" viewBox="0 0 12 12" {...p}><path d="M6 2v8M2 6h8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" /></svg>,
+  pin: (p) => <svg width="12" height="12" viewBox="0 0 12 12" {...p}><path d="M6 1.5c-2 0-3.5 1.5-3.5 3.4c0 2.4 3.5 5.6 3.5 5.6s3.5-3.2 3.5-5.6C9.5 3 8 1.5 6 1.5z" stroke="currentColor" strokeWidth="1.1" fill="none" /><circle cx="6" cy="5" r="1.2" fill="currentColor" /></svg>,
+  clock: (p) => <svg width="12" height="12" viewBox="0 0 12 12" {...p}><circle cx="6" cy="6" r="4.5" stroke="currentColor" strokeWidth="1.1" fill="none" /><path d="M6 3.5V6l1.8 1.2" stroke="currentColor" strokeWidth="1.1" fill="none" strokeLinecap="round" /></svg>,
+  plane: (p) => <svg width="12" height="12" viewBox="0 0 12 12" {...p}><path d="M1.5 6.5l3 0.3l1.8 2.7l0.9-0.2l-1-3l2.8 0.3l1.1-1l-2.7-1.1l-0.9-3l-0.9 0.2l-0.4 3l-3.1 0.5z" stroke="currentColor" strokeWidth="1" fill="none" strokeLinejoin="round" /></svg>,
+  bed: (p) => <svg width="12" height="12" viewBox="0 0 12 12" {...p}><path d="M1.5 8.5V3.5M1.5 6h9v2.5M10.5 6V5a1 1 0 00-1-1H5.5v2" stroke="currentColor" strokeWidth="1.1" fill="none" strokeLinecap="round" /><circle cx="3.5" cy="5.3" r="0.9" stroke="currentColor" strokeWidth="1" fill="none" /></svg>,
+  fork: (p) => <svg width="12" height="12" viewBox="0 0 12 12" {...p}><path d="M3.5 1.5v3.2a1.5 1.5 0 003 0V1.5M5 4.5v6M8.5 1.5c-.8 0-1.5.7-1.5 1.5v3h1.5v4.5" stroke="currentColor" strokeWidth="1.1" fill="none" strokeLinecap="round" /></svg>,
+  star: (p) => <svg width="10" height="10" viewBox="0 0 10 10" {...p}><path d="M5 1L6.2 3.7L9 4.1L7 6.1L7.5 9L5 7.6L2.5 9L3 6.1L1 4.1L3.8 3.7Z" fill="currentColor" /></svg>,
+  spark: (p) => <svg width="14" height="14" viewBox="0 0 14 14" {...p}><path d="M7 1.5L8.2 5.3L12 6.5L8.2 7.7L7 11.5L5.8 7.7L2 6.5L5.8 5.3Z" fill="currentColor" /></svg>,
+  search: (p) => <svg width="12" height="12" viewBox="0 0 12 12" {...p}><circle cx="5.3" cy="5.3" r="3.3" stroke="currentColor" strokeWidth="1.2" fill="none" /><path d="M7.8 7.8L10 10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" /></svg>,
+  sun: (p) => <svg width="12" height="12" viewBox="0 0 12 12" {...p}><circle cx="6" cy="6" r="2.3" stroke="currentColor" strokeWidth="1.1" fill="none" /><path d="M6 1v1.5M6 9.5V11M1 6h1.5M9.5 6H11M2.5 2.5l1 1M8.5 8.5l1 1M2.5 9.5l1-1M8.5 3.5l1-1" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" /></svg>,
+  moon: (p) => <svg width="12" height="12" viewBox="0 0 12 12" {...p}><path d="M9.5 7.5A4 4 0 014.5 2.5A4 4 0 109.5 7.5z" stroke="currentColor" strokeWidth="1.1" fill="none" strokeLinejoin="round" /></svg>,
+  close: (p) => <svg width="12" height="12" viewBox="0 0 12 12" {...p}><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /></svg>
+};
+
+/* ---------- Logo ---------- */
+function Logo({ onDark = false }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+      <img src="assets/logo.png" alt="ALTAIRGO" style={{ height: 28, width: 'auto', display: 'block', filter: onDark ? 'invert(1) brightness(1.8)' : 'none' }} />
+    </div>);
+
+}
+
+/* ---------- Inline Nav (inside hero card) ---------- */
+function InlineNav({ onPlan }) {
+  const [open, setOpen] = useState(null);
+  const items = [
+  { label: 'Home', key: 'home' },
+  { label: 'Destinations', key: 'dest', menu: ['Jaipur, Rajasthan', 'Kerala Backwaters', 'Varanasi, UP', 'Leh-Ladakh', 'Goa', 'Rishikesh & Haridwar', 'Hampi, Karnataka'] },
+  { label: 'Planner', key: 'plan', menu: ['AI Itinerary Builder', 'Multi-city yatra', 'Group planning', 'Budget optimizer in ₹'] },
+  { label: 'Resources', key: 'res', menu: ['Travel guides', 'IRCTC & flights', 'Packing lists', 'Community'] },
+  { label: 'Pricing', key: 'price' }];
+
+  return (
+    <div style={{ position: 'relative', zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 22px', margin: '14px', borderRadius: 999, background: 'rgba(255,255,255,0.55)', backdropFilter: 'blur(18px) saturate(140%)', WebkitBackdropFilter: 'blur(18px) saturate(140%)', border: '1px solid rgba(255,255,255,0.7)', boxShadow: '0 8px 28px -12px rgba(60,30,15,0.18), inset 0 1px 0 rgba(255,255,255,0.8)' }}>
+      <Logo />
+      <nav style={{ display: 'flex', gap: 4, alignItems: 'center' }} onMouseLeave={() => setOpen(null)}>
+        {items.map((it) =>
+        <div key={it.key} style={{ position: 'relative' }}>
+            <button
+            onMouseEnter={() => setOpen(it.menu ? it.key : null)}
+            style={{
+              all: 'unset', cursor: 'pointer', padding: '9px 14px', fontSize: 13.5, fontWeight: 500,
+              color: it.key === 'home' ? 'var(--ink)' : 'var(--ink-soft)',
+              display: 'inline-flex', alignItems: 'center', gap: 5,
+              borderBottom: it.key === 'home' ? '1.5px solid var(--ink)' : '1.5px solid transparent'
+            }}>
+              {it.label}{it.menu && <I.chev style={{ opacity: 0.5 }} />}
+            </button>
+            {it.menu && open === it.key &&
+          <div style={{ position: 'absolute', top: '100%', left: 0, marginTop: 8, minWidth: 220, background: 'var(--card)', border: '1px solid var(--line)', borderRadius: 14, padding: 6, boxShadow: '0 20px 40px -20px rgba(40,30,20,0.18)', zIndex: 50 }}>
+                {it.menu.map((m, i) =>
+            <div key={i} style={{ padding: '10px 12px', fontSize: 13, color: 'var(--ink-soft)', borderRadius: 9, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+            onMouseEnter={(e) => {e.currentTarget.style.background = 'var(--a1)';e.currentTarget.style.color = 'var(--ink)';}}
+            onMouseLeave={(e) => {e.currentTarget.style.background = 'transparent';e.currentTarget.style.color = 'var(--ink-soft)';}}>
+                    {m}<I.arrow style={{ opacity: 0.5 }} />
+                  </div>
+            )}
+              </div>
+          }
+          </div>
+        )}
+      </nav>
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+        <button style={{ all: 'unset', cursor: 'pointer', fontSize: 13.5, fontWeight: 500, padding: '9px 14px', color: 'var(--ink-soft)' }}>Sign in</button>
+        <button onClick={onPlan} style={{ all: 'unset', cursor: 'pointer', fontSize: 13.5, fontWeight: 500, padding: '10px 18px', background: 'var(--ink)', color: 'var(--page-bg)', borderRadius: 999, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          Plan a trip <I.arrow />
+        </button>
+      </div>
+    </div>);
+
+}
+
+/* ---------- Gradient wash ---------- */
+function Wash({ intensity }) {
+  return (
+    <svg width="100%" height="100%" viewBox="0 0 1200 640" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+      <defs>
+        <radialGradient id="w1" cx="0.22" cy="0.55" r="0.75">
+          <stop offset="0" stopColor="var(--a3)" stopOpacity={0.55 * intensity} />
+          <stop offset="0.5" stopColor="var(--a2)" stopOpacity={0.3 * intensity} />
+          <stop offset="1" stopColor="var(--a1)" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="w2" cx="0.08" cy="0.9" r="0.5">
+          <stop offset="0" stopColor="var(--a2)" stopOpacity={0.4 * intensity} />
+          <stop offset="1" stopColor="var(--a1)" stopOpacity="0" />
+        </radialGradient>
+        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M40 0H0V40" stroke="var(--ink)" strokeOpacity="0.04" fill="none" />
+        </pattern>
+      </defs>
+      <rect width="1200" height="640" fill="url(#w1)" />
+      <rect width="1200" height="640" fill="url(#w2)" />
+      <rect width="1200" height="640" fill="url(#grid)" />
+    </svg>);
+
+}
+
+/* ---------- Floating filter pills (ambient) ---------- */
+function AmbientPills() {
+  const pills = [
+  { t: '5 days', x: 38, y: 12 },
+  { t: 'culture', x: 55, y: 8 },
+  { t: 'under ₹2L', x: 30, y: 22 },
+  { t: 'autumn', x: 60, y: 24 },
+  { t: 'temples', x: 44, y: 30 },
+  { t: 'slow travel', x: 33, y: 40 },
+  { t: 'solo', x: 58, y: 42 }];
+
+  return (
+    <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+      {pills.map((p, i) =>
+      <div key={i} className="amb-pill" style={{
+        position: 'absolute', left: `${p.x}%`, top: `${p.y}%`,
+        padding: '5px 11px', fontSize: 11.5, fontWeight: 500,
+        background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(6px)',
+        border: '1px solid rgba(255,255,255,0.9)',
+        borderRadius: 999, color: 'var(--ink-soft)',
+        boxShadow: '0 4px 14px -6px rgba(70,40,20,0.15)',
+        animation: `float ${5 + i * 0.4}s ease-in-out ${i * 0.3}s infinite alternate`
+      }}>{p.t}</div>
+      )}
+      <style>{`@keyframes float { from { transform: translateY(-3px);} to { transform: translateY(3px);} }`}</style>
+    </div>);
+
+}
+
+/* ---------- Itinerary card variants ---------- */
+const CARD_DATA = [
+{
+  dest: 'Jaipur, Rajasthan',
+  tag: 'Royal Heritage',
+  blurb: 'Five unhurried days through palaces, stepwells, and the old bazaars of the Pink City — paced for rooftop chai mornings and havelis by night.',
+  meta: [{ i: 'plane', t: 'Flight incl.' }, { i: 'bed', t: '2 havelis' }, { i: 'clock', t: '5 days' }],
+  days: [
+  { d: 'Mon', l: 'Amber Fort at sunrise', c: 'fort' },
+  { d: 'Tue', l: 'Hawa Mahal & Jantar Mantar', c: 'heritage' },
+  { d: 'Wed', l: 'Chand Baori stepwell', c: 'nature' },
+  { d: 'Thu', l: 'Johari Bazaar + thali', c: 'food' },
+  { d: 'Fri', l: 'Nahargarh & departure', c: 'fort' }]
+
+},
+{
+  dest: 'Kerala Backwaters',
+  tag: 'Slow Coastal',
+  blurb: 'A long weekend on a kettuvallam through Alleppey, with one day pulled out to the tea hills of Munnar and Ayurveda on Marari beach.',
+  meta: [{ i: 'plane', t: 'Flight incl.' }, { i: 'bed', t: 'Houseboat + resort' }, { i: 'clock', t: '4 days' }],
+  days: [
+  { d: 'Fri', l: 'Kochi — Fort & Jew Town', c: 'walk' },
+  { d: 'Sat', l: 'Alleppey houseboat', c: 'water' },
+  { d: 'Sun', l: 'Munnar tea gardens', c: 'nature' },
+  { d: 'Mon', l: 'Marari beach & fly out', c: 'beach' }]
+
+},
+{
+  dest: 'Leh-Ladakh',
+  tag: 'High Himalaya',
+  blurb: 'A week across moonscapes, monasteries, and the Nubra dunes — acclimatize in Leh, then climb to Pangong and back through Khardung La.',
+  meta: [{ i: 'plane', t: 'Flight incl.' }, { i: 'bed', t: 'Homestay + camp' }, { i: 'clock', t: '7 days' }],
+  days: [
+  { d: 'Sat', l: 'Leh arrival + rest', c: 'city' },
+  { d: 'Sun', l: 'Shanti Stupa & old town', c: 'heritage' },
+  { d: 'Mon', l: 'Hemis & Thiksey monasteries', c: 'temple' },
+  { d: 'Tue', l: 'Khardung La → Nubra', c: 'mountain' },
+  { d: 'Wed', l: 'Hunder dunes & camels', c: 'desert' },
+  { d: 'Thu', l: 'Pangong Tso night', c: 'lake' },
+  { d: 'Fri', l: 'Return & departure', c: 'city' }]
+
+}];
+
+
+function ItineraryCard({ variant, onCycle }) {
+  const data = CARD_DATA[variant % CARD_DATA.length];
+  const [hover, setHover] = useState(null);
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '1.05fr 1fr', gap: 0, background: 'var(--card)', border: '1px solid var(--line)', borderRadius: 22, overflow: 'hidden', boxShadow: '0 30px 60px -30px rgba(60,30,15,0.22), 0 10px 20px -10px rgba(60,30,15,0.1)', width: 640 }}>
+      {/* left: itinerary */}
+      <div style={{ padding: '22px 22px 20px', borderRight: '1px solid var(--line)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, var(--a2), var(--a3))', display: 'grid', placeItems: 'center', color: '#fff', fontSize: 13, fontWeight: 600 }}>
+              {data.dest.charAt(0)}
+            </div>
+            <div>
+              <div style={{ fontSize: 11, color: 'var(--ink-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{data.tag}</div>
+              <div style={{ fontSize: 13.5, fontWeight: 600 }}>{data.dest}</div>
+            </div>
+          </div>
+          <button onClick={onCycle} style={{ all: 'unset', cursor: 'pointer', fontSize: 10.5, fontFamily: 'var(--mono)', color: 'var(--ink-muted)', padding: '4px 8px', border: '1px solid var(--line)', borderRadius: 6 }}>
+            {variant + 1}/3 →
+          </button>
+        </div>
+
+        <div style={{ fontFamily: '"Instrument Serif", serif', fontSize: 22, lineHeight: 1.2, marginBottom: 8, letterSpacing: '-0.01em' }}>
+          {data.dest.split(',')[0]} <span style={{ fontStyle: 'italic', color: 'var(--a3)' }}>itinerary</span>
+        </div>
+        <div style={{ fontSize: 12.5, lineHeight: 1.55, color: 'var(--ink-soft)', marginBottom: 16 }}>
+          {data.blurb}
+        </div>
+
+        <div style={{ display: 'flex', gap: 14, marginBottom: 16, paddingBottom: 16, borderBottom: '1px dashed var(--line)' }}>
+          {data.meta.map((m, i) =>
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11.5, color: 'var(--ink-soft)' }}>
+              {m.i === 'plane' && <I.plane />}
+              {m.i === 'bed' && <I.bed />}
+              {m.i === 'clock' && <I.clock />}
+              {m.t}
+            </div>
+          )}
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+          {data.days.slice(0, 5).map((day, i) =>
+          <div key={i}
+          onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)}
+          style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 8px', borderRadius: 8, background: hover === i ? 'var(--a1)' : 'transparent', transition: 'background 0.15s' }}>
+              <div style={{ fontFamily: 'var(--mono)', fontSize: 10, color: 'var(--ink-muted)', width: 28 }}>{day.d}</div>
+              <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--a3)' }} />
+              <div style={{ fontSize: 12, color: 'var(--ink)', flex: 1 }}>{day.l}</div>
+              <div style={{ fontSize: 10, fontFamily: 'var(--mono)', color: 'var(--ink-muted)' }}>{day.c}</div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* right: map + details */}
+      <div style={{ padding: '22px', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ position: 'relative', background: 'linear-gradient(160deg, var(--a1), #fff)', borderRadius: 14, height: 150, border: '1px solid var(--line)', overflow: 'hidden', marginBottom: 14 }}>
+          {/* stylized map */}
+          <svg viewBox="0 0 240 150" width="100%" height="100%">
+            <defs>
+              <pattern id="dots" width="8" height="8" patternUnits="userSpaceOnUse">
+                <circle cx="1" cy="1" r="0.7" fill="var(--ink)" opacity="0.15" />
+              </pattern>
+            </defs>
+            <rect width="240" height="150" fill="url(#dots)" />
+            <path d="M0,100 Q40,80 80,95 T160,80 T240,90" stroke="var(--a3)" strokeWidth="1.2" fill="none" opacity="0.5" strokeDasharray="2 3" />
+            <path d="M20,60 Q70,50 120,70 T220,50" stroke="var(--a2)" strokeWidth="1" fill="none" opacity="0.5" />
+            {/* route */}
+            <path d={
+            variant === 0 ? "M60,100 C80,70 100,60 130,55 C160,50 180,70 195,85" :
+            variant === 1 ? "M50,80 C80,60 120,65 150,70 C180,75 200,60 200,50" :
+            "M40,110 C60,90 90,70 120,60 C150,50 180,40 210,35 C195,60 180,80 160,100"
+            } stroke="var(--a3)" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+            {data.days.slice(0, 5).map((_, i) => {
+              const pts = variant === 0 ? [[60, 100], [95, 75], [130, 55], [165, 60], [195, 85]] :
+              variant === 1 ? [[50, 80], [90, 67], [130, 70], [170, 65], [200, 50]] :
+              [[40, 110], [85, 80], [130, 58], [180, 42], [210, 35]];
+              const [x, y] = pts[i] || [0, 0];
+              return <g key={i}>
+                <circle cx={x} cy={y} r="4" fill="#fff" stroke="var(--a3)" strokeWidth="1.5" />
+                <text x={x} y={y + 1.5} fontSize="5" fontFamily="var(--mono)" textAnchor="middle" fill="var(--a3)" fontWeight="600">{i + 1}</text>
+              </g>;
+            })}
+          </svg>
+          <div style={{ position: 'absolute', top: 10, left: 10, fontSize: 10, fontFamily: 'var(--mono)', color: 'var(--ink-muted)', background: 'rgba(255,255,255,0.7)', padding: '3px 7px', borderRadius: 6 }}>
+            <I.pin /> {data.dest}
+          </div>
+        </div>
+
+        <div style={{ fontSize: 11, color: 'var(--ink-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
+          AI suggestions
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, flex: 1 }}>
+          {[
+          { i: 'fork', t: 'Laxmi Misthan Bhandar thali', s: '+ ₹450 · Wed eve' },
+          { i: 'star', t: 'Patrika Gate photo stop', s: '+ 1h · Thu am' },
+          { i: 'spark', t: 'Block-printing workshop', s: '+ ₹1,200 · optional' }].
+          map((s, i) =>
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 10px', border: '1px solid var(--line)', borderRadius: 10, fontSize: 12 }}>
+              <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'var(--a1)', display: 'grid', placeItems: 'center', color: 'var(--a3)' }}>
+                {s.i === 'fork' && <I.fork />}
+                {s.i === 'star' && <I.star />}
+                {s.i === 'spark' && <I.spark />}
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ color: 'var(--ink)' }}>{s.t}</div>
+                <div style={{ fontSize: 10.5, color: 'var(--ink-muted)', fontFamily: 'var(--mono)' }}>{s.s}</div>
+              </div>
+              <I.plus style={{ color: 'var(--ink-muted)' }} />
+            </div>
+          )}
+        </div>
+
+        <button style={{ all: 'unset', cursor: 'pointer', marginTop: 14, padding: '10px', background: 'var(--ink)', color: 'var(--page-bg)', borderRadius: 10, textAlign: 'center', fontSize: 12, fontWeight: 500, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+          <I.spark /> Refine with AI
+        </button>
+      </div>
+    </div>);
+
+}
+
+/* ---------- About section ---------- */
+function About() {
+  const stats = [
+  { k: '50,000+', v: 'travelers planned' },
+  { k: '28 states', v: 'covered across India' },
+  { k: '4.9 / 5', v: 'average trip rating' },
+  { k: '₹2.4 Cr', v: 'saved on bookings' }];
+
+  return (
+    <section style={{ padding: '100px 72px', borderTop: '1px solid var(--line)', background: 'var(--page-bg)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: 80, alignItems: 'start' }}>
+        <div>
+          <div className="mono" style={{ marginBottom: 16 }}>{'{ about · altairgo }'}</div>
+          <h2 style={{ fontSize: 48, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0 }}>
+            Travel, re-imagined for the <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', color: 'var(--a3)' }}>Indian</span> traveler.
+          </h2>
+        </div>
+        <div>
+          <p style={{ fontSize: 16, lineHeight: 1.65, color: 'var(--ink-soft)', margin: 0, marginBottom: 40 }}>
+            Altairgo Intelligence is an AI-first trip planner built from the ground up for India — its seasons, its trains, its monsoons, its festivals, and the way we actually travel. Whether it's a long weekend in Goa, a pilgrimage to Badrinath, or a 14-day Rajasthan circuit, we plan it in minutes instead of weeks.
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 24, paddingTop: 32, borderTop: '1px dashed var(--line)' }}>
+            {stats.map((s, i) =>
+            <div key={i}>
+                <div style={{ fontFamily: '"Instrument Serif", serif', fontSize: 44, fontStyle: 'italic', color: 'var(--a3)', lineHeight: 1 }}>{s.k}</div>
+                <div style={{ fontSize: 13, color: 'var(--ink-muted)', marginTop: 6 }}>{s.v}</div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>);
+
+}
+
+/* ---------- Destinations: sliding cards ---------- */
+const DESTINATIONS = [
+{ name: 'Jaipur', state: 'Rajasthan', price: 24500, days: 5, tag: 'Heritage', hue: 32 },
+{ name: 'Alleppey', state: 'Kerala', price: 18900, days: 4, tag: 'Backwaters', hue: 150 },
+{ name: 'Leh', state: 'Ladakh', price: 42000, days: 7, tag: 'Himalaya', hue: 220 },
+{ name: 'Varanasi', state: 'Uttar Pradesh', price: 16500, days: 4, tag: 'Spiritual', hue: 45 },
+{ name: 'Hampi', state: 'Karnataka', price: 19800, days: 4, tag: 'Ruins', hue: 60 },
+{ name: 'Rishikesh', state: 'Uttarakhand', price: 14200, days: 3, tag: 'Yoga · Raft', hue: 180 },
+{ name: 'Goa', state: 'Coastal', price: 22000, days: 5, tag: 'Beach', hue: 200 },
+{ name: 'Udaipur', state: 'Rajasthan', price: 26800, days: 4, tag: 'Lakes', hue: 280 }];
+
+
+function Destinations() {
+  const scrollRef = useRef(null);
+  const scroll = (dir) => {
+    if (scrollRef.current) scrollRef.current.scrollBy({ left: dir * 340, behavior: 'smooth' });
+  };
+  return (
+    <section style={{ padding: '100px 0 100px', borderTop: '1px solid var(--line)', background: 'var(--card)', overflow: 'hidden' }}>
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', padding: '0 72px', marginBottom: 40 }}>
+        <div>
+          <div className="mono" style={{ marginBottom: 16 }}>{'{ 02 · destinations }'}</div>
+          <h2 style={{ fontSize: 48, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0, maxWidth: 600 }}>
+            Handpicked <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', color: 'var(--a3)' }}>corners</span> of India
+          </h2>
+        </div>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <button onClick={() => scroll(-1)} style={{ all: 'unset', cursor: 'pointer', width: 44, height: 44, borderRadius: '50%', border: '1px solid var(--line)', display: 'grid', placeItems: 'center', color: 'var(--ink)' }}>
+            <I.arrow style={{ transform: 'rotate(180deg)' }} />
+          </button>
+          <button onClick={() => scroll(1)} style={{ all: 'unset', cursor: 'pointer', width: 44, height: 44, borderRadius: '50%', background: 'var(--ink)', color: 'var(--page-bg)', display: 'grid', placeItems: 'center' }}>
+            <I.arrow />
+          </button>
+        </div>
+      </div>
+      <div ref={scrollRef} style={{ display: 'flex', gap: 20, padding: '0 72px 20px', overflowX: 'auto', scrollSnapType: 'x mandatory', scrollbarWidth: 'none' }}>
+        <style>{`section > div::-webkit-scrollbar { display: none; }`}</style>
+        {DESTINATIONS.map((d, i) =>
+        <div key={i} style={{
+          flex: '0 0 320px', scrollSnapAlign: 'start',
+          background: `linear-gradient(165deg, oklch(92% 0.06 ${d.hue}), oklch(98% 0.01 ${d.hue}))`,
+          borderRadius: 20, border: '1px solid var(--line)', overflow: 'hidden',
+          cursor: 'pointer', transition: 'transform 0.25s ease, box-shadow 0.25s ease'
+        }}
+        onMouseEnter={(e) => {e.currentTarget.style.transform = 'translateY(-6px)';e.currentTarget.style.boxShadow = '0 24px 40px -20px rgba(60,30,15,0.25)';}}
+        onMouseLeave={(e) => {e.currentTarget.style.transform = 'translateY(0)';e.currentTarget.style.boxShadow = 'none';}}>
+            {/* placeholder image */}
+            <div style={{ height: 220, position: 'relative', borderBottom: '1px solid rgba(0,0,0,0.04)' }}>
+              <svg width="100%" height="100%" viewBox="0 0 320 220" preserveAspectRatio="none">
+                <defs>
+                  <pattern id={`str-${i}`} width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                    <rect width="3" height="6" fill={`oklch(74% 0.15 ${d.hue})`} opacity="0.15" />
+                  </pattern>
+                </defs>
+                <rect width="320" height="220" fill={`url(#str-${i})`} />
+                {/* abstract shapes */}
+                <circle cx="80" cy="100" r="50" fill={`oklch(80% 0.12 ${d.hue})`} opacity="0.35" />
+                <path d="M0,180 Q80,140 160,160 T320,150 L320,220 L0,220Z" fill={`oklch(70% 0.14 ${d.hue})`} opacity="0.4" />
+              </svg>
+              <div style={{ position: 'absolute', top: 14, left: 14, padding: '5px 10px', background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(6px)', borderRadius: 999, fontSize: 10.5, fontFamily: 'var(--mono)', color: 'var(--ink-soft)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{d.tag}</div>
+              <div style={{ position: 'absolute', bottom: 14, left: 14, fontFamily: 'var(--mono)', fontSize: 10.5, color: 'var(--ink-soft)' }}>{String(i + 1).padStart(2, '0')} / {DESTINATIONS.length}</div>
+            </div>
+            <div style={{ padding: '20px 22px 22px', background: 'rgba(255,255,255,0.6)', backdropFilter: 'blur(10px)' }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 6 }}>
+                <div style={{ fontSize: 22, fontWeight: 500, letterSpacing: '-0.01em' }}>{d.name}</div>
+                <div style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--ink-muted)' }}>{d.days}D / {d.days - 1}N</div>
+              </div>
+              <div style={{ fontSize: 12.5, color: 'var(--ink-muted)', marginBottom: 16 }}>{d.state}</div>
+              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', paddingTop: 12, borderTop: '1px dashed var(--line)' }}>
+                <div>
+                  <div style={{ fontSize: 10.5, color: 'var(--ink-muted)', fontFamily: 'var(--mono)' }}>starting</div>
+                  <div style={{ fontSize: 18, fontWeight: 500 }}>₹{d.price.toLocaleString('en-IN')}</div>
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--a3)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 4 }}>Explore <I.arrow /></div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>);
+
+}
+
+/* ---------- Packages ---------- */
+const PACKAGES = [
+{ name: 'Wanderer', price: 0, period: 'forever', tag: 'Free', desc: 'Plan up to 2 trips per month with AI', feats: ['AI itinerary builder', '2 trips / month', 'Email support', 'Basic booking tools'], accent: false },
+{ name: 'Explorer', price: 499, period: 'per month', tag: 'Most loved', desc: 'For travelers who plan often across India', feats: ['Unlimited trips', 'Real-time IRCTC sync', 'Group planning (up to 8)', 'Priority support', 'Offline access', 'Downloadable PDFs'], accent: true },
+{ name: 'Concierge', price: 2499, period: 'per month', tag: 'Premium', desc: 'Human + AI hybrid, bookings included', feats: ['Everything in Explorer', 'Dedicated travel concierge', 'Same-day rebooking', 'Luxury properties', '24/7 WhatsApp support', 'Visa assistance'], accent: false }];
+
+
+function Packages() {
+  return (
+    <section style={{ padding: '100px 72px', borderTop: '1px solid var(--line)', background: 'var(--page-bg)' }}>
+      <div style={{ textAlign: 'center', marginBottom: 60 }}>
+        <div className="mono" style={{ marginBottom: 16 }}>{'{ 03 · packages }'}</div>
+        <h2 style={{ fontSize: 48, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0 }}>
+          Pick a plan that fits your <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', color: 'var(--a3)' }}>rhythm</span>
+        </h2>
+        <p style={{ fontSize: 15, color: 'var(--ink-soft)', marginTop: 16, maxWidth: 560, marginInline: 'auto', lineHeight: 1.6 }}>
+          All plans priced in ₹, billed monthly. Cancel anytime. GST included.
+        </p>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, maxWidth: 1100, margin: '0 auto' }}>
+        {PACKAGES.map((p, i) =>
+        <div key={i} style={{
+          padding: '32px 28px 28px',
+          background: p.accent ? 'var(--ink)' : 'var(--card)',
+          color: p.accent ? 'var(--page-bg)' : 'var(--ink)',
+          border: '1px solid var(--line)', borderRadius: 20,
+          position: 'relative'
+        }}>
+            {p.tag &&
+          <div style={{ position: 'absolute', top: -10, right: 20, padding: '4px 10px', background: p.accent ? 'var(--a3)' : 'var(--a1)', color: p.accent ? '#fff' : 'var(--a3)', fontSize: 10.5, fontFamily: 'var(--mono)', borderRadius: 999, letterSpacing: '0.04em', textTransform: 'uppercase' }}>{p.tag}</div>
+          }
+            <div style={{ fontSize: 13, opacity: 0.7, marginBottom: 8, fontFamily: 'var(--mono)' }}>{p.name}</div>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 10 }}>
+              <span style={{ fontSize: 20, opacity: 0.7 }}>₹</span>
+              <div style={{ fontFamily: '"Instrument Serif", serif', fontSize: 56, fontStyle: 'italic', lineHeight: 1, color: p.accent ? 'var(--a2)' : 'var(--a3)' }}>{p.price}</div>
+              <span style={{ fontSize: 12, opacity: 0.6, marginLeft: 6 }}>{p.period}</span>
+            </div>
+            <p style={{ fontSize: 13, opacity: 0.75, marginBottom: 24, lineHeight: 1.55 }}>{p.desc}</p>
+            <button style={{ all: 'unset', cursor: 'pointer', display: 'block', textAlign: 'center', padding: '12px', width: '100%', borderRadius: 999, background: p.accent ? 'var(--a3)' : 'var(--ink)', color: p.accent ? '#fff' : 'var(--page-bg)', fontSize: 13, fontWeight: 500, marginBottom: 24, boxSizing: 'border-box' }}>
+              {p.price === 0 ? 'Start free' : 'Choose plan'} →
+            </button>
+            <div style={{ borderTop: `1px ${p.accent ? 'solid rgba(255,255,255,0.1)' : 'dashed var(--line)'}`, paddingTop: 18 }}>
+              {p.feats.map((f, j) =>
+            <div key={j} style={{ fontSize: 13, marginBottom: 10, display: 'flex', alignItems: 'center', gap: 8, opacity: 0.9 }}>
+                  <span style={{ color: p.accent ? 'var(--a2)' : 'var(--a3)' }}>✓</span>{f}
+                </div>
+            )}
+            </div>
+          </div>
+        )}
+      </div>
+    </section>);
+
+}
+
+/* ---------- Blogs ---------- */
+const BLOGS = [
+{ cat: 'Travel guide', title: 'When to visit Ladakh: a month-by-month guide', date: 'Apr 12, 2026', read: '8 min', hue: 220 },
+{ cat: 'Culture', title: 'The 12 Jyotirlingas — a circuit worth taking slowly', date: 'Apr 04, 2026', read: '12 min', hue: 32 },
+{ cat: 'Food', title: 'Eating through Old Delhi in one monsoon afternoon', date: 'Mar 27, 2026', read: '6 min', hue: 150 }];
+
+
+function Blogs() {
+  return (
+    <section style={{ padding: '100px 72px', borderTop: '1px solid var(--line)', background: 'var(--card)' }}>
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 48 }}>
+        <div>
+          <div className="mono" style={{ marginBottom: 16 }}>{'{ 04 · journal }'}</div>
+          <h2 style={{ fontSize: 48, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0, maxWidth: 640 }}>
+            Stories from the <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', color: 'var(--a3)' }}>road</span>
+          </h2>
+        </div>
+        <button style={{ all: 'unset', cursor: 'pointer', fontSize: 13, color: 'var(--ink)', padding: '10px 18px', border: '1px solid var(--line)', borderRadius: 999, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          All posts <I.arrow />
+        </button>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+        {BLOGS.map((b, i) =>
+        <article key={i} style={{ cursor: 'pointer', border: '1px solid var(--line)', borderRadius: 18, overflow: 'hidden', background: 'var(--card)', transition: 'transform 0.25s, box-shadow 0.25s' }}
+        onMouseEnter={(e) => {e.currentTarget.style.transform = 'translateY(-4px)';e.currentTarget.style.boxShadow = '0 20px 30px -18px rgba(60,30,15,0.2)';}}
+        onMouseLeave={(e) => {e.currentTarget.style.transform = 'translateY(0)';e.currentTarget.style.boxShadow = 'none';}}>
+            <div style={{ height: 220, background: `linear-gradient(150deg, oklch(92% 0.06 ${b.hue}), oklch(82% 0.11 ${b.hue}))`, position: 'relative' }}>
+              <svg width="100%" height="100%" viewBox="0 0 400 220" preserveAspectRatio="none">
+                <defs>
+                  <pattern id={`bstr-${i}`} width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+                    <rect width="2" height="5" fill="#fff" opacity="0.25" />
+                  </pattern>
+                </defs>
+                <rect width="400" height="220" fill={`url(#bstr-${i})`} />
+              </svg>
+              <div style={{ position: 'absolute', top: 14, left: 14, padding: '4px 10px', background: 'rgba(255,255,255,0.85)', borderRadius: 999, fontSize: 10.5, fontFamily: 'var(--mono)', color: 'var(--ink-soft)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{b.cat}</div>
+            </div>
+            <div style={{ padding: '22px 22px 24px' }}>
+              <h3 style={{ fontSize: 18, fontWeight: 500, lineHeight: 1.3, letterSpacing: '-0.01em', margin: 0, marginBottom: 14 }}>{b.title}</h3>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--ink-muted)' }}>
+                <span>{b.date}</span><span>{b.read} read</span>
+              </div>
+            </div>
+          </article>
+        )}
+      </div>
+    </section>);
+
+}
+
+/* ---------- Footer ---------- */
+function Footer() {
+  const cols = [
+  { h: 'Product', items: ['AI Itinerary', 'Destinations', 'Packages', 'Group planning', 'Mobile app'] },
+  { h: 'Company', items: ['About us', 'Careers', 'Press', 'Contact', 'Partners'] },
+  { h: 'Resources', items: ['Travel guides', 'Visa help', 'Blog', 'Community', 'Support'] },
+  { h: 'Legal', items: ['Privacy', 'Terms', 'Refund policy', 'Cookie policy', 'GST details'] }];
+
+  return (
+    <footer style={{ padding: '80px 72px 40px', background: 'var(--ink)', color: 'var(--page-bg)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1.4fr repeat(4, 1fr)', gap: 40, marginBottom: 60 }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+            <svg width="26" height="26" viewBox="0 0 26 26">
+              <path d="M4 20L13 4L22 20H17.5L13 12L8.5 20Z" fill="var(--a2)" />
+              <circle cx="13" cy="16.5" r="1.6" fill="var(--ink)" />
+            </svg>
+            <div style={{ fontWeight: 600, fontSize: 15, letterSpacing: '-0.02em' }}>altairgo<span style={{ opacity: 0.5, fontWeight: 400 }}> / intelligence</span></div>
+          </div>
+          <p style={{ fontSize: 13.5, opacity: 0.65, lineHeight: 1.65, maxWidth: 280, margin: 0, marginBottom: 24 }}>
+            An AI trip planner, made in India, for travelers who want to spend less time planning and more time being there.
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontFamily: 'var(--mono)', fontSize: 11, opacity: 0.6 }}>
+            <div>hello@altairgo.in</div>
+            <div>Bengaluru · Mumbai · Delhi</div>
+          </div>
+        </div>
+        {cols.map((c, i) =>
+        <div key={i}>
+            <div style={{ fontSize: 11, fontFamily: 'var(--mono)', textTransform: 'uppercase', letterSpacing: '0.08em', opacity: 0.5, marginBottom: 18 }}>{c.h}</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {c.items.map((it, j) =>
+            <a key={j} style={{ fontSize: 13, opacity: 0.85, textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}>{it}</a>
+            )}
+            </div>
+          </div>
+        )}
+      </div>
+      <div style={{ paddingTop: 30, borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11.5, fontFamily: 'var(--mono)', opacity: 0.55 }}>
+        <div>© 2026 Altairgo Intelligence Pvt. Ltd. · All rights reserved.</div>
+        <div style={{ display: 'flex', gap: 20 }}>
+          <span>Made in 🇮🇳 with चाय</span>
+          <span>v1.0 · 2026</span>
+        </div>
+      </div>
+    </footer>);
+
+}
+
+/* ---------- How It Works (4-step process) ---------- */
+function HowItWorks() {
+  const steps = [
+  { n: '01', t: 'Tell us your dream trip', d: 'Destination, days, style, budget — the AI reads shorthand and ordinary sentences.' },
+  { n: '02', t: 'AI builds your itinerary', d: 'A day-by-day plan with real costs in ₹, live weather, and bookable experiences.' },
+  { n: '03', t: 'Customize every detail', d: 'Swap hotels, stretch days, add a side trip — the trip editor rebuilds around you.' },
+  { n: '04', t: 'Track, book, and go', d: 'One-tap bookings for flights, trains, stays. Offline-ready when you land.' }];
+
+  return (
+    <section id="how" style={{ padding: '110px 72px', borderTop: '1px solid var(--line)', background: 'var(--page-bg)', position: 'relative' }}>
+      <div style={{ textAlign: 'center', marginBottom: 70 }}>
+        <div className="mono" style={{ marginBottom: 16 }}>{'{ 02 · how it works }'}</div>
+        <h2 style={{ fontSize: 52, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0, maxWidth: 760, marginInline: 'auto' }}>
+          From idea to <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', color: 'var(--a3)' }}>boarding pass</span> in four steps
+        </h2>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0, position: 'relative' }}>
+        {/* connecting line */}
+        <div style={{ position: 'absolute', top: 28, left: '12.5%', right: '12.5%', height: 1, borderTop: '1px dashed var(--line)' }} />
+        {steps.map((s, i) =>
+        <div key={i} style={{ padding: '0 20px', position: 'relative' }}>
+            <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', marginBottom: 28 }}>
+              <div style={{
+              width: 56, height: 56, borderRadius: '50%',
+              background: i === 0 ? 'var(--ink)' : 'var(--card)',
+              color: i === 0 ? 'var(--a2)' : 'var(--a3)',
+              border: i === 0 ? 'none' : '1px solid var(--line)',
+              display: 'grid', placeItems: 'center',
+              fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', fontSize: 22, fontWeight: 400,
+              boxShadow: '0 4px 16px -6px rgba(60,30,15,0.15)',
+              position: 'relative', zIndex: 2
+            }}>{s.n}</div>
+            </div>
+            <h3 style={{ fontSize: 18, fontWeight: 500, letterSpacing: '-0.01em', margin: 0, marginBottom: 10, textAlign: 'center' }}>{s.t}</h3>
+            <p style={{ fontSize: 13.5, color: 'var(--ink-soft)', lineHeight: 1.6, margin: 0, textAlign: 'center', maxWidth: 240, marginInline: 'auto' }}>{s.d}</p>
+          </div>
+        )}
+      </div>
+    </section>);
+
+}
+
+/* ---------- Platform Capabilities ---------- */
+function Capabilities() {
+  const feats = [
+  { icon: 'spark', t: 'AI Itinerary', d: 'Day-by-day trips generated in seconds. Shaped around your pace, budget, and quirks.' },
+  { icon: 'rupee', t: 'Real Costs in ₹', d: 'Live rates for hotels, trains, and entry fees. No hidden conversion markup.' },
+  { icon: 'calendar', t: 'Smart Booking', d: 'One-tap booking for flights, trains, stays, and experiences — IRCTC synced.' },
+  { icon: 'cloud', t: 'Live Weather', d: 'Monsoon-aware planning. Rearranges your day when the forecast shifts.' },
+  { icon: 'tag', t: 'Local Events', d: 'Festivals, melas, and pop-ups you would have missed. Auto-added if you say yes.' },
+  { icon: 'edit', t: 'Trip Editor', d: 'Drag, swap, stretch. The itinerary rebuilds around every change in real time.' }];
+
+  const renderIcon = (k) => {
+    const common = { width: 22, height: 22, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round' };
+    switch (k) {
+      case 'spark':return <svg {...common}><path d="M12 3l2 6l6 2l-6 2l-2 6l-2-6l-6-2l6-2z" /></svg>;
+      case 'rupee':return <svg {...common}><path d="M7 5h10M7 9h10M9 5c3 0 5 2 5 4s-2 4-5 4h-2l6 6" /></svg>;
+      case 'calendar':return <svg {...common}><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" /></svg>;
+      case 'cloud':return <svg {...common}><path d="M7 18a4 4 0 010-8a5 5 0 019.6-1.4A4 4 0 0117 18H7z" /></svg>;
+      case 'tag':return <svg {...common}><path d="M20 12l-8 8l-9-9V3h8z" /><circle cx="8" cy="8" r="1.2" fill="currentColor" /></svg>;
+      case 'edit':return <svg {...common}><path d="M4 20h4L20 8l-4-4L4 16z" /><path d="M14 6l4 4" /></svg>;
+      default:return null;
+    }
+  };
+  return (
+    <section style={{ padding: '110px 72px', borderTop: '1px solid var(--line)', background: 'var(--card)' }}>
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 56, flexWrap: 'wrap', gap: 24 }}>
+        <div>
+          <div className="mono" style={{ marginBottom: 16 }}>{'{ 04 · capabilities }'}</div>
+          <h2 style={{ fontSize: 52, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0, maxWidth: 640 }}>
+            Six <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', color: 'var(--a3)' }}>superpowers</span>, one planner.
+          </h2>
+        </div>
+        <p style={{ fontSize: 15, color: 'var(--ink-soft)', maxWidth: 380, lineHeight: 1.6, margin: 0 }}>
+          Every trip gets the same intelligence — whether it's a 3-day Goa break or a 21-day Himalayan circuit.
+        </p>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: 'var(--line)', border: '1px solid var(--line)', borderRadius: 20, overflow: 'hidden' }}>
+        {feats.map((f, i) =>
+        <div key={i} style={{ padding: '36px 32px', background: 'var(--card)', transition: 'background 0.2s' }}
+        onMouseEnter={(e) => {e.currentTarget.style.background = 'var(--a1)';}}
+        onMouseLeave={(e) => {e.currentTarget.style.background = 'var(--card)';}}>
+            <div style={{ width: 44, height: 44, borderRadius: 12, background: 'var(--a1)', color: 'var(--a3)', display: 'grid', placeItems: 'center', marginBottom: 22 }}>
+              {renderIcon(f.icon)}
+            </div>
+            <h3 style={{ fontSize: 19, fontWeight: 500, letterSpacing: '-0.01em', margin: 0, marginBottom: 10 }}>{f.t}</h3>
+            <p style={{ fontSize: 13.5, color: 'var(--ink-soft)', lineHeight: 1.6, margin: 0 }}>{f.d}</p>
+          </div>
+        )}
+      </div>
+    </section>);
+
+}
+
+/* ---------- Final CTA Banner ---------- */
+function FinalCTA({ onPlan }) {
+  return (
+    <section style={{ padding: '0 24px 24px', background: 'var(--page-bg)' }}>
+      <div style={{ position: 'relative', borderRadius: 28, overflow: 'hidden', background: 'var(--ink)', color: 'var(--page-bg)', padding: '90px 72px', textAlign: 'center' }}>
+        {/* gradient wash */}
+        <svg width="100%" height="100%" viewBox="0 0 1200 500" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+          <defs>
+            <radialGradient id="ctag" cx="0.2" cy="0.8" r="0.7">
+              <stop offset="0" stopColor="var(--a3)" stopOpacity="0.55" />
+              <stop offset="0.6" stopColor="var(--a2)" stopOpacity="0.15" />
+              <stop offset="1" stopColor="var(--ink)" stopOpacity="0" />
+            </radialGradient>
+            <radialGradient id="ctag2" cx="0.85" cy="0.2" r="0.5">
+              <stop offset="0" stopColor="var(--a2)" stopOpacity="0.35" />
+              <stop offset="1" stopColor="var(--ink)" stopOpacity="0" />
+            </radialGradient>
+          </defs>
+          <rect width="1200" height="500" fill="url(#ctag)" />
+          <rect width="1200" height="500" fill="url(#ctag2)" />
+        </svg>
+
+        <div style={{ position: 'relative' }}>
+          <div style={{ fontFamily: 'var(--mono)', fontSize: 11.5, opacity: 0.6, marginBottom: 20, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{'{ ready when you are }'}</div>
+          <h2 style={{ fontSize: 72, lineHeight: 1.02, letterSpacing: '-0.035em', fontWeight: 500, margin: 0, marginBottom: 18 }}>
+            Start planning <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', color: 'var(--a2)' }}>for free</span>.
+          </h2>
+          <p style={{ fontSize: 17, opacity: 0.7, maxWidth: 560, marginInline: 'auto', lineHeight: 1.55, marginBottom: 40 }}>
+            Join 10,000+ travellers who plan smarter. No credit card. No commitments. Just a plan, built for you.
+          </p>
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button onClick={onPlan} style={{ all: 'unset', cursor: 'pointer', padding: '16px 28px', background: 'var(--a2)', color: 'var(--ink)', borderRadius: 999, fontSize: 15, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+              Plan my yatra free <I.arrow />
+            </button>
+            <button style={{ all: 'unset', cursor: 'pointer', padding: '16px 26px', border: '1px solid rgba(255,255,255,0.25)', borderRadius: 999, fontSize: 15, fontWeight: 500, color: 'var(--page-bg)', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+              Explore destinations <I.arrow />
+            </button>
+          </div>
+          <div style={{ marginTop: 32, fontFamily: 'var(--mono)', fontSize: 11.5, opacity: 0.5 }}>
+            ₹0 forever · ⭐ 4.9 · 28 states · made in India
+          </div>
+        </div>
+      </div>
+    </section>);
+
+}
+
+/* ---------- Hero ---------- */
+function Hero({ onPlan, headline, headlineItalic, intensity, cardVariant, setCardVariant }) {
+  // split headline around italic word
+  const parts = headline.split(headlineItalic);
+
+  return (
+    <div style={{ position: 'relative', minHeight: 700, overflow: 'hidden' }}>
+      <Wash intensity={intensity} />
+      <AmbientPills />
+
+      {/* glass nav floats over the hero */}
+      <InlineNav onPlan={onPlan} />
+
+      {/* meta line under nav */}
+      <div style={{ position: 'absolute', top: 92, left: 28, display: 'flex', alignItems: 'center', gap: 8, zIndex: 3 }}>
+        <div className="mono">{'{ beta · trip planner }'}</div>
+        <div className="mono" style={{ opacity: 0.5 }}>01</div>
+      </div>
+      <div style={{ position: 'absolute', top: 92, right: 28, display: 'flex', alignItems: 'center', gap: 8, zIndex: 3 }}>
+        <div className="mono" style={{ opacity: 0.5 }}>
+</div>
+        <div className="mono">{'{ yatra · AI }'}</div>
+      </div>
+      <div style={{ position: 'absolute', bottom: 16, right: 28 }}>
+        <div className="mono">{'{ v1.0 · 2026 }'}</div>
+      </div>
+
+      <div style={{ position: 'relative', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, padding: '40px 72px 72px', alignItems: 'center' }}>
+          {/* Left: headline */}
+          <div style={{ position: 'relative', zIndex: 2 }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.8)', borderRadius: 999, fontSize: 12, color: 'var(--ink-soft)', marginBottom: 28, boxShadow: '0 4px 14px -6px rgba(70,40,20,0.1)' }}>
+              <I.plus /> AI planner is live · v1.0 <I.chev style={{ transform: 'rotate(-90deg)', opacity: 0.5 }} />
+            </div>
+
+            <h1 style={{ fontSize: 64, lineHeight: 1.02, letterSpacing: '-0.035em', fontWeight: 500, margin: 0, marginBottom: 22, color: 'var(--ink)' }}>
+              {parts[0]}
+              <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', fontWeight: 400, color: 'var(--a3)' }}>{headlineItalic}</span>
+              {parts[1] || ''}
+            </h1>
+
+            <p style={{ fontSize: 15.5, lineHeight: 1.55, color: 'var(--ink-soft)', maxWidth: 460, margin: 0, marginBottom: 32 }}>
+              An AI trip planner for travelers who don't want cookie-cutter tours — tell it the shape of your trip and it builds the rest, from flights to dinner reservations.
+            </p>
+
+            <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+              <button onClick={onPlan} style={{ all: 'unset', cursor: 'pointer', padding: '14px 24px', background: 'var(--ink)', color: 'var(--page-bg)', borderRadius: 999, fontSize: 14, fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                Plan my yatra <span style={{ color: 'var(--a2)', fontWeight: 600 }}>free</span> <I.arrow />
+              </button>
+              <button onClick={() => document.getElementById('destinations')?.scrollIntoView({ behavior: 'smooth' })} style={{ all: 'unset', cursor: 'pointer', padding: '14px 22px', border: '1px solid var(--line)', borderRadius: 999, fontSize: 14, fontWeight: 500, background: 'var(--card)', display: 'inline-flex', alignItems: 'center', gap: 8, color: 'var(--ink)' }}>
+                Explore destinations <I.arrow />
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 40, fontSize: 12, color: 'var(--ink-muted)' }}>
+              <div style={{ display: 'flex', gap: 1, color: 'var(--a3)' }}>
+                {[0, 1, 2, 3, 4].map((i) => <I.star key={i} />)}
+              </div>
+              <span style={{ fontFamily: 'var(--mono)' }}>4.9 · 10,000+ trips planned</span>
+            </div>
+          </div>
+
+          {/* Right: product card */}
+          <div style={{ position: 'relative', zIndex: 2, display: 'flex', justifyContent: 'flex-end' }}>
+            <ItineraryCard variant={cardVariant} onCycle={() => setCardVariant((cardVariant + 1) % 3)} />
+          </div>
+      </div>
+    </div>);
+}
+
+/* ---------- Trip Builder (secondary screen) ---------- */
+function TripBuilder({ onBack }) {
+  const [step, setStep] = useState(0);
+  const [dest, setDest] = useState('Jaipur');
+  const [days, setDays] = useState(5);
+  const [vibe, setVibe] = useState(['Heritage', 'Food']);
+  const [budget, setBudget] = useState(80000);
+  const [generating, setGenerating] = useState(false);
+  const [done, setDone] = useState(false);
+
+  const toggleVibe = (v) => setVibe(vibe.includes(v) ? vibe.filter((x) => x !== v) : [...vibe, v]);
+
+  const generate = () => {
+    setGenerating(true);
+    setTimeout(() => {setGenerating(false);setDone(true);}, 2200);
+  };
+
+  return (
+    <div style={{ padding: '26px 36px 60px' }}>
+      <div style={{ position: 'relative', borderRadius: 22, background: 'var(--card)', border: '1px solid var(--line)', minHeight: 700, overflow: 'hidden' }}>
+        <div style={{ padding: '26px 36px', borderBottom: '1px solid var(--line)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <button onClick={onBack} style={{ all: 'unset', cursor: 'pointer', width: 32, height: 32, border: '1px solid var(--line)', borderRadius: '50%', display: 'grid', placeItems: 'center' }}>
+              <I.arrow style={{ transform: 'rotate(180deg)' }} />
+            </button>
+            <div>
+              <div className="mono">{'{ new trip / step ' + (step + 1) + ' of 4 }'}</div>
+              <div style={{ fontSize: 20, fontFamily: '"Instrument Serif", serif', letterSpacing: '-0.01em' }}>Let's shape your <span style={{ fontStyle: 'italic', color: 'var(--a3)' }}>trip</span></div>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 6 }}>
+            {[0, 1, 2, 3].map((i) =>
+            <div key={i} style={{ width: 36, height: 4, borderRadius: 2, background: i <= step ? 'var(--a3)' : 'var(--line)' }} />
+            )}
+          </div>
+        </div>
+
+        <div style={{ padding: '40px 36px', display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 40, minHeight: 560 }}>
+          <div>
+            {step === 0 &&
+            <div>
+                <div style={{ fontSize: 13, color: 'var(--ink-muted)', marginBottom: 10, fontFamily: 'var(--mono)' }}>01 · destination</div>
+                <div style={{ fontSize: 36, fontWeight: 500, lineHeight: 1.1, marginBottom: 24, letterSpacing: '-0.02em' }}>Where are you headed?</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '14px 18px', border: '1px solid var(--line)', borderRadius: 14, background: 'var(--page-bg)', marginBottom: 20 }}>
+                  <I.search style={{ color: 'var(--ink-muted)' }} />
+                  <input value={dest} onChange={(e) => setDest(e.target.value)} style={{ all: 'unset', flex: 1, fontSize: 15 }} />
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  {['Jaipur', 'Kerala', 'Leh-Ladakh', 'Goa', 'Varanasi', 'Hampi', 'Rishikesh'].map((d) =>
+                <button key={d} onClick={() => setDest(d)} style={{ all: 'unset', cursor: 'pointer', padding: '7px 14px', border: '1px solid var(--line)', borderRadius: 999, fontSize: 12.5, color: dest === d ? 'var(--page-bg)' : 'var(--ink-soft)', background: dest === d ? 'var(--ink)' : 'transparent' }}>{d}</button>
+                )}
+                </div>
+              </div>
+            }
+            {step === 1 &&
+            <div>
+                <div style={{ fontSize: 13, color: 'var(--ink-muted)', marginBottom: 10, fontFamily: 'var(--mono)' }}>02 · duration</div>
+                <div style={{ fontSize: 36, fontWeight: 500, lineHeight: 1.1, marginBottom: 24, letterSpacing: '-0.02em' }}>How many days?</div>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 20 }}>
+                  <div style={{ fontFamily: '"Instrument Serif", serif', fontSize: 96, lineHeight: 1, color: 'var(--a3)', fontStyle: 'italic' }}>{days}</div>
+                  <div style={{ fontSize: 18, color: 'var(--ink-soft)' }}>days</div>
+                </div>
+                <input type="range" min="2" max="21" value={days} onChange={(e) => setDays(+e.target.value)} style={{ width: '100%', accentColor: 'var(--a3)' }} />
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, fontFamily: 'var(--mono)', color: 'var(--ink-muted)', marginTop: 6 }}>
+                  <span>2</span><span>21</span>
+                </div>
+              </div>
+            }
+            {step === 2 &&
+            <div>
+                <div style={{ fontSize: 13, color: 'var(--ink-muted)', marginBottom: 10, fontFamily: 'var(--mono)' }}>03 · vibe</div>
+                <div style={{ fontSize: 36, fontWeight: 500, lineHeight: 1.1, marginBottom: 24, letterSpacing: '-0.02em' }}>What's the mood?</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+                  {['Culture', 'Food', 'Nature', 'Adventure', 'Nightlife', 'Relaxation', 'Photography', 'Off-beat', 'Family', 'Romantic'].map((v) =>
+                <button key={v} onClick={() => toggleVibe(v)} style={{ all: 'unset', cursor: 'pointer', padding: '9px 16px', border: '1px solid var(--line)', borderRadius: 999, fontSize: 13, color: vibe.includes(v) ? 'var(--page-bg)' : 'var(--ink-soft)', background: vibe.includes(v) ? 'var(--a3)' : 'transparent', borderColor: vibe.includes(v) ? 'var(--a3)' : 'var(--line)' }}>
+                      {vibe.includes(v) ? '✓ ' : '+ '}{v}
+                    </button>
+                )}
+                </div>
+              </div>
+            }
+            {step === 3 && !done &&
+            <div>
+                <div style={{ fontSize: 13, color: 'var(--ink-muted)', marginBottom: 10, fontFamily: 'var(--mono)' }}>04 · budget</div>
+                <div style={{ fontSize: 36, fontWeight: 500, lineHeight: 1.1, marginBottom: 24, letterSpacing: '-0.02em' }}>Your comfort range?</div>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 20 }}>
+                  <span style={{ fontSize: 24, color: 'var(--ink-soft)' }}>₹</span>
+                  <div style={{ fontFamily: '"Instrument Serif", serif', fontSize: 72, lineHeight: 1, color: 'var(--a3)', fontStyle: 'italic' }}>{budget.toLocaleString()}</div>
+                  <span style={{ fontSize: 14, color: 'var(--ink-muted)', marginLeft: 8 }}>per person, all-in</span>
+                </div>
+                <input type="range" min="15000" max="400000" step="5000" value={budget} onChange={(e) => setBudget(+e.target.value)} style={{ width: '100%', accentColor: 'var(--a3)' }} />
+                <button onClick={generate} style={{ all: 'unset', cursor: 'pointer', marginTop: 32, padding: '14px 26px', background: 'var(--ink)', color: 'var(--page-bg)', borderRadius: 999, fontSize: 14, fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                  <I.spark /> Generate my itinerary
+                </button>
+              </div>
+            }
+            {step === 3 && done &&
+            <div>
+                <div style={{ fontSize: 13, color: 'var(--a3)', marginBottom: 10, fontFamily: 'var(--mono)' }}>✓ itinerary ready</div>
+                <div style={{ fontSize: 40, fontWeight: 500, lineHeight: 1.05, marginBottom: 16, letterSpacing: '-0.02em', fontFamily: '"Instrument Serif", serif' }}>
+                  Your {days}-day <span style={{ fontStyle: 'italic', color: 'var(--a3)' }}>{dest}</span> trip is waiting.
+                </div>
+                <div style={{ fontSize: 14, color: 'var(--ink-soft)', marginBottom: 24, lineHeight: 1.6 }}>
+                  We built an itinerary around <strong>{vibe.join(', ').toLowerCase()}</strong>, sized for a <strong>₹{budget.toLocaleString()}</strong> budget. Flights, stays, and 14 bookable experiences are ready to review.
+                </div>
+                <div style={{ display: 'flex', gap: 10 }}>
+                  <button onClick={onBack} style={{ all: 'unset', cursor: 'pointer', padding: '12px 22px', background: 'var(--ink)', color: 'var(--page-bg)', borderRadius: 999, fontSize: 13, fontWeight: 500 }}>View itinerary →</button>
+                  <button onClick={() => {setStep(0);setDone(false);}} style={{ all: 'unset', cursor: 'pointer', padding: '12px 22px', border: '1px solid var(--line)', borderRadius: 999, fontSize: 13, color: 'var(--ink-soft)' }}>Start over</button>
+                </div>
+              </div>
+            }
+          </div>
+
+          {/* right side: live preview panel */}
+          <div style={{ position: 'relative', background: 'linear-gradient(155deg, var(--a1), #fff)', borderRadius: 18, border: '1px solid var(--line)', padding: 24, overflow: 'hidden' }}>
+            {generating ?
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: 14 }}>
+                <div style={{ width: 40, height: 40, border: '2px solid var(--line)', borderTopColor: 'var(--a3)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                <div style={{ fontFamily: 'var(--mono)', fontSize: 12, color: 'var(--ink-soft)' }}>Scanning 2,400 options across India...</div>
+                <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+              </div> :
+
+            <>
+                <div style={{ fontSize: 11, fontFamily: 'var(--mono)', color: 'var(--ink-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14 }}>Live preview</div>
+                <div style={{ fontSize: 13, lineHeight: 1.6, color: 'var(--ink-soft)' }}>
+                  <div style={{ marginBottom: 12 }}>
+                    <span style={{ color: 'var(--ink-muted)' }}>Destination — </span>
+                    <span style={{ color: 'var(--ink)', fontWeight: 500 }}>{dest}</span>
+                  </div>
+                  <div style={{ marginBottom: 12 }}>
+                    <span style={{ color: 'var(--ink-muted)' }}>Duration — </span>
+                    <span style={{ color: 'var(--ink)', fontWeight: 500 }}>{days} days</span>
+                  </div>
+                  <div style={{ marginBottom: 12 }}>
+                    <span style={{ color: 'var(--ink-muted)' }}>Vibe — </span>
+                    <span style={{ color: 'var(--ink)', fontWeight: 500 }}>{vibe.length ? vibe.join(', ').toLowerCase() : '—'}</span>
+                  </div>
+                  <div style={{ marginBottom: 20 }}>
+                    <span style={{ color: 'var(--ink-muted)' }}>Budget — </span>
+                    <span style={{ color: 'var(--ink)', fontWeight: 500 }}>₹{budget.toLocaleString()}</span>
+                  </div>
+
+                  <div style={{ borderTop: '1px dashed var(--line)', paddingTop: 16, marginTop: 16 }}>
+                    <div style={{ fontFamily: '"Instrument Serif", serif', fontSize: 22, fontStyle: 'italic', color: 'var(--a3)', marginBottom: 8 }}>{dest}, {days} days</div>
+                    <div style={{ fontSize: 12, color: 'var(--ink-muted)', lineHeight: 1.6 }}>
+                      Draft itinerary will feel like: morning walks before crowds, long lunches, 1–2 key reservations per day, and honest rest windows. {vibe.includes('Food') && 'Two dinners booked.'} {vibe.includes('Nature') && 'One outdoor day trip.'}
+                    </div>
+                  </div>
+                </div>
+              </>
+            }
+          </div>
+        </div>
+
+        {!done &&
+        <div style={{ padding: '20px 36px', borderTop: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <button onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0} style={{ all: 'unset', cursor: step === 0 ? 'not-allowed' : 'pointer', padding: '10px 18px', border: '1px solid var(--line)', borderRadius: 999, fontSize: 13, color: 'var(--ink-soft)', opacity: step === 0 ? 0.4 : 1 }}>
+              ← Back
+            </button>
+            {step < 3 &&
+          <button onClick={() => setStep(step + 1)} style={{ all: 'unset', cursor: 'pointer', padding: '10px 22px', background: 'var(--ink)', color: 'var(--page-bg)', borderRadius: 999, fontSize: 13, fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                Continue <I.arrow />
+              </button>
+          }
+          </div>
+        }
+      </div>
+    </div>);
+
+}
+
+/* ---------- Tweaks panel ---------- */
+function TweaksPanel({ tweaks, setTweak, open, onClose }) {
+  if (!open) return null;
+  return (
+    <div style={{ position: 'fixed', right: 20, bottom: 20, width: 280, background: 'var(--card)', border: '1px solid var(--line)', borderRadius: 16, padding: 16, boxShadow: '0 20px 40px -15px rgba(0,0,0,0.25)', zIndex: 100, fontSize: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+        <div style={{ fontWeight: 600, fontSize: 13 }}>Tweaks</div>
+        <button onClick={onClose} style={{ all: 'unset', cursor: 'pointer', color: 'var(--ink-muted)' }}><I.close /></button>
+      </div>
+
+      <div style={{ marginBottom: 14 }}>
+        <div style={{ color: 'var(--ink-muted)', marginBottom: 6, fontFamily: 'var(--mono)', fontSize: 10, textTransform: 'uppercase' }}>Accent hue</div>
+        <input type="range" min="0" max="360" value={tweaks.accentHue} onChange={(e) => setTweak('accentHue', +e.target.value)} style={{ width: '100%', accentColor: 'var(--a3)' }} />
+        <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
+          {[32, 80, 150, 230, 300].map((h) =>
+          <button key={h} onClick={() => setTweak('accentHue', h)} style={{ all: 'unset', cursor: 'pointer', width: 22, height: 22, borderRadius: '50%', background: `oklch(74% 0.15 ${h})`, border: tweaks.accentHue === h ? '2px solid var(--ink)' : '1px solid var(--line)' }} />
+          )}
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 14 }}>
+        <div style={{ color: 'var(--ink-muted)', marginBottom: 6, fontFamily: 'var(--mono)', fontSize: 10, textTransform: 'uppercase' }}>Gradient intensity</div>
+        <input type="range" min="0" max="2" step="0.1" value={tweaks.gradientIntensity} onChange={(e) => setTweak('gradientIntensity', +e.target.value)} style={{ width: '100%', accentColor: 'var(--a3)' }} />
+      </div>
+
+      <div style={{ marginBottom: 14 }}>
+        <div style={{ color: 'var(--ink-muted)', marginBottom: 6, fontFamily: 'var(--mono)', fontSize: 10, textTransform: 'uppercase' }}>Headline</div>
+        <textarea value={tweaks.headline} onChange={(e) => setTweak('headline', e.target.value)} style={{ width: '100%', padding: 8, border: '1px solid var(--line)', borderRadius: 8, fontSize: 12, fontFamily: 'inherit', resize: 'none' }} rows={2} />
+        <input value={tweaks.headlineItalic} onChange={(e) => setTweak('headlineItalic', e.target.value)} placeholder="italicized word" style={{ width: '100%', padding: 8, border: '1px solid var(--line)', borderRadius: 8, fontSize: 12, fontFamily: 'inherit', marginTop: 6 }} />
+      </div>
+
+      <div>
+        <div style={{ color: 'var(--ink-muted)', marginBottom: 6, fontFamily: 'var(--mono)', fontSize: 10, textTransform: 'uppercase' }}>Card variant</div>
+        <div style={{ display: 'flex', gap: 6 }}>
+          {['Jaipur', 'Kerala', 'Leh-Ladakh'].map((d, i) =>
+          <button key={i} onClick={() => setTweak('cardVariant', i)} style={{ all: 'unset', cursor: 'pointer', flex: 1, padding: '6px 8px', textAlign: 'center', border: '1px solid var(--line)', borderRadius: 8, background: tweaks.cardVariant === i ? 'var(--ink)' : 'transparent', color: tweaks.cardVariant === i ? 'var(--page-bg)' : 'var(--ink-soft)', fontSize: 11 }}>{d}</button>
+          )}
+        </div>
+      </div>
+    </div>);
+
+}
+
+/* ---------- App ---------- */
+function App() {
+  const [screen, setScreen] = useState(() => localStorage.getItem('altairgo_screen') || 'hero');
+  const [tweaks, setTweaks] = useState(TWEAK_DEFAULTS);
+  const [tweaksOpen, setTweaksOpen] = useState(false);
+
+  useEffect(() => {localStorage.setItem('altairgo_screen', screen);}, [screen]);
+
+  // accent
+  useEffect(() => {
+    const h = tweaks.accentHue;
+    document.documentElement.style.setProperty('--a1', `oklch(92% 0.06 ${h})`);
+    document.documentElement.style.setProperty('--a2', `oklch(84% 0.11 ${h})`);
+    document.documentElement.style.setProperty('--a3', `oklch(74% 0.15 ${h})`);
+  }, [tweaks.accentHue]);
+
+  // tweaks protocol
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.data?.type === '__activate_edit_mode') setTweaksOpen(true);
+      if (e.data?.type === '__deactivate_edit_mode') setTweaksOpen(false);
+    };
+    window.addEventListener('message', handler);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', handler);
+  }, []);
+
+  const setTweak = (k, v) => {
+    const next = { ...tweaks, [k]: v };
+    setTweaks(next);
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { [k]: v } }, '*');
+  };
+
+  const [cardVariant, setCardVariant] = useState(tweaks.cardVariant);
+  useEffect(() => {setCardVariant(tweaks.cardVariant);}, [tweaks.cardVariant]);
+
+  return (
+    <div data-screen-label={screen === 'hero' ? '01 Hero' : '02 Trip Builder'}>
+      {screen === 'hero' &&
+      <>
+          <Hero
+          onPlan={() => setScreen('builder')}
+          headline={tweaks.headline}
+          headlineItalic={tweaks.headlineItalic}
+          intensity={tweaks.gradientIntensity}
+          cardVariant={cardVariant}
+          setCardVariant={(v) => {setCardVariant(v);setTweak('cardVariant', v);}} />
+        
+          <About />
+          <Destinations />
+          <Packages />
+          <Blogs />
+          <Footer />
+        </>
+      }
+      {screen === 'builder' && <TripBuilder onBack={() => setScreen('hero')} />}
+      <TweaksPanel tweaks={tweaks} setTweak={setTweak} open={tweaksOpen} onClose={() => setTweaksOpen(false)} />
+    </div>);
+
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

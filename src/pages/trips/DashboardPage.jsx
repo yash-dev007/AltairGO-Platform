@@ -138,7 +138,7 @@ const DashboardPage = () => {
   if (!user) return null;
 
   return (
-    <div style={{ paddingTop: '70px', minHeight: '100vh', background: '#f8fafc' }}>
+    <div style={{ paddingTop: 'var(--navbar-offset, 88px)', minHeight: '100vh', background: '#f8fafc' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem 1.5rem' }}>
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '3rem', flexWrap: 'wrap', gap: '1rem' }}>
@@ -168,22 +168,21 @@ const DashboardPage = () => {
 
         {/* Stats strip */}
         {!loading && trips.length > 0 && (() => {
-          const totalSpent = trips.reduce((sum, t) => {
-            const ij = t.itinerary_json ? (typeof t.itinerary_json === 'string' ? (() => { try { return JSON.parse(t.itinerary_json); } catch { return {}; } })() : t.itinerary_json) : {};
-            return sum + (t.total_cost || t.budget || ij.total_cost || 0);
-          }, 0);
-          const destinations = new Set(trips.map(t => t.destination || t.origin_city).filter(Boolean)).size;
+          const currentYear = new Date().getFullYear();
+          const totalBudgetSpent = trips.reduce((sum, t) => sum + (Number(t.total_cost) || 0), 0);
+          const tripsThisYear = trips.filter(t => t.created_at && new Date(t.created_at).getFullYear() === currentYear).length;
           const stats = [
-            { label: 'Trips Saved', value: trips.length },
-            { label: 'Total Invested', value: `₹${Number(totalSpent).toLocaleString('en-IN')}` },
-            { label: 'Destinations', value: destinations || trips.length },
+            { label: 'Trips Planned', value: trips.length, icon: '🗺️' },
+            { label: 'Total Budget', value: `₹${totalBudgetSpent.toLocaleString('en-IN')}`, icon: '💰' },
+            { label: 'Trips This Year', value: tripsThisYear, icon: '📅' },
           ];
           return (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '2.5rem' }}>
               {stats.map(s => (
-                <div key={s.label} style={{ background: 'white', borderRadius: '16px', padding: '1.25rem 1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)', border: '1px solid #f1f5f9', textAlign: 'center' }}>
-                  <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#1e293b', lineHeight: 1 }}>{s.value}</div>
-                  <div style={{ fontSize: '0.78rem', color: '#94a3b8', fontWeight: 600, marginTop: '0.3rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{s.label}</div>
+                <div key={s.label} style={{ background: 'white', borderRadius: '16px', padding: '1.4rem 1.5rem', boxShadow: '0 2px 8px rgba(79,70,229,0.07)', border: '1px solid #ede9fe', textAlign: 'center' }}>
+                  <div style={{ fontSize: '1.4rem', marginBottom: '0.4rem', lineHeight: 1 }}>{s.icon}</div>
+                  <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#4F46E5', lineHeight: 1 }}>{s.value}</div>
+                  <div style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600, marginTop: '0.35rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{s.label}</div>
                 </div>
               ))}
             </div>

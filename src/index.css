@@ -1,54 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+@import './design-system/index.css';
 
 :root {
-  /* AltairGO Palette */
-  --primary: #1E293B;
-  --primary-light: #475569;
+  /* ── Legacy aliases — kept for backward-compat with existing components ── */
+  /* Remove these as components are migrated to design-system tokens          */
+  --primary:        var(--color-primary);
+  --primary-light:  var(--color-primary-light);
 
-  --accent: #65A30D;
-  --accent-hover: #4D7C0F;
-  --accent-light: #ECFCCB;
+  --accent:         var(--color-accent);
+  --accent-hover:   var(--color-accent-dark);
+  --accent-light:   var(--color-accent-subtle);
 
-  --background: #FFFFFF;
-  --surface: #F1F5F9;
-  --surface-card: #FFFFFF;
+  --background:     var(--color-bg);
+  --surface:        var(--color-bg-subtle);
+  --surface-card:   var(--color-bg-elevated);
 
-  --text-main: #1E293B;
-  --text-inverse: #FFFFFF;
-  --text-muted: #94A3B8;
+  --text-main:      var(--color-text);
+  --text-inverse:   var(--color-text-inverted);
+  --text-muted:     var(--color-text-subtle);
 
-  --border: #E2E8F0;
+  --border:         var(--color-border);
 
-  /* Spacing */
-  --spacing-xs: 0.5rem;
-  --spacing-sm: 1rem;
-  --spacing-md: 1.5rem;
-  --spacing-lg: 2rem;
-  --spacing-xl: 4rem;
-  --spacing-2xl: 6rem;
+  --font-main:      var(--font-family);
 
-  /* Typography */
-  --font-main: 'Poppins', sans-serif;
-
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-base: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.25rem;
-  --text-2xl: 1.5rem;
-  --text-3xl: 1.875rem;
-  --text-4xl: 2.25rem;
-  --text-5xl: 3rem;
-
-  /* Radius */
-  --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1.5rem;
-  --radius-full: 9999px;
-
-  /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
-  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.08);
+  /* Spacing aliases */
+  --spacing-xs:  var(--space-2);
+  --spacing-sm:  var(--space-4);
+  --spacing-md:  var(--space-6);
+  --spacing-lg:  var(--space-8);
+  --spacing-xl:  var(--space-16);
+  --spacing-2xl: var(--space-24);
 }
 
 html, body {
@@ -68,10 +49,10 @@ html {
 }
 
 body {
-  font-family: var(--font-main);
-  background-color: var(--background);
-  color: var(--text-main);
-  line-height: 1.6;
+  font-family: var(--font-family);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: var(--line-height-normal);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -108,46 +89,48 @@ img {
 }
 
 .btnPrimary {
-  background: var(--primary);
-  color: white;
+  background: var(--color-primary);
+  color: var(--color-text-inverted);
   padding: 0.75rem 1.5rem;
   border-radius: var(--radius-full);
-  font-weight: 500;
-  transition: transform 0.2s, background 0.2s;
-  font-size: 0.9rem;
+  font-weight: var(--font-weight-medium);
+  transition: transform var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+  font-size: var(--font-size-sm);
 }
 
 .btnPrimary:hover {
-  background: #0f172a;
+  background: var(--color-primary-dark);
   transform: translateY(-1px);
+  box-shadow: var(--shadow-primary);
 }
 
 .btnAccent {
-  background: var(--accent);
-  color: white;
+  background: var(--color-accent);
+  color: var(--color-text-inverted);
   padding: 0.75rem 1.5rem;
   border-radius: var(--radius-full);
-  font-weight: 500;
-  transition: transform 0.2s;
+  font-weight: var(--font-weight-medium);
+  transition: transform var(--transition-fast), background var(--transition-fast);
 }
 
 .btnAccent:hover {
-  background: var(--accent-hover);
+  background: var(--color-accent-dark);
+  transform: translateY(-1px);
 }
 
 .btnOutline {
   background: transparent;
-  border: 1px solid white;
-  color: white;
+  border: 1px solid var(--color-text-inverted);
+  color: var(--color-text-inverted);
   padding: 0.75rem 1.5rem;
   border-radius: var(--radius-full);
-  font-weight: 500;
-  transition: background 0.2s, color 0.2s;
+  font-weight: var(--font-weight-medium);
+  transition: background var(--transition-fast), color var(--transition-fast);
 }
 
 .btnOutline:hover {
-  background: white;
-  color: var(--text-main);
+  background: var(--color-text-inverted);
+  color: var(--color-text);
 }
 
 .global-spinner-container {

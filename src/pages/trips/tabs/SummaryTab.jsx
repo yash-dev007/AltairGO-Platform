@@ -41,7 +41,7 @@ export default function SummaryTab({
                 <div style={{ fontWeight: 600, color: '#475569', fontSize: '0.85rem', marginBottom: '0.5rem' }}>Highlights</div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                   {tripSummary.highlights.map((h, i) => (
-                    <span key={i} style={{ background: '#fef3c7', color: '#d97706', padding: '4px 10px', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600 }}>
+                    <span key={i} style={{ background: '#E8F8F2', color: '#088A52', padding: '4px 10px', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600 }}>
                       {typeof h === 'string' ? h : h.name || JSON.stringify(h)}
                     </span>
                   ))}
@@ -101,14 +101,14 @@ export default function SummaryTab({
                   key={n}
                   type="button"
                   onClick={() => onChangeRating(n)}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', fontSize: '1.8rem', lineHeight: 1, color: n <= reviewForm.rating ? '#f59e0b' : '#e2e8f0', transition: 'color 0.15s' }}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', fontSize: '1.8rem', lineHeight: 1, color: n <= reviewForm.rating ? '#0BA060' : '#e2e8f0', transition: 'color 0.15s' }}
                 >
                   ★
                 </button>
               ))}
             </div>
             {reviewForm.rating > 0 && (
-              <div style={{ fontSize: '0.82rem', color: '#f59e0b', fontWeight: 600 }}>{RATING_LABELS[reviewForm.rating]}</div>
+              <div style={{ fontSize: '0.82rem', color: '#0BA060', fontWeight: 600 }}>{RATING_LABELS[reviewForm.rating]}</div>
             )}
           </div>
 

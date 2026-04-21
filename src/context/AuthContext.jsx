@@ -39,22 +39,24 @@ export const AuthProvider = ({ children }) => {
     const expiry = jwtExpiry(accessToken);
     if (!expiry) return;
     // Refresh 3 minutes before expiry (but at least 10s from now)
-    const delay = Math.max(expiry - Date.now() - 3 * 60 * 1000, 10_000);
+    const delay = Math.max(expiry - Date.now() - 5 * 60 * 1000, 10_000);
     refreshTimerRef.current = setTimeout(async () => {
       const refreshToken = safeLS.get('ag_refresh_token');
       if (!refreshToken) return;
       try {
         const res = await fetch(`${API_BASE_URL}/auth/refresh`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${refreshToken}` },
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refresh_token: refreshToken }),
         });
         if (res.ok) {
           const data = await res.json();
-          if (data.token) {
-            setToken(data.token);
-            safeLS.set('ag_token', data.token);
+          const newAccess = data.access_token || data.token;
+          if (newAccess) {
+            safeLS.set('ag_token', newAccess);
             if (data.refresh_token) safeLS.set('ag_refresh_token', data.refresh_token);
-            scheduleRefresh(data.token);
+            setToken(newAccess);
+            scheduleRefresh(newAccess);
           }
         } else {
           // Refresh token expired — log out silently

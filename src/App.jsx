@@ -30,9 +30,9 @@ const BlogDetails = lazy(() => import('./pages/blogs/BlogDetails.jsx'));
 
 // Protected Route
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, isAdmin, loading } = useAuth();
   if (loading) return <LoadingOverlay message="Checking authentication..." />;
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (!isAuthenticated && !isAdmin) return <Navigate to="/login" replace />;
   return children;
 };
 
@@ -65,7 +65,8 @@ function AppLayout() {
   const isAdmin = location.pathname.startsWith('/admin');
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
   const isGenerating = location.pathname.startsWith('/planner/generating');
-  const shouldHideLayout = isAdmin || isAuthPage || isGenerating;
+  const isHome = location.pathname === '/';
+  const shouldHideLayout = isAdmin || isAuthPage || isGenerating || isHome;
 
   return (
     <>

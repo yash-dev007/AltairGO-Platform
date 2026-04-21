@@ -29,8 +29,8 @@ const Footer = () => {
               <img src={logo} alt="AltairGO Logo" className={styles.footerLogo} />
             </Link>
             <p className={styles.brandDesc}>
-              AI-powered travel itineraries crafted for every traveler. Discover hidden gems,
-              plan smart budgets, and explore the world intelligently. Your next adventure starts here.
+              AI-powered travel itineraries crafted for every Indian traveller. Discover hidden gems,
+              plan smart budgets, and explore all 28 states intelligently.
             </p>
             <div className={styles.socials}>
               <a href="#" onClick={noop} className={styles.socialLink} aria-label="Website"><Globe size={16} /></a>
@@ -41,26 +41,42 @@ const Footer = () => {
           </div>
 
           <div className={styles.linksCol}>
-            <h3 className={styles.colTitle}>Explore</h3>
+            <h3 className={styles.colTitle}>Product</h3>
+            <Link to="/planner">Trip Planner</Link>
             <Link to="/discover">Destinations</Link>
-            <Link to="/planner">Plan a Trip</Link>
             <Link to="/trips">My Trips</Link>
-            <Link to="/blogs">Blogs</Link>
+            <Link to="/blogs">Travel Journal</Link>
           </div>
 
           <div className={styles.linksCol}>
-            <h3 className={styles.colTitle}>Support</h3>
+            <h3 className={styles.colTitle}>Company</h3>
+            <a href="#" onClick={noop}>About Us</a>
+            <a href="#" onClick={noop}>Careers</a>
+            <a href="#" onClick={noop}>Press Kit</a>
+            <a href="#" onClick={noop}>Contact</a>
+          </div>
+
+          <div className={styles.linksCol}>
+            <h3 className={styles.colTitle}>Resources</h3>
             <a href="#" onClick={noop}>Help Center</a>
+            <a href="#" onClick={noop}>Travel Guides</a>
+            <a href="#" onClick={noop}>API Docs</a>
+            <a href="#" onClick={noop}>Status</a>
+          </div>
+
+          <div className={styles.linksCol}>
+            <h3 className={styles.colTitle}>Legal</h3>
             <a href="#" onClick={noop}>Privacy Policy</a>
             <a href="#" onClick={noop}>Terms of Service</a>
-            <a href="#" onClick={noop}>Contact Us</a>
+            <a href="#" onClick={noop}>Cookie Policy</a>
+            <a href="#" onClick={noop}>Refund Policy</a>
           </div>
         </div>
 
         <div className={styles.newsletterSection}>
           <div className={styles.newsletterContent}>
-            <h3 className={styles.newsletterTitle}>Unlock the World</h3>
-            <p className={styles.newsletterDesc}>Get curated itineraries and travel secrets delivered to your inbox.</p>
+            <h3 className={styles.newsletterTitle}>Unlock India</h3>
+            <p className={styles.newsletterDesc}>Curated itineraries and travel secrets delivered to your inbox.</p>
           </div>
           <form className={styles.form} onSubmit={handleNewsletter}>
             <div className={styles.inputGroup}>
@@ -79,10 +95,11 @@ const Footer = () => {
 
         <div className={styles.bottomSection}>
           <p>© {new Date().getFullYear()} AltairGO. All rights reserved.</p>
+          <p className={styles.madeIn}>Made in 🇮🇳 with चाय</p>
           <div className={styles.legalLinks}>
-            <a href="#" onClick={noop}>Terms of Service</a>
-            <a href="#" onClick={noop}>Privacy Policy</a>
-            <a href="#" onClick={noop}>Cookie Policy</a>
+            <a href="#" onClick={noop}>Terms</a>
+            <a href="#" onClick={noop}>Privacy</a>
+            <a href="#" onClick={noop}>Cookies</a>
           </div>
         </div>
       </div>

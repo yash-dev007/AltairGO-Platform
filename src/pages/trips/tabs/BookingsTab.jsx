@@ -7,7 +7,7 @@ const BOOKING_TYPE_ICONS = {
 };
 
 const BOOKING_STATUS_COLORS = {
-  pending: '#f59e0b', approved: '#10b981', executed: '#3b82f6',
+  pending: '#0BA060', approved: '#10b981', executed: '#3b82f6',
   failed: '#ef4444', cancelled: '#94a3b8', rejected: '#ef4444',
 };
 

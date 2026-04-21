@@ -32,6 +32,11 @@ async function req(path, opts = {}) {
 
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw Object.assign(new Error(data.error || data.message || 'Request failed'), { status: res.status, data });
+  // Unwrap the {success, data:[...]} envelope the backend normalizer adds to list responses
+  if (data !== null && typeof data === 'object' && !Array.isArray(data)
+      && 'success' in data && 'data' in data && Array.isArray(data.data)) {
+    return data.data;
+  }
   return data;
 }
 

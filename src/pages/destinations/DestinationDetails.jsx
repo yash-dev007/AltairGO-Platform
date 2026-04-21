@@ -78,7 +78,7 @@ const DestinationDetails = () => {
   ];
 
   return (
-    <div style={{ paddingTop: '70px', minHeight: '100vh' }}>
+    <div style={{ paddingTop: 'var(--navbar-offset, 88px)', minHeight: '100vh' }}>
       {/* Hero */}
       <div style={{
         height: '50vh',
@@ -231,8 +231,8 @@ const DestinationDetails = () => {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
                       <h3 style={{ fontWeight: 700, color: '#1e293b', fontSize: '1rem', flex: 1 }}>{a.name}</h3>
                       {a.rating && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', background: '#fef3c7', padding: '4px 8px', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 600, color: '#92400e', flexShrink: 0, marginLeft: '0.5rem' }}>
-                          <Star size={12} fill="#f59e0b" stroke="none" /> {Number(a.rating).toFixed(1)}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', background: '#E8F8F2', padding: '4px 8px', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 600, color: '#088A52', flexShrink: 0, marginLeft: '0.5rem' }}>
+                          <Star size={12} fill="#0BA060" stroke="none" /> {Number(a.rating).toFixed(1)}
                         </div>
                       )}
                     </div>
