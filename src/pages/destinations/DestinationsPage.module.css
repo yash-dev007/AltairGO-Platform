@@ -13,13 +13,13 @@
 .pageTitle {
   font-size: clamp(2.5rem, 6vw, 3.5rem);
   font-weight: 800;
-  color: #1e293b;
+  color: #141413;
   margin-bottom: 1rem;
   letter-spacing: -0.05em;
 }
 
 .pageSubtitle {
-  color: #64748b;
+  color: #5e5d59;
   max-width: 600px;
   margin: 0 auto 2.5rem;
   font-size: 1.1rem;
@@ -37,17 +37,17 @@
   width: 100%;
   padding: 1.2rem 1.5rem 1.2rem 3.5rem;
   border-radius: 999px;
-  border: 2px solid #e2e8f0;
+  border: 2px solid #f0eee6;
   font-size: 1rem;
   outline: none;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(250, 249, 245, 0.8);
   backdrop-filter: blur(10px);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
 }
 
 .searchInput:focus {
-  border-color: #0f172a;
+  border-color: #141413;
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
 }
@@ -57,7 +57,7 @@
   left: 1.2rem;
   top: 50%;
   transform: translateY(-50%);
-  color: #94a3b8;
+  color: #87867f;
 }
 
 .filterRow {
@@ -71,7 +71,7 @@
 .filterChip {
   padding: 0.5rem 1.25rem;
   border-radius: 999px;
-  border: 1.5px solid #e2e8f0;
+  border: 1.5px solid #f0eee6;
   background: white;
   color: #475569;
   font-size: 0.9rem;
@@ -82,13 +82,13 @@
 }
 
 .filterChip:hover {
-  border-color: #1e293b;
-  color: #1e293b;
+  border-color: #141413;
+  color: #141413;
 }
 
 .filterChip.active {
-  background: #1e293b;
-  border-color: #1e293b;
+  background: #141413;
+  border-color: #141413;
   color: white;
 }
 
@@ -97,7 +97,7 @@
   align-items: center;
   gap: 8px;
   padding: 0.7rem 1.5rem;
-  background: linear-gradient(135deg, #65a30d, #4d7c0f);
+  background: linear-gradient(135deg, #5ac576, #3d9a58);
   color: white;
   border-radius: 999px;
   border: none;
@@ -111,7 +111,7 @@
 
 .recommendBtn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(101, 163, 13, 0.3);
+  box-shadow: 0 8px 20px rgba(90, 197, 118, 0.3);
 }
 
 .grid {
@@ -123,7 +123,7 @@
 }
 
 .skeleton {
-  background: #e2e8f0;
+  background: #f0eee6;
   min-height: 280px;
   border-radius: 24px;
   position: relative;

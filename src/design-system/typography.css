@@ -4,8 +4,8 @@
    ============================================================ */
 
 :root {
-  --font-family:          'Poppins', sans-serif;
-  --font-family-mono:     'Courier New', Courier, monospace;
+  --font-family:          'Geist', system-ui, sans-serif;
+  --font-family-mono:     'JetBrains Mono', ui-monospace, monospace;
 
   --font-size-xs:   0.75rem;    /* 12px */
   --font-size-sm:   0.875rem;   /* 14px */

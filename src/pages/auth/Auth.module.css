@@ -1,10 +1,10 @@
-/* Auth Pages — Premium Split-Screen Layout */
+/* Auth Pages — Warm Split-Screen Layout */
 
 .page {
   display: flex;
   height: 100vh;
   overflow: hidden;
-  background: #f8fafc;
+  background: #f5f4ed;
 }
 
 /* Left: Hero Panel */
@@ -13,7 +13,7 @@
   flex: 1;
   position: relative;
   background:
-    linear-gradient(160deg, rgba(15, 23, 42, 0.55) 0%, rgba(15, 23, 42, 0.3) 50%, rgba(30, 64, 40, 0.5) 100%),
+    linear-gradient(160deg, rgba(20, 20, 19, 0.55) 0%, rgba(20, 20, 19, 0.3) 50%, rgba(30, 64, 40, 0.5) 100%),
     url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=1920&auto=format&fit=crop');
   background-size: cover;
   background-position: center;
@@ -46,7 +46,7 @@
 }
 
 .heroBrandAccent {
-  color: #4ade80;
+  color: #5ac576;
 }
 
 .heroTitle {
@@ -99,6 +99,7 @@
   overflow-x: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  background: #f5f4ed;
 }
 
 .formPanel::-webkit-scrollbar {
@@ -111,7 +112,7 @@
   width: 350px;
   height: 350px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(74, 222, 128, 0.06) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(90, 197, 118, 0.07) 0%, transparent 70%);
   top: -80px;
   right: -60px;
   pointer-events: none;
@@ -123,7 +124,7 @@
   width: 250px;
   height: 250px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(90, 197, 118, 0.04) 0%, transparent 70%);
   bottom: -40px;
   left: -30px;
   pointer-events: none;
@@ -145,26 +146,26 @@
   width: 56px;
   height: 56px;
   border-radius: 16px;
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  background: linear-gradient(135deg, #141413 0%, #30302e 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 1.25rem;
-  color: white;
-  box-shadow: 0 8px 24px rgba(30, 41, 59, 0.25);
+  color: #faf9f5;
+  box-shadow: 0 8px 24px rgba(20, 20, 19, 0.25);
 }
 
 .formTitle {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #141413;
   letter-spacing: -0.02em;
   margin-bottom: 0.4rem;
 }
 
 .formSubtitle {
   font-size: 0.95rem;
-  color: #94a3b8;
+  color: #87867f;
   font-weight: 400;
 }
 
@@ -183,7 +184,7 @@
 .fieldLabel {
   font-size: 0.82rem;
   font-weight: 600;
-  color: #475569;
+  color: #5e5d59;
   letter-spacing: 0.02em;
 }
 
@@ -196,7 +197,7 @@
   left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: #94a3b8;
+  color: #87867f;
   pointer-events: none;
   transition: color 0.2s;
   z-index: 2;
@@ -206,28 +207,29 @@
   width: 100%;
   padding: 14px 14px 14px 44px;
   border-radius: 14px;
-  border: 1.5px solid #e2e8f0;
+  border: 1.5px solid #e8e6dc;
   font-size: 0.95rem;
   font-family: inherit;
-  color: #1e293b;
-  background: white;
+  color: #141413;
+  background: #faf9f5;
   outline: none;
   transition: all 0.25s ease;
 }
 
 .input::placeholder {
-  color: #cbd5e1;
+  color: #c8c5bc;
   font-weight: 400;
 }
 
 .input:focus {
-  border-color: #1e293b;
-  box-shadow: 0 0 0 4px rgba(30, 41, 59, 0.08);
+  border-color: #141413;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(20, 20, 19, 0.07);
 }
 
-.input:focus~.inputIcon,
+.input:focus ~ .inputIcon,
 .inputGroup:focus-within .inputIcon {
-  color: #1e293b;
+  color: #141413;
 }
 
 .error {
@@ -245,27 +247,11 @@
 }
 
 @keyframes shakeIn {
-
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-
-  20% {
-    transform: translateX(-6px);
-  }
-
-  40% {
-    transform: translateX(6px);
-  }
-
-  60% {
-    transform: translateX(-4px);
-  }
-
-  80% {
-    transform: translateX(4px);
-  }
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
 }
 
 .submitBtn {
@@ -276,15 +262,15 @@
   font-size: 1rem;
   font-weight: 600;
   font-family: inherit;
-  color: white;
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  color: #faf9f5;
+  background: linear-gradient(135deg, #141413 0%, #30302e 100%);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 16px rgba(30, 41, 59, 0.2);
+  box-shadow: 0 4px 16px rgba(20, 20, 19, 0.2);
   margin-top: 0.5rem;
   position: relative;
   overflow: hidden;
@@ -294,14 +280,14 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.1));
+  background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.08));
   opacity: 0;
   transition: opacity 0.3s;
 }
 
 .submitBtn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(30, 41, 59, 0.3);
+  box-shadow: 0 8px 24px rgba(20, 20, 19, 0.3);
 }
 
 .submitBtn:hover::before {
@@ -325,7 +311,7 @@
   align-items: center;
   gap: 1rem;
   margin: 0.5rem 0;
-  color: #cbd5e1;
+  color: #c8c5bc;
   font-size: 0.8rem;
   font-weight: 500;
   letter-spacing: 0.05em;
@@ -337,18 +323,18 @@
   content: '';
   flex: 1;
   height: 1px;
-  background: #e2e8f0;
+  background: #e8e6dc;
 }
 
 .footer {
   text-align: center;
   margin-top: 1.75rem;
   font-size: 0.9rem;
-  color: #64748b;
+  color: #5e5d59;
 }
 
 .footerLink {
-  color: #1e293b;
+  color: #141413;
   font-weight: 600;
   text-decoration: none;
   transition: color 0.2s;
@@ -357,8 +343,8 @@
 }
 
 .footerLink:hover {
-  color: #3b82f6;
-  border-bottom-color: #3b82f6;
+  color: #5ac576;
+  border-bottom-color: #5ac576;
 }
 
 .trustRow {
@@ -368,7 +354,7 @@
   gap: 1.5rem;
   margin-top: 2rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid #f0eee6;
 }
 
 .trustItem {
@@ -376,18 +362,18 @@
   align-items: center;
   gap: 6px;
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: #87867f;
   font-weight: 500;
 }
 
 .trustItem svg {
-  color: #4ade80;
+  color: #5ac576;
 }
 
 .strengthBar {
   height: 4px;
   border-radius: 4px;
-  background: #e2e8f0;
+  background: #e8e6dc;
   overflow: hidden;
   margin-top: 6px;
 }

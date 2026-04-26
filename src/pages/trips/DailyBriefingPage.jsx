@@ -24,20 +24,20 @@ const DailyBriefingPage = () => {
 
   if (!briefing) return (
     <div style={{ textAlign: 'center', padding: '8rem 2rem' }}>
-      <p style={{ color: '#64748b' }}>No briefing data available.</p>
-      <Link to={`/trip/${id}`} style={{ color: '#1e293b', fontWeight: 600, textDecoration: 'none' }}>Back to Trip</Link>
+      <p style={{ color: '#5e5d59' }}>No briefing data available.</p>
+      <Link to={`/trip/${id}`} style={{ color: '#141413', fontWeight: 600, textDecoration: 'none' }}>Back to Trip</Link>
     </div>
   );
 
   return (
-    <div style={{ paddingTop: 'var(--navbar-offset, 88px)', minHeight: '100vh', background: '#f8fafc' }}>
+    <div style={{ paddingTop: 'var(--navbar-offset, 88px)', minHeight: '100vh', background: '#f5f4ed' }}>
       <div style={{ maxWidth: '700px', margin: '0 auto', padding: '2rem 1.5rem' }}>
-        <Link to={`/trip/${id}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#64748b', textDecoration: 'none', fontWeight: 500, marginBottom: '2rem', fontSize: '0.9rem' }}>
+        <Link to={`/trip/${id}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#5e5d59', textDecoration: 'none', fontWeight: 500, marginBottom: '2rem', fontSize: '0.9rem' }}>
           <ArrowLeft size={16} /> Back to Trip
         </Link>
 
-        <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#1e293b', marginBottom: '0.5rem' }}>Day {day} Briefing</h1>
-        {briefing.date && <p style={{ color: '#64748b', marginBottom: '2rem' }}>{briefing.date}</p>}
+        <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#141413', marginBottom: '0.5rem' }}>Day {day} Briefing</h1>
+        {briefing.date && <p style={{ color: '#5e5d59', marginBottom: '2rem' }}>{briefing.date}</p>}
 
         {/* Morning Tip */}
         {briefing.morning_tip && (
@@ -67,13 +67,13 @@ const DailyBriefingPage = () => {
         {/* What to Carry */}
         {briefing.what_to_carry && briefing.what_to_carry.length > 0 && (
           <div style={{ background: 'white', borderRadius: '16px', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-            <h3 style={{ fontWeight: 700, color: '#1e293b', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <h3 style={{ fontWeight: 700, color: '#141413', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Calendar size={18} /> What to Carry
             </h3>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {briefing.what_to_carry.map((item, i) => (
-                <li key={i} style={{ display: 'flex', gap: '8px', fontSize: '0.9rem', color: '#475569' }}>
-                  <span style={{ color: '#4ade80' }}>✓</span> {item}
+                <li key={i} style={{ display: 'flex', gap: '8px', fontSize: '0.9rem', color: '#5e5d59' }}>
+                  <span style={{ color: '#5ac576' }}>✓</span> {item}
                 </li>
               ))}
             </ul>
@@ -83,21 +83,21 @@ const DailyBriefingPage = () => {
         {/* Dress Code */}
         {briefing.dress_code && (
           <div style={{ background: 'white', borderRadius: '16px', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-            <h3 style={{ fontWeight: 700, color: '#1e293b', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <h3 style={{ fontWeight: 700, color: '#141413', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Shirt size={18} /> Dress Code
             </h3>
-            <p style={{ color: '#475569', lineHeight: 1.6 }}>{briefing.dress_code}</p>
+            <p style={{ color: '#5e5d59', lineHeight: 1.6 }}>{briefing.dress_code}</p>
           </div>
         )}
 
         {/* Today's Bookings */}
         {briefing.confirmed_bookings_today && briefing.confirmed_bookings_today.length > 0 && (
           <div style={{ background: 'white', borderRadius: '16px', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-            <h3 style={{ fontWeight: 700, color: '#1e293b', marginBottom: '1rem' }}>Today's Confirmed Bookings</h3>
+            <h3 style={{ fontWeight: 700, color: '#141413', marginBottom: '1rem' }}>Today's Confirmed Bookings</h3>
             {briefing.confirmed_bookings_today.map((b, i) => (
-              <div key={i} style={{ padding: '0.75rem 0', borderBottom: i < briefing.confirmed_bookings_today.length - 1 ? '1px solid #f1f5f9' : 'none' }}>
-                <div style={{ fontWeight: 600, color: '#1e293b', fontSize: '0.9rem' }}>{b.type || b.booking_type}</div>
-                <div style={{ fontSize: '0.8rem', color: '#64748b' }}>{b.item_name || b.details || b.provider_name}</div>
+              <div key={i} style={{ padding: '0.75rem 0', borderBottom: i < briefing.confirmed_bookings_today.length - 1 ? '1px solid #faf9f5' : 'none' }}>
+                <div style={{ fontWeight: 600, color: '#141413', fontSize: '0.9rem' }}>{b.type || b.booking_type}</div>
+                <div style={{ fontSize: '0.8rem', color: '#5e5d59' }}>{b.item_name || b.details || b.provider_name}</div>
               </div>
             ))}
           </div>

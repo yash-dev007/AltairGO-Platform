@@ -1,0 +1,1 @@
+{"nodes": [{"id": "adminlogin_adminlogin", "label": "AdminLogin", "file_type": "code", "source_file": "src/pages/admin/AdminLogin.jsx"}], "edges": [{"source": "adminlogin_adminlogin", "target": "authcontext_useauth", "relation": "calls", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "src/pages/admin/AdminLogin.jsx"}], "hyperedges": []}

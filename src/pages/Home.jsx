@@ -40,58 +40,6 @@ function Logo({ onDark = false }) {
   );
 }
 
-/* ---------- Inline Nav (inside hero card) ---------- */
-function InlineNav({ onPlan }) {
-  const [open, setOpen] = useState(null);
-  const navigate = useNavigate();
-
-  const items = [
-    { label: 'Home', key: 'home' },
-    { label: 'Destinations', key: 'dest', menu: ['Jaipur, Rajasthan', 'Kerala Backwaters', 'Varanasi, UP', 'Leh-Ladakh', 'Goa', 'Rishikesh & Haridwar', 'Hampi, Karnataka'] },
-    { label: 'Planner', key: 'plan', menu: ['AI Itinerary Builder', 'Multi-city yatra', 'Group planning', 'Budget optimizer in ₹'] },
-    { label: 'Resources', key: 'res', menu: ['Travel guides', 'IRCTC & flights', 'Packing lists', 'Community'] },
-    { label: 'Pricing', key: 'price' }
-  ];
-
-  return (
-    <div className={styles.inlineNav} style={{ position: 'relative', zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 22px', margin: '14px', borderRadius: 999, background: 'rgba(255,255,255,0.55)', backdropFilter: 'blur(18px) saturate(140%)', WebkitBackdropFilter: 'blur(18px) saturate(140%)', border: '1px solid rgba(255,255,255,0.7)', boxShadow: '0 8px 28px -12px rgba(60,30,15,0.18), inset 0 1px 0 rgba(255,255,255,0.8)' }}>
-      <Logo />
-      <nav style={{ display: 'flex', gap: 4, alignItems: 'center' }} onMouseLeave={() => setOpen(null)}>
-        {items.map((it) =>
-          <div key={it.key} style={{ position: 'relative' }}>
-            <button
-              onMouseEnter={() => setOpen(it.menu ? it.key : null)}
-              style={{
-                all: 'unset', cursor: 'pointer', padding: '9px 14px', fontSize: 13.5, fontWeight: 500,
-                color: it.key === 'home' ? 'var(--ink)' : 'var(--ink-soft)',
-                display: 'inline-flex', alignItems: 'center', gap: 5,
-                borderBottom: it.key === 'home' ? '1.5px solid var(--ink)' : '1.5px solid transparent'
-              }}>
-              {it.label}{it.menu && <I.chev style={{ opacity: 0.5 }} />}
-            </button>
-            {it.menu && open === it.key &&
-              <div style={{ position: 'absolute', top: '100%', left: 0, marginTop: 8, minWidth: 220, background: 'var(--card)', border: '1px solid var(--line)', borderRadius: 14, padding: 6, boxShadow: '0 20px 40px -20px rgba(40,30,20,0.18)', zIndex: 50 }}>
-                {it.menu.map((m, i) =>
-                  <div key={i} style={{ padding: '10px 12px', fontSize: 13, color: 'var(--ink-soft)', borderRadius: 9, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--a1)'; e.currentTarget.style.color = 'var(--ink)'; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--ink-soft)'; }}>
-                    {m}<I.arrow style={{ opacity: 0.5 }} />
-                  </div>
-                )}
-              </div>
-            }
-          </div>
-        )}
-      </nav>
-      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-        <button onClick={() => navigate('/login')} style={{ all: 'unset', cursor: 'pointer', fontSize: 13.5, fontWeight: 500, padding: '9px 14px', color: 'var(--ink-soft)' }}>Sign in</button>
-        <button onClick={onPlan} style={{ all: 'unset', cursor: 'pointer', fontSize: 13.5, fontWeight: 500, padding: '10px 18px', background: 'var(--ink)', color: 'var(--page-bg)', borderRadius: 999, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-          Plan a trip <I.arrow />
-        </button>
-      </div>
-    </div>
-  );
-}
 
 /* ---------- Gradient wash ---------- */
 function Wash({ intensity }) {
@@ -185,7 +133,7 @@ function ItineraryCard({ variant, onCycle }) {
           </button>
         </div>
 
-        <div style={{ fontFamily: '"Instrument Serif", serif', fontSize: 22, lineHeight: 1.2, marginBottom: 8, letterSpacing: '-0.01em' }}>
+        <div style={{ fontFamily: 'var(--serif)', fontSize: 22, lineHeight: 1.2, marginBottom: 8, letterSpacing: '-0.01em' }}>
           {data.dest.split(',')[0]} <span style={{ fontStyle: 'italic', color: 'var(--a3)' }}>itinerary</span>
         </div>
         <div style={{ fontSize: 12.5, lineHeight: 1.55, color: 'var(--ink-soft)', marginBottom: 16 }}>
@@ -292,33 +240,60 @@ function Hero({ onPlan, headline, headlineItalic, intensity, cardVariant, setCar
   return (
     <div style={{ position: 'relative', minHeight: 700, overflow: 'hidden' }}>
       <Wash intensity={intensity} />
-      <InlineNav onPlan={onPlan} />
 
-      <div className={`${styles.responsiveGrid} ${styles.heroContainer} ${styles.sectionContainer}`} style={{ position: 'relative', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, padding: '40px 72px 72px', alignItems: 'center' }}>
-        {/* Left: headline */}
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }} style={{ position: 'relative', zIndex: 2 }}>
-          <h1 className={styles.heroHeadline} style={{ fontSize: 64, lineHeight: 1.02, letterSpacing: '-0.035em', fontWeight: 500, margin: 0, marginBottom: 22, color: 'var(--ink)' }}>
+      <div className={`${styles.responsiveGrid} ${styles.heroContainer} ${styles.sectionContainer}`} style={{ position: 'relative', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, alignItems: 'center' }}>
+        {/* Left: headline — staggered children */}
+        <div style={{ position: 'relative', zIndex: 2 }}>
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1], delay: 0 }} style={{ marginBottom: 18 }}>
+            <span className={styles.mono} style={{ letterSpacing: '0.05em' }}>{'{ ai · trip · planner }'}</span>
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+            className={styles.heroHeadline}
+            style={{ fontFamily: 'var(--serif)', fontSize: 64, lineHeight: 1.08, letterSpacing: 0, fontWeight: 500, margin: 0, marginBottom: 22, color: 'var(--ink)' }}
+          >
             {parts[0]}
-            <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', fontWeight: 400, color: 'var(--a3)' }}>{headlineItalic}</span>
+            <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontWeight: 400, color: 'var(--a3)' }}>{headlineItalic}</span>
             {parts[1] || ''}
-          </h1>
+          </motion.h1>
 
-          <p style={{ fontSize: 15.5, lineHeight: 1.55, color: 'var(--ink-soft)', maxWidth: 460, margin: 0, marginBottom: 32 }}>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1], delay: 0.22 }}
+            style={{ fontSize: 15.5, lineHeight: 1.55, color: 'var(--ink-soft)', maxWidth: 460, margin: 0, marginBottom: 32 }}
+          >
             An AI trip planner for travelers who don't want cookie-cutter tours — tell it the shape of your trip and it builds the rest, from flights to dinner reservations.
-          </p>
+          </motion.p>
 
-          <div className={styles.heroActions} style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-            <button onClick={onPlan} style={{ all: 'unset', cursor: 'pointer', padding: '14px 24px', background: 'var(--ink)', color: 'var(--page-bg)', borderRadius: 999, fontSize: 14, fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-              Plan my yatra <span style={{ color: 'var(--a2)', fontWeight: 600 }}>free</span> <I.arrow />
+          <motion.div
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.36 }}
+            className={styles.heroActions} style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}
+          >
+            <button onClick={onPlan} style={{ all: 'unset', cursor: 'pointer', padding: '14px 24px', background: 'var(--a3)', color: 'var(--card)', borderRadius: 12, fontSize: 14, fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 8, boxShadow: '0 0 0 1px var(--a3)', transition: 'transform 0.18s ease' }} onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.04)'; }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}>
+              Plan my trip free <I.arrow />
             </button>
-            <button onClick={() => navigate('/discover')} style={{ all: 'unset', cursor: 'pointer', padding: '14px 22px', border: '1px solid var(--line)', borderRadius: 999, fontSize: 14, fontWeight: 500, background: 'var(--card)', display: 'inline-flex', alignItems: 'center', gap: 8, color: 'var(--ink)' }}>
+            <button onClick={() => navigate('/discover')} style={{ all: 'unset', cursor: 'pointer', padding: '14px 22px', border: '1px solid var(--line-warm)', borderRadius: 12, fontSize: 14, fontWeight: 500, background: 'var(--card)', display: 'inline-flex', alignItems: 'center', gap: 8, color: 'var(--ink)', transition: 'transform 0.18s ease' }} onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.04)'; }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}>
               Explore destinations <I.arrow />
             </button>
-          </div>
-        </motion.div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            transition={{ duration: 0.9, delay: 0.55 }}
+            style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 40, fontSize: 12, color: 'var(--ink-muted)' }}
+          >
+            <div style={{ display: 'flex', gap: 1, color: 'var(--a3)' }}>
+              {[0, 1, 2, 3, 4].map((i) => <I.star key={i} />)}
+            </div>
+            <span style={{ fontFamily: 'var(--mono)' }}>4.9 · 10,000+ trips planned</span>
+          </motion.div>
+        </div>
 
         {/* Right: product card */}
-        <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }} style={{ position: 'relative', zIndex: 2, display: 'flex', justifyContent: 'flex-end' }}>
+        <motion.div initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 2, delay: 0.18, ease: [0.16, 1, 0.3, 1] }} style={{ position: 'relative', zIndex: 2, display: 'flex', justifyContent: 'flex-end' }}>
           <ItineraryCard variant={cardVariant} onCycle={() => setCardVariant((cardVariant + 1) % 3)} />
         </motion.div>
       </div>
@@ -336,29 +311,29 @@ function About() {
   ];
 
   return (
-    <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.6, ease: "easeOut" }} className={styles.sectionContainer} style={{ padding: '100px 72px', borderTop: '1px solid var(--line)', background: 'var(--page-bg)' }}>
+    <section className={styles.sectionContainer} style={{ paddingBlock: '100px', borderTop: '1px solid var(--line)', background: 'var(--page-bg)' }}>
       <div className={styles.responsiveGrid} style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: 80, alignItems: 'start' }}>
-        <div>
+        <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}>
           <div className={styles.mono} style={{ marginBottom: 16 }}>{'{ about · altairgo }'}</div>
           <h2 className={styles.sectionHeadline} style={{ fontSize: 48, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0 }}>
-            Travel, re-imagined for the <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', color: 'var(--a3)' }}>Indian</span> traveler.
+            Travel, re-imagined for the <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--a3)' }}>Indian</span> traveler.
           </h2>
-        </div>
-        <div>
+        </motion.div>
+        <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.65, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}>
           <p style={{ fontSize: 16, lineHeight: 1.65, color: 'var(--ink-soft)', margin: 0, marginBottom: 40 }}>
             Altairgo Intelligence is an AI-first trip planner built from the ground up for India — its seasons, its trains, its monsoons, its festivals, and the way we actually travel. Whether it's a long weekend in Goa, a pilgrimage to Badrinath, or a 14-day Rajasthan circuit, we plan it in minutes instead of weeks.
           </p>
           <div className={styles.responsiveGrid4} style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 24, paddingTop: 32, borderTop: '1px dashed var(--line)' }}>
             {stats.map((s, i) =>
               <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.5, delay: i * 0.1, ease: "easeOut" }}>
-                <div style={{ fontFamily: '"Instrument Serif", serif', fontSize: 44, fontStyle: 'italic', color: 'var(--a3)', lineHeight: 1 }}>{s.k}</div>
+                <div style={{ fontFamily: 'var(--serif)', fontSize: 44, fontStyle: 'italic', color: 'var(--a3)', lineHeight: 1 }}>{s.k}</div>
                 <div style={{ fontSize: 13, color: 'var(--ink-muted)', marginTop: 6 }}>{s.v}</div>
               </motion.div>
             )}
           </div>
-        </div>
+        </motion.div>
       </div>
-    </motion.section>
+    </section>
   );
 }
 
@@ -380,24 +355,24 @@ function Destinations() {
     if (scrollRef.current) scrollRef.current.scrollBy({ left: dir * 340, behavior: 'smooth' });
   };
   return (
-    <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.6, ease: "easeOut" }} style={{ padding: '100px 0 100px', borderTop: '1px solid var(--line)', background: 'var(--card)', overflow: 'hidden' }}>
-      <div className={styles.sectionContainer} style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', padding: '0 72px', marginBottom: 40 }}>
-        <div>
+    <section style={{ paddingBlock: '100px', borderTop: '1px solid var(--line)', background: 'var(--card)', overflow: 'hidden' }} className={styles.sectionContainer}>
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', padding: '0 0', marginBottom: 40 }}>
+        <motion.div initial={{ opacity: 0, y: 22 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}>
           <div className={styles.mono} style={{ marginBottom: 16 }}>{'{ 02 · destinations }'}</div>
           <h2 className={styles.sectionHeadline} style={{ fontSize: 48, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0, maxWidth: 600 }}>
-            Handpicked <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', color: 'var(--a3)' }}>corners</span> of India
+            Handpicked <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--a3)' }}>corners</span> of India
           </h2>
-        </div>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+        </motion.div>
+        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           <button onClick={() => scroll(-1)} style={{ all: 'unset', cursor: 'pointer', width: 44, height: 44, borderRadius: '50%', border: '1px solid var(--line)', display: 'grid', placeItems: 'center', color: 'var(--ink)' }}>
             <I.arrow style={{ transform: 'rotate(180deg)' }} />
           </button>
           <button onClick={() => scroll(1)} style={{ all: 'unset', cursor: 'pointer', width: 44, height: 44, borderRadius: '50%', background: 'var(--ink)', color: 'var(--page-bg)', display: 'grid', placeItems: 'center' }}>
             <I.arrow />
           </button>
-        </div>
+        </motion.div>
       </div>
-      <div ref={scrollRef} className={`${styles.destinationsScroll} ${styles.sectionContainer}`} style={{ display: 'flex', gap: 20, padding: '0 72px 20px', overflowX: 'auto', scrollSnapType: 'x mandatory' }}>
+      <div ref={scrollRef} className={styles.destinationsScroll} style={{ display: 'flex', gap: 20, padding: '0 0 4px', overflowX: 'auto', scrollSnapType: 'x mandatory', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
         {DESTINATIONS.map((d, i) =>
           <motion.div key={i}
             initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.5, delay: i * 0.08, ease: "easeOut" }}
@@ -440,7 +415,7 @@ function Destinations() {
           </motion.div>
         )}
       </div>
-    </motion.section>
+    </section>
   );
 }
 
@@ -454,17 +429,17 @@ const BLOGS = [
 function Blogs() {
   const navigate = useNavigate();
   return (
-    <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.6, ease: "easeOut" }} style={{ padding: '100px 72px', borderTop: '1px solid var(--line)', background: 'var(--card)' }} className={styles.sectionContainer}>
+    <section style={{ paddingBlock: '100px', borderTop: '1px solid var(--line)', background: 'var(--card)' }} className={styles.sectionContainer}>
       <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 48 }}>
-        <div>
+        <motion.div initial={{ opacity: 0, y: 22 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}>
           <div className={styles.mono} style={{ marginBottom: 16 }}>{'{ 04 · journal }'}</div>
           <h2 style={{ fontSize: 48, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0, maxWidth: 640 }} className={styles.sectionHeadline}>
-            Stories from the <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', color: 'var(--a3)' }}>road</span>
+            Stories from the <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--a3)' }}>road</span>
           </h2>
-        </div>
-        <button onClick={() => navigate('/blogs')} style={{ all: 'unset', cursor: 'pointer', fontSize: 13, color: 'var(--ink)', padding: '10px 18px', border: '1px solid var(--line)', borderRadius: 999, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+        </motion.div>
+        <motion.button initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }} onClick={() => navigate('/blogs')} style={{ all: 'unset', cursor: 'pointer', fontSize: 13, color: 'var(--ink)', padding: '10px 18px', border: '1px solid var(--line)', borderRadius: 999, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
           All posts <I.arrow />
-        </button>
+        </motion.button>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }} className={`${styles.responsiveGrid} ${styles.responsiveGrid3}`}>
         {BLOGS.map((b, i) =>
@@ -492,55 +467,10 @@ function Blogs() {
           </motion.article>
         )}
       </div>
-    </motion.section>
-  );
+    </section>);
 }
 
-/* ---------- Footer ---------- */
-function Footer() {
-  const cols = [
-    { h: 'Product', items: ['AI Itinerary', 'Destinations', 'Group planning', 'Mobile app'] },
-    { h: 'Company', items: ['About us', 'Careers', 'Press', 'Contact', 'Partners'] },
-    { h: 'Resources', items: ['Travel guides', 'Visa help', 'Blog', 'Community', 'Support'] },
-    { h: 'Legal', items: ['Privacy', 'Terms', 'Refund policy', 'Cookie policy', 'GST details'] }
-  ];
 
-  return (
-    <footer style={{ padding: '80px 72px 40px', background: 'var(--ink)', color: 'var(--page-bg)' }} className={styles.sectionContainer}>
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr repeat(4, 1fr)', gap: 40, marginBottom: 60 }} className={`${styles.responsiveGrid} ${styles.footerGrid}`}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-            <Logo onDark={true} />
-          </div>
-          <p style={{ fontSize: 13.5, opacity: 0.65, lineHeight: 1.65, maxWidth: 280, margin: 0, marginBottom: 24 }}>
-            An AI trip planner, made in India, for travelers who want to spend less time planning and more time being there.
-          </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontFamily: 'var(--mono)', fontSize: 11, opacity: 0.6 }}>
-            <div>hello@altairgo.in</div>
-            <div>Bengaluru · Mumbai · Delhi</div>
-          </div>
-        </div>
-        {cols.map((c, i) =>
-          <div key={i}>
-            <div style={{ fontSize: 11, fontFamily: 'var(--mono)', textTransform: 'uppercase', letterSpacing: '0.08em', opacity: 0.5, marginBottom: 18 }}>{c.h}</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {c.items.map((it, j) =>
-                <a key={j} style={{ fontSize: 13, opacity: 0.85, textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}>{it}</a>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-      <div style={{ paddingTop: 30, borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11.5, fontFamily: 'var(--mono)', opacity: 0.55 }}>
-        <div>© 2026 Altairgo Intelligence Pvt. Ltd. · All rights reserved.</div>
-        <div style={{ display: 'flex', gap: 20 }}>
-          <span>Made in 🇮🇳 with चाय</span>
-          <span>v1.0 · 2026</span>
-        </div>
-      </div>
-    </footer>
-  );
-}
 
 /* ---------- How It Works (4-step process) ---------- */
 function HowItWorks() {
@@ -552,13 +482,17 @@ function HowItWorks() {
   ];
 
   return (
-    <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.6, ease: "easeOut" }} id="how" className={styles.sectionContainer} style={{ padding: '110px 72px', borderTop: '1px solid var(--line)', background: 'var(--page-bg)', position: 'relative' }}>
-      <div style={{ textAlign: 'center', marginBottom: 70 }}>
+    <section id="how" className={styles.sectionContainer} style={{ paddingBlock: '110px', borderTop: '1px solid var(--line)', background: 'var(--page-bg)', position: 'relative' }}>
+      <motion.div
+        initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+        style={{ textAlign: 'center', marginBottom: 70 }}
+      >
         <div className={styles.mono} style={{ marginBottom: 16 }}>{'{ 02 · how it works }'}</div>
         <h2 className={styles.sectionHeadline} style={{ fontSize: 52, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0, maxWidth: 760, marginInline: 'auto' }}>
-          From idea to <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', color: 'var(--a3)' }}>boarding pass</span> in four steps
+          From idea to <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--a3)' }}>boarding pass</span> in four steps
         </h2>
-      </div>
+      </motion.div>
 
       <div className={styles.responsiveGrid4} style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0, position: 'relative' }}>
         {/* connecting line */}
@@ -572,7 +506,7 @@ function HowItWorks() {
                 color: i === 0 ? 'var(--a2)' : 'var(--a3)',
                 border: i === 0 ? 'none' : '1px solid var(--line)',
                 display: 'grid', placeItems: 'center',
-                fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', fontSize: 22, fontWeight: 400,
+                fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: 22, fontWeight: 400,
                 boxShadow: '0 4px 16px -6px rgba(60,30,15,0.15)',
                 position: 'relative', zIndex: 2
               }}>{s.n}</div>
@@ -582,8 +516,7 @@ function HowItWorks() {
           </motion.div>
         )}
       </div>
-    </motion.section>
-  );
+    </section>);
 }
 
 /* ---------- Platform Capabilities ---------- */
@@ -610,12 +543,12 @@ function Capabilities() {
     }
   };
   return (
-    <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.6, ease: "easeOut" }} style={{ padding: '110px 72px', borderTop: '1px solid var(--line)', background: 'var(--card)' }} className={styles.sectionContainer}>
+    <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.6, ease: "easeOut" }} style={{ paddingBlock: '110px', borderTop: '1px solid var(--line)', background: 'var(--card)' }} className={styles.sectionContainer}>
       <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 56, flexWrap: 'wrap', gap: 24 }}>
         <div>
           <div className={styles.mono} style={{ marginBottom: 16 }}>{'{ 04 · capabilities }'}</div>
           <h2 style={{ fontSize: 48, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0, maxWidth: 640 }} className={styles.sectionHeadline}>
-            Six <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', color: 'var(--a3)' }}>superpowers</span>, one planner.
+            Six <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--a3)' }}>superpowers</span>, one planner.
           </h2>
         </div>
         <p style={{ fontSize: 15, color: 'var(--ink-soft)', maxWidth: 380, lineHeight: 1.6, margin: 0 }}>
@@ -641,44 +574,190 @@ function Capabilities() {
   );
 }
 
+/* ---------- Packages ---------- */
+const PACKAGES = [
+  {
+    name: 'Wanderer',
+    price: 0,
+    period: 'forever',
+    tag: 'Free',
+    desc: 'Everything you need to plan your first trip — no credit card, no catch.',
+    feats: ['3 AI itineraries / month', 'Day-by-day planner', 'Budget estimator', 'PDF export'],
+    primary: false,
+    cta: 'Start free'
+  },
+  {
+    name: 'Explorer',
+    price: 499,
+    period: 'per month',
+    tag: 'Most loved',
+    desc: 'Unlimited trips, real-time bookings, and the full AltairGO intelligence stack.',
+    feats: ['Unlimited itineraries', 'One-tap bookings', 'Live weather rerouting', 'Smart budget tracking', 'Priority AI queue', 'Trip sharing'],
+    primary: true,
+    cta: 'Choose Explorer'
+  }
+];
+
+function Packages() {
+  const navigate = useNavigate();
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.6, ease: 'easeOut' }}
+      style={{ paddingBlock: '110px', borderTop: '1px solid var(--line)', background: 'var(--page-bg)' }}
+      className={styles.sectionContainer}
+    >
+      <div style={{ textAlign: 'center', marginBottom: 64 }}>
+        <div className={styles.mono} style={{ marginBottom: 16 }}>{'{ 05 · pricing }'}</div>
+        <h2 className={styles.sectionHeadline} style={{ fontSize: 52, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0, maxWidth: 640, marginInline: 'auto' }}>
+          Simple plans, <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--a3)' }}>no surprises.</span>
+        </h2>
+      </div>
+
+      <div className={styles.pkgGrid} style={{ gridTemplateColumns: 'repeat(2, 1fr)', gap: 20, maxWidth: 820, marginInline: 'auto' }}>
+        {PACKAGES.map((pkg) => (
+          <motion.div
+            key={pkg.name}
+            whileHover={{ y: -4 }}
+            transition={{ duration: 0.22 }}
+            style={{
+              borderRadius: 20,
+              padding: '40px 36px',
+              background: pkg.primary ? 'var(--ink)' : 'var(--card)',
+              color: pkg.primary ? 'var(--card)' : 'var(--ink)',
+              border: pkg.primary ? 'none' : '1px solid var(--line-warm)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}
+          >
+            {/* background glow for primary */}
+            {pkg.primary && (
+              <svg width="100%" height="100%" viewBox="0 0 400 300" preserveAspectRatio="none"
+                style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+                <defs>
+                  <radialGradient id="pkgg" cx="0.5" cy="1" r="0.8">
+                    <stop offset="0" stopColor="var(--a3)" stopOpacity="0.22" />
+                    <stop offset="1" stopColor="transparent" stopOpacity="0" />
+                  </radialGradient>
+                </defs>
+                <rect width="400" height="300" fill="url(#pkgg)" />
+              </svg>
+            )}
+
+            <div style={{ position: 'relative' }}>
+              {/* tag */}
+              <span style={{
+                display: 'inline-block', marginBottom: 24,
+                padding: '4px 10px', borderRadius: 999, fontSize: 11, fontWeight: 500,
+                background: pkg.primary ? 'var(--a3)' : 'var(--a1)',
+                color: pkg.primary ? 'var(--card)' : 'var(--a3)',
+                fontFamily: 'var(--mono)'
+              }}>{pkg.tag}</span>
+
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ fontSize: 22, fontWeight: 500, letterSpacing: '-0.01em', marginBottom: 4 }}>{pkg.name}</div>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                  <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: 44, lineHeight: 1, letterSpacing: '-0.02em' }}>
+                    {pkg.price === 0 ? 'Free' : `₹${pkg.price}`}
+                  </span>
+                  {pkg.price > 0 && (
+                    <span style={{ fontSize: 13, opacity: 0.55 }}>/ {pkg.period}</span>
+                  )}
+                </div>
+              </div>
+
+              <p style={{ fontSize: 13.5, lineHeight: 1.6, opacity: 0.7, marginBottom: 28, margin: '0 0 28px' }}>{pkg.desc}</p>
+
+              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 32px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {pkg.feats.map((f) => (
+                  <li key={f} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13.5 }}>
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <circle cx="7" cy="7" r="6.5" stroke={pkg.primary ? 'var(--a2)' : 'var(--a3)'} strokeOpacity="0.5" />
+                      <path d="M4 7l2 2 4-4" stroke={pkg.primary ? 'var(--a2)' : 'var(--a3)'} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    <span style={{ opacity: 0.85 }}>{f}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                onClick={() => navigate('/planner')}
+                style={{
+                  all: 'unset', cursor: 'pointer', width: '100%', textAlign: 'center',
+                  padding: '13px 20px', borderRadius: 12, fontSize: 14, fontWeight: 500,
+                  background: pkg.primary ? 'var(--a2)' : 'var(--ink)',
+                  color: 'var(--card)',
+                  boxSizing: 'border-box',
+                  transition: 'opacity 0.18s'
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.85'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
+              >
+                {pkg.cta}
+              </button>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </motion.section>
+  );
+}
+
 /* ---------- Final CTA Banner ---------- */
 function FinalCTA({ onPlan }) {
   const navigate = useNavigate();
   return (
-    <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.6, ease: "easeOut" }} style={{ padding: '0 24px 24px', background: 'var(--page-bg)' }}>
-      <div style={{ position: 'relative', borderRadius: 28, overflow: 'hidden', background: 'var(--card)', color: 'var(--ink)', textAlign: 'center', border: '1px solid var(--line)' }} className={styles.finalCtaBox}>
-        {/* gradient wash */}
+    <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.6, ease: 'easeOut' }} style={{ padding: '0 24px 24px', background: 'var(--page-bg)' }}>
+      <div style={{ position: 'relative', borderRadius: 28, overflow: 'hidden', background: 'var(--ink)', color: 'var(--card)', textAlign: 'center' }} className={styles.finalCtaBox}>
+        {/* terracotta radial glow + grid */}
         <svg width="100%" height="100%" viewBox="0 0 1200 500" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
           <defs>
-            <radialGradient id="ctag" cx="0.2" cy="0.8" r="0.7">
-              <stop offset="0" stopColor="var(--a1)" stopOpacity="0.8" />
-              <stop offset="0.5" stopColor="var(--a1)" stopOpacity="0.2" />
-              <stop offset="1" stopColor="var(--card)" stopOpacity="0" />
+            <radialGradient id="ctag1" cx="0.5" cy="1.1" r="0.7">
+              <stop offset="0" stopColor="#5ac576" stopOpacity="0.28" />
+              <stop offset="0.55" stopColor="#8dd9a0" stopOpacity="0.1" />
+              <stop offset="1" stopColor="#141413" stopOpacity="0" />
             </radialGradient>
-            <radialGradient id="ctag2" cx="0.85" cy="0.2" r="0.5">
-              <stop offset="0" stopColor="var(--a2)" stopOpacity="0.2" />
-              <stop offset="1" stopColor="var(--card)" stopOpacity="0" />
+            <radialGradient id="ctag2" cx="0.18" cy="0.85" r="0.45">
+              <stop offset="0" stopColor="#5ac576" stopOpacity="0.15" />
+              <stop offset="1" stopColor="transparent" stopOpacity="0" />
             </radialGradient>
+            <radialGradient id="ctag3" cx="0.82" cy="0.85" r="0.4">
+              <stop offset="0" stopColor="#5ac576" stopOpacity="0.12" />
+              <stop offset="1" stopColor="transparent" stopOpacity="0" />
+            </radialGradient>
+            <pattern id="ctaGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M40 0H0V40" stroke="white" strokeOpacity="0.04" fill="none" />
+            </pattern>
           </defs>
-          <rect width="1200" height="500" fill="url(#ctag)" />
+          <rect width="1200" height="500" fill="url(#ctag1)" />
           <rect width="1200" height="500" fill="url(#ctag2)" />
+          <rect width="1200" height="500" fill="url(#ctag3)" />
+          <rect width="1200" height="500" fill="url(#ctaGrid)" />
         </svg>
 
         <div style={{ position: 'relative' }}>
-          <div style={{ fontFamily: 'var(--mono)', fontSize: 11.5, color: 'var(--ink-muted)', marginBottom: 20, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{'{ ready when you are }'}</div>
-          <h2 style={{ fontSize: 72, lineHeight: 1.02, letterSpacing: '-0.035em', fontWeight: 500, margin: 0, marginBottom: 18 }}>
-            Start planning <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', color: 'var(--a3)' }}>for free</span>.
+          <div style={{ fontFamily: 'var(--mono)', fontSize: 11.5, color: 'rgba(250,249,245,0.45)', marginBottom: 20, letterSpacing: '0.06em' }}>{'{ ready when you are }'}</div>
+          <h2 className={styles.ctaHeadline} style={{ lineHeight: 1.02, letterSpacing: '-0.035em', fontWeight: 500, margin: 0, marginBottom: 18, color: 'var(--card)' }}>
+            Start planning <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--a2)' }}>for free</span>.
           </h2>
-          <p style={{ fontSize: 17, color: 'var(--ink-soft)', maxWidth: 560, marginInline: 'auto', lineHeight: 1.55, marginBottom: 40 }}>
+          <p style={{ fontSize: 17, color: 'rgba(250,249,245,0.6)', maxWidth: 520, marginInline: 'auto', lineHeight: 1.6, marginBottom: 40 }}>
             Join thousands of travellers who plan smarter. No credit card. No commitments. Just a plan, built for you.
           </p>
-          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <motion.button onClick={onPlan} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} style={{ all: 'unset', cursor: 'pointer', padding: '16px 28px', background: 'var(--ink)', color: 'var(--card)', borderRadius: 999, fontSize: 15, fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-              Plan my yatra free <I.arrow />
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 40 }}>
+            <motion.button onClick={onPlan} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} style={{ all: 'unset', cursor: 'pointer', padding: '16px 28px', background: 'var(--a2)', color: 'var(--ink)', borderRadius: 999, fontSize: 15, fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 8, boxShadow: '0 0 0 1px var(--a2)' }}>
+              Plan my trip <I.arrow />
             </motion.button>
-            <motion.button onClick={() => navigate('/discover')} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} style={{ all: 'unset', cursor: 'pointer', padding: '16px 26px', border: '1px solid var(--line)', background: 'var(--card)', borderRadius: 999, fontSize: 15, fontWeight: 500, color: 'var(--ink)', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            <motion.button onClick={() => navigate('/discover')} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} style={{ all: 'unset', cursor: 'pointer', padding: '16px 26px', border: '1px solid rgba(255,255,255,0.18)', background: 'rgba(255,255,255,0.04)', borderRadius: 999, fontSize: 15, fontWeight: 500, color: 'rgba(250,249,245,0.85)', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
               Explore destinations <I.arrow />
             </motion.button>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, fontFamily: 'var(--mono)', fontSize: 11, color: 'rgba(250,249,245,0.35)', letterSpacing: '0.04em' }}>
+            <span style={{ opacity: 0.4 }}>·</span>
+            <span>4.9 ★</span>
+            <span style={{ opacity: 0.4 }}>·</span>
+            <span>28 states</span>
+            <span style={{ opacity: 0.4 }}>·</span>
+            <span>made in India</span>
           </div>
         </div>
       </div>
@@ -707,9 +786,9 @@ export default function Home() {
       <HowItWorks />
       <Destinations />
       <Capabilities />
+      <Packages />
       <Blogs />
       <FinalCTA onPlan={handlePlan} />
-      <Footer />
     </div>
   );
 }

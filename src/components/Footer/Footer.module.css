@@ -1,279 +1,155 @@
 .footer {
-  background-color: var(--color-bg-dark);
-  color: var(--color-text-subtle);
-  padding: 5rem 0 2rem 0;
-  margin-top: 5rem;
-  position: relative;
-  font-family: var(--font-family);
+  background: #111111;
+  color: #888888;
+  padding: 80px 0 40px;
+  border-top: 1px solid #222222;
+  font-family: 'Geist', system-ui, sans-serif;
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 72px;
 }
 
-.topSection {
+.footerGrid {
   display: grid;
-  grid-template-columns: 1.8fr 1fr 1fr 1fr 1fr;
-  gap: 3rem;
-  padding-bottom: 4rem;
+  grid-template-columns: 2fr repeat(4, 1fr);
+  gap: 40px;
+  margin-bottom: 80px;
 }
 
 .brandCol {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  max-width: 450px;
 }
 
 .brandLogo {
   display: flex;
   align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .footerLogo {
-  height: 70px;
+  height: 40px;
   width: auto;
-  object-fit: contain;
   filter: brightness(0) invert(1);
 }
 
-.brandAccent {
-  color: var(--color-accent-light);
-}
-
 .brandDesc {
-  color: var(--color-text-subtle);
-  font-size: 0.95rem;
-  line-height: 1.7;
-  font-weight: 300;
+  font-size: 14px;
+  line-height: 1.65;
+  max-width: 280px;
+  margin: 0;
+  margin-bottom: 24px;
+  opacity: 0.75;
 }
 
-.socials {
+.contactInfo {
   display: flex;
-  gap: 1rem;
-  margin-top: 0.5rem;
+  flex-direction: column;
+  gap: 10px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11px;
+  opacity: 0.6;
 }
 
-.socialLink {
-  background: transparent;
-  color: var(--color-text-subtle);
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-full);
-  transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  text-decoration: none;
+.email {
+  color: #bbbbbb;
 }
 
-.socialLink:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--color-text-inverted);
-  transform: translateY(-2px);
+.locations {
+  color: #888888;
 }
 
 .linksCol {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
 }
 
 .colTitle {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--color-text-inverted);
-  margin-bottom: 0.5rem;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.5;
+  margin-bottom: 18px;
 }
 
-.linksCol a {
-  color: var(--color-text-subtle);
-  font-size: 0.95rem;
-  transition: all 0.2s;
+.linksList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footerLink {
+  font-size: 13.5px;
+  opacity: 0.85;
   text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: opacity 0.2s;
   width: fit-content;
 }
 
-.linksCol a:hover {
-  color: var(--color-text-inverted);
-}
-
-.newsletterSection {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--color-bg-dark-surface);
-  padding: 2.5rem 3rem;
-  border-radius: var(--radius-xl);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  margin-bottom: 3rem;
-}
-
-.newsletterContent {
-  max-width: 500px;
-}
-
-.newsletterTitle {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--color-text-inverted);
-  margin-bottom: 0.5rem;
-}
-
-.newsletterDesc {
-  color: var(--color-text-subtle);
-  font-size: 0.95rem;
-  margin: 0;
-}
-
-.form {
-  flex: 0 0 450px;
-}
-
-.inputGroup {
-  display: flex;
-  position: relative;
-  gap: 1rem;
-  align-items: center;
-}
-
-.input {
-  flex: 1;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 0.9rem 1.5rem;
-  border-radius: var(--radius-2xl);
-  color: var(--color-text-inverted);
-  font-family: inherit;
-  font-size: 0.95rem;
-  transition: all 0.3s;
-}
-
-.input::placeholder {
-  color: var(--color-text-muted);
-}
-
-.input:focus {
-  outline: none;
-  border-color: rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.submitBtn {
-  background: var(--color-primary);
-  color: #ffffff;
-  border: none;
-  padding: 0.9rem 2rem;
-  border-radius: var(--radius-2xl);
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 0.95rem;
-  white-space: nowrap;
-  font-family: inherit;
-}
-
-.submitBtn:hover {
-  background: var(--color-primary-dark);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-primary);
+.footerLink:hover {
+  opacity: 1;
 }
 
 .bottomSection {
-  padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  gap: 1.5rem;
-  color: var(--color-text-muted);
-  font-size: 0.85rem;
-}
-
-.legalLinks {
-  display: flex;
-  gap: 2rem;
-}
-
-.legalLinks a {
-  color: var(--color-text-muted);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.legalLinks a:hover {
-  color: var(--color-text-subtle);
-}
-
-.madeIn {
+  font-size: 11.5px;
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 12px;
-  color: var(--color-text-muted);
-  letter-spacing: 0.02em;
+  opacity: 0.55;
+  color: #888888;
 }
 
-@media (min-width: 768px) {
-  .bottomSection {
-    flex-direction: row;
-    justify-content: space-between;
-  }
-}
-
-@media (max-width: 1200px) {
-  .topSection {
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 2.5rem;
-  }
-
-  .brandCol {
-    grid-column: span 3;
-    max-width: 100%;
-  }
+.vCredit {
+  display: flex;
+  gap: 20px;
 }
 
 @media (max-width: 1024px) {
-  .newsletterSection {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2rem;
-    padding: 2rem;
-  }
-
-  .form {
-    width: 100%;
-    flex: none;
+  .footerGrid {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 40px;
   }
 }
 
-@media (max-width: 640px) {
-  .topSection {
+@media (max-width: 768px) {
+  .container {
+    padding: 0 24px;
+  }
+
+  .footerGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 40px;
+  }
+
+  .brandCol {
+    grid-column: span 2;
+    margin-bottom: 10px;
+  }
+
+  .bottomSection {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .footerGrid {
     grid-template-columns: 1fr;
   }
 
   .brandCol {
     grid-column: span 1;
-  }
-
-  .inputGroup {
-    flex-direction: column;
-    width: 100%;
-    gap: 1rem;
-  }
-
-  .input {
-    width: 100%;
-  }
-
-  .submitBtn {
-    width: 100%;
-  }
-
-  .legalLinks {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem;
   }
 }

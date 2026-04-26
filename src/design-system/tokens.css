@@ -1,51 +1,50 @@
 /* ============================================================
    AltairGO Design Tokens
    Single source of truth for all design decisions.
-   Primary: #171F30 (dark navy) | Accent: #0BA060 (green)
+   Primary: #141413 (warm near-black) | Accent: #5ac576 (sage green)
    ============================================================ */
 
 :root {
-  /* ── Primary (Dark Navy) ── */
-  --color-primary:        #171F30;
-  --color-primary-dark:   #0B1120;
-  --color-primary-light:  #4A5568;
-  --color-primary-subtle: #EDF2F7;
+  /* ── Primary (Near Black, warm) ── */
+  --color-primary:        #141413;    /* Anthropic Near Black */
+  --color-primary-dark:   #0a0a09;
+  --color-primary-light:  #4d4c48;    /* Charcoal Warm */
+  --color-primary-subtle: #f5f4ed;    /* Parchment */
 
-  /* ── Accent (Green) ── */
-  --color-accent:         #0BA060;
-  --color-accent-dark:    #088A52;
-  --color-accent-light:   #3CC88A;
-  --color-accent-subtle:  #E8F8F2;
+  /* ── Accent (Sage Green brand) ── */
+  --color-accent:         #5ac576;    /* Sage Green */
+  --color-accent-dark:    #3d9a58;
+  --color-accent-light:   #8dd9a0;    /* Sage soft */
+  --color-accent-subtle:  #e8f7ec;    /* Sage tint */
 
   /* ── Backgrounds ── */
-  --color-bg:             #F8FAFC;
-  --color-bg-subtle:      #F1F5F9;
-  --color-bg-elevated:    #FFFFFF;
-  --color-bg-hero:        #faf7f2;
-  --color-bg-overlay:     rgba(15, 23, 42, 0.5);
+  --color-bg:             #f5f4ed;    /* Parchment */
+  --color-bg-subtle:      #faf9f5;    /* Ivory */
+  --color-bg-elevated:    #ffffff;
+  --color-bg-hero:        #f5f4ed;
+  --color-bg-overlay:     rgba(20, 20, 19, 0.5);
 
   /* ── Dark Theme (footer / dark sections) ── */
-  --color-bg-dark:         #0B1120;
-  --color-bg-dark-surface: #171F30;
-  --color-bg-dark-elevated:#1E293B;
+  --color-bg-dark:         #141413;   /* Near Black */
+  --color-bg-dark-surface: #30302e;   /* Dark Surface */
+  --color-bg-dark-elevated:#3d3d3a;
 
   /* ── Text ── */
-  --color-text:           #1E293B;
-  --color-text-muted:     #64748B;
-  --color-text-subtle:    #94A3B8;
-  --color-text-inverted:  #FFFFFF;
+  --color-text:           #141413;    /* Near Black */
+  --color-text-muted:     #5e5d59;    /* Olive Gray */
+  --color-text-subtle:    #87867f;    /* Stone Gray */
+  --color-text-inverted:  #faf9f5;    /* Ivory */
 
   /* ── Borders ── */
-  --color-border:         #E2E8F0;
-  --color-border-subtle:  #F1F5F9;
-  --color-border-strong:  #CBD5E1;
+  --color-border:         #f0eee6;    /* Border Cream */
+  --color-border-subtle:  #faf9f5;
+  --color-border-strong:  #e8e6dc;    /* Border Warm */
 
   /* ── Semantic ── */
   --color-success:        #10B981;
   --color-success-subtle: #ECFDF5;
   --color-warning:        #F59E0B;
   --color-warning-subtle: #FFFBEB;
-  /* Note: warning intentionally stays amber — it's a semantic UI state, not brand color */
   --color-error:          #EF4444;
   --color-error-subtle:   #FEF2F2;
   --color-error-border:   #FECACA;
@@ -81,8 +80,8 @@
   --shadow-lg:   0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --shadow-xl:   0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   --shadow-card: 0 4px 16px rgb(0 0 0 / 0.06);
-  --shadow-primary: 0 8px 24px rgb(23 31 48 / 0.30);
-  --shadow-accent:  0 8px 24px rgb(11 160 96 / 0.25);
+  --shadow-primary: 0 8px 24px rgb(20 20 19 / 0.28);
+  --shadow-accent:  0 8px 24px rgb(90 197 118 / 0.25);
 
   /* ── Transitions ── */
   --transition-fast:   150ms ease;
@@ -102,5 +101,5 @@
   /* ── Layout ── */
   --container-max: 1200px;
   --navbar-height: 70px;
-  --navbar-offset: calc(var(--navbar-height) + 18px); /* floating pill: 10px top + 8px breathing room */
+  --navbar-offset: calc(var(--navbar-height) + 18px);
 }

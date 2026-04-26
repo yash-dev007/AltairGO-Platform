@@ -1,7 +1,7 @@
 import React from 'react';
 
 const shimmerStyle = {
-  background: '#e2e8f0',
+  background: '#f0eee6',
   borderRadius: '8px',
   position: 'relative',
   overflow: 'hidden',
@@ -63,7 +63,7 @@ export const DashboardSkeleton = ({ count = 3 }) => (
 );
 
 export const BlogCardSkeleton = () => (
-  <div style={{ background: 'white', borderRadius: '1.5rem', overflow: 'hidden', boxShadow: '0 4px 24px rgba(0,0,0,0.08)', border: '1px solid #e2e8f0' }}>
+  <div style={{ background: 'white', borderRadius: '1.5rem', overflow: 'hidden', boxShadow: '0 4px 24px rgba(0,0,0,0.08)', border: '1px solid #f0eee6' }}>
     <Skeleton height="200px" borderRadius="0" />
     <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
       <Skeleton height="0.75rem" width="35%" borderRadius="20px" />
