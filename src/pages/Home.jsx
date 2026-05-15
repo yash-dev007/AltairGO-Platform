@@ -21,6 +21,7 @@ import journalHimachal from '../assets/journal_himachal.png';
 import journalMumbai from '../assets/journal_mumbai.png';
 import journalVaranasi from '../assets/journal_varanasi.png';
 import journalMeghalaya from '../assets/journal_meghalaya.png';
+import footerBg from '../assets/footer-bg.png';
 
 /* ---------- Tweakable defaults ---------- */
 const TWEAK_DEFAULTS = {
@@ -648,45 +649,95 @@ function ExploreJourneys() {
 }
 
 
-/* ---------- How It Works (4-step process) ---------- */
+/* ---------- How It Works (Premium Accordion) ---------- */
 function HowItWorks() {
-  const steps = [
-    { n: '01', t: 'Tell us your dream trip', d: 'Destination, days, style, budget — the AI reads shorthand and ordinary sentences.' },
-    { n: '02', t: 'AI builds your itinerary', d: 'A day-by-day plan with real costs in ₹, live weather, and bookable experiences.' },
-    { n: '03', t: 'Customize every detail', d: 'Swap hotels, stretch days, add a side trip — the trip editor rebuilds around you.' },
-    { n: '04', t: 'Track, book, and go', d: 'One-tap bookings for flights, trains, stays. Offline-ready when you land.' }
+  const [openAccordion, setOpenAccordion] = useState(0);
+
+  const accordions = [
+    { q: 'When are you traveling?', a: 'Altairgo automatically adjusts recommendations based on season, weather, festivals, monsoons, and crowd patterns across India.' },
+    { q: 'What kind of trip are you planning?', a: 'Choose from road trips, spiritual journeys, family vacations, backpacking adventures, luxury escapes, workations, or weekend getaways.' },
+    { q: 'What’s your budget range?', a: 'Get optimized itineraries for budget, mid-range, or premium travel with smart transport and stay recommendations.' },
+    { q: 'How do you want to travel?', a: 'Plan trips around trains, flights, buses, road travel, or mixed transport with realistic India-first routing.' },
+    { q: 'What makes Altairgo different?', a: 'Unlike generic travel planners, Altairgo is built specifically for Indian travel behavior, regional seasons, train connectivity, and real-world trip flexibility.' }
   ];
 
   return (
-    <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.6, ease: "easeOut" }} id="how" className={styles.sectionContainer} style={{ padding: '110px 72px', borderTop: '1px solid var(--line)', background: 'var(--page-bg)', position: 'relative' }}>
-      <div style={{ textAlign: 'center', marginBottom: 70 }}>
-        <div className={styles.mono} style={{ marginBottom: 16 }}>{'{ 02 · how it works }'}</div>
-        <h2 className={styles.sectionHeadline} style={{ fontSize: 52, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0, maxWidth: 760, marginInline: 'auto' }}>
-          From idea to <span style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic', color: 'var(--a3)' }}>boarding pass</span> in four steps
-        </h2>
+    <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.6, ease: "easeOut" }} id="how" className={styles.sectionContainer} style={{ padding: '120px 72px', borderTop: '1px solid var(--line)', background: 'var(--page-bg)' }}>
+      
+      {/* Top Header Section */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 60, gap: 40, flexWrap: 'wrap' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '10px 18px', background: 'var(--ink)', color: 'var(--card)', borderRadius: 'var(--radius-pill)', fontSize: 13, fontWeight: 500, letterSpacing: '0.02em' }}>
+          <I.arrow style={{ transform: 'rotate(90deg)', opacity: 0.8 }} /> How Altairgo Works
+        </div>
+        <div style={{ fontSize: 24, fontWeight: 400, color: 'var(--ink-soft)', maxWidth: 500, lineHeight: 1.4 }}>
+          Turn chaotic chats into a smooth travel experience. Align decisions and create an organized plan.
+        </div>
       </div>
 
-      <div className={styles.responsiveGrid4} style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0, position: 'relative' }}>
-        {/* connecting line */}
-        <div style={{ position: 'absolute', top: 28, left: '12.5%', right: '12.5%', height: 1, borderTop: '1px dashed var(--line)' }} />
-        {steps.map((s, i) =>
-          <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.5, delay: i * 0.15, ease: "easeOut" }} style={{ padding: '0 20px', position: 'relative' }}>
-            <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', marginBottom: 28 }}>
-              <div style={{
-                width: 56, height: 56, borderRadius: '50%',
-                background: i === 0 ? 'var(--ink)' : 'var(--card)',
-                color: i === 0 ? 'var(--a2)' : 'var(--a3)',
-                border: i === 0 ? 'none' : '1px solid var(--line)',
-                display: 'grid', placeItems: 'center',
-                fontFamily: 'var(--font-heading)', fontStyle: 'italic', fontSize: 22, fontWeight: 400,
-                boxShadow: '0 4px 16px -6px rgba(60,30,15,0.15)',
-                position: 'relative', zIndex: 2
-              }}>{s.n}</div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr', gap: 80, alignItems: 'flex-start' }} className={styles.responsiveGrid}>
+        
+        {/* Left Side */}
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div style={{ borderRadius: 'var(--radius-xl)', overflow: 'hidden', height: 420, marginBottom: 40, background: 'var(--card)' }}>
+            <motion.img 
+              src={philHimalayas} 
+              alt="Indian Journey" 
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              whileHover={{ scale: 1.03 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            />
+          </div>
+          <h2 style={{ fontSize: 44, lineHeight: 1.05, letterSpacing: '-0.02em', fontWeight: 500, margin: 0, marginBottom: 20, color: 'var(--ink)' }}>
+            Plan Your Perfect Indian Journey — Without the Chaos.
+          </h2>
+          <p style={{ fontSize: 16, color: 'var(--ink-soft)', lineHeight: 1.6, margin: 0, marginBottom: 32, maxWidth: 500 }}>
+            Altairgo turns scattered travel ideas into smart AI-powered itineraries built for the way India actually travels — trains, road trips, monsoons, pilgrimages, long weekends, and spontaneous plans.
+          </p>
+          <div>
+            <button style={{ all: 'unset', cursor: 'pointer', fontSize: 15, fontWeight: 500, color: 'var(--ink)', borderBottom: '1.5px solid var(--ink)', paddingBottom: 4, display: 'inline-flex', alignItems: 'center', gap: 8, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = 0.7} onMouseLeave={(e) => e.currentTarget.style.opacity = 1}>
+              Explore Smarter <I.arrow />
+            </button>
+          </div>
+        </div>
+
+        {/* Right Side */}
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 0, marginBottom: 60 }}>
+            {accordions.map((item, i) => (
+              <div key={i} style={{ borderBottom: '1px solid var(--line)', padding: '24px 0' }}>
+                <div 
+                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
+                  onClick={() => setOpenAccordion(openAccordion === i ? -1 : i)}
+                >
+                  <h3 style={{ fontSize: 20, fontWeight: 500, margin: 0, color: openAccordion === i ? 'var(--ink)' : 'var(--ink-soft)', transition: 'color 0.2s' }}>{item.q}</h3>
+                  <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--a1)', display: 'grid', placeItems: 'center', color: 'var(--ink-soft)', transition: 'transform 0.3s, background 0.2s', transform: openAccordion === i ? 'rotate(45deg)' : 'rotate(0)' }}>
+                    <I.plus />
+                  </div>
+                </div>
+                <motion.div 
+                  initial={{ height: 0, opacity: 0 }} 
+                  animate={{ height: openAccordion === i ? 'auto' : 0, opacity: openAccordion === i ? 1 : 0 }} 
+                  transition={{ duration: 0.3, ease: 'easeInOut' }}
+                  style={{ overflow: 'hidden' }}
+                >
+                  <p style={{ fontSize: 15, color: 'var(--ink-soft)', lineHeight: 1.6, margin: 0, paddingTop: 16, paddingBottom: 8, maxWidth: 480 }}>
+                    {item.a}
+                  </p>
+                </motion.div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start', alignSelf: 'flex-end' }}>
+            <div style={{ width: 150, height: 160, borderRadius: 'var(--radius-lg)', overflow: 'hidden', transform: 'translateY(20px)' }}>
+              <img src={destRajasthan} alt="Rajasthan" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
-            <h3 style={{ fontSize: 18, fontWeight: 500, letterSpacing: '-0.01em', margin: 0, marginBottom: 10, textAlign: 'center' }}>{s.t}</h3>
-            <p style={{ fontSize: 13.5, color: 'var(--ink-soft)', lineHeight: 1.6, margin: 0, textAlign: 'center', maxWidth: 240, marginInline: 'auto' }}>{s.d}</p>
-          </motion.div>
-        )}
+            <div style={{ width: 170, height: 120, borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+              <img src={destKerala} alt="Kerala" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
+          </div>
+        </div>
+
       </div>
     </motion.section>
   );
@@ -822,37 +873,44 @@ function CinematicFooter({ onPlan }) {
       </div>
 
       {/* Minimal Elegant Footer Details */}
-      <div style={{ padding: '80px 72px 40px', background: 'var(--page-bg)', borderTop: '1px solid var(--line)' }} className={styles.sectionContainer}>
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr repeat(4, 1fr)', gap: 40, marginBottom: 60 }} className={`${styles.responsiveGrid} ${styles.footerGrid}`}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-              <Logo onDark={false} />
-            </div>
-            <p style={{ fontSize: 14, color: 'var(--ink-soft)', lineHeight: 1.6, maxWidth: 280, margin: 0, marginBottom: 24 }}>
-              An AI trip planner, made in India, for travelers who want to spend less time planning and more time being there.
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontFamily: 'var(--mono)', fontSize: 12, color: 'var(--ink-muted)' }}>
-              <div>hello@altairgo.in</div>
-              <div>Bengaluru · Mumbai · Delhi</div>
-            </div>
-          </div>
-          {cols.map((c, i) =>
-            <div key={i}>
-              <div style={{ fontSize: 11, fontFamily: 'var(--mono)', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--ink-muted)', marginBottom: 18 }}>{c.h}</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {c.items.map((it, j) =>
-                  <a key={j} style={{ fontSize: 14, color: 'var(--ink-soft)', textDecoration: 'none', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--ink)'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--ink-soft)'}>{it}</a>
-                )}
+      <div style={{ position: 'relative', padding: '80px 72px 40px', background: 'var(--page-bg)', borderTop: '1px solid var(--line)', overflow: 'hidden' }} className={styles.sectionContainer}>
+        {/* Soft atmospheric background */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
+          <img src={footerBg} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.25, mixBlendMode: 'multiply' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, transparent, var(--page-bg))' }} />
+        </div>
+
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr repeat(4, 1fr)', gap: 40, marginBottom: 60 }} className={`${styles.responsiveGrid} ${styles.footerGrid}`}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+                <Logo onDark={false} />
+              </div>
+              <p style={{ fontSize: 14, color: 'var(--ink-soft)', lineHeight: 1.6, maxWidth: 280, margin: 0, marginBottom: 24 }}>
+                An AI trip planner, made in India, for travelers who want to spend less time planning and more time being there.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontFamily: 'var(--mono)', fontSize: 12, color: 'var(--ink-muted)' }}>
+                <div>hello@altairgo.in</div>
+                <div>Bengaluru · Mumbai · Delhi</div>
               </div>
             </div>
-          )}
-        </div>
-        
-        <div style={{ paddingTop: 30, borderTop: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, fontFamily: 'var(--mono)', color: 'var(--ink-muted)' }}>
-          <div>© 2026 Altairgo Intelligence Pvt. Ltd. · All rights reserved.</div>
-          <div style={{ display: 'flex', gap: 24 }}>
-            <span>Made in 🇮🇳 with चाय</span>
-            <span>v1.0 · 2026</span>
+            {cols.map((c, i) =>
+              <div key={i}>
+                <div style={{ fontSize: 11, fontFamily: 'var(--mono)', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--ink-muted)', marginBottom: 18 }}>{c.h}</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {c.items.map((it, j) =>
+                    <a key={j} style={{ fontSize: 14, color: 'var(--ink-soft)', textDecoration: 'none', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--ink)'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--ink-soft)'}>{it}</a>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+          
+          <div style={{ paddingTop: 30, borderTop: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, fontFamily: 'var(--mono)', color: 'var(--ink-muted)' }}>
+            <div>© 2026 Altairgo Intelligence Pvt. Ltd. · All rights reserved.</div>
+            <div style={{ display: 'flex', gap: 24 }}>
+              <span>v1.0 · 2026</span>
+            </div>
           </div>
         </div>
       </div>
