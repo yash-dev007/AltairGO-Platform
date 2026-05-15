@@ -8,6 +8,12 @@ import philJaipur from '../assets/phil-jaipur.png';
 import philKerala from '../assets/phil-kerala.png';
 import philGoa from '../assets/phil-goa.png';
 import philHimalayas from '../assets/phil-himalayas.png';
+import destGoa from '../assets/dest-goa.png';
+import destKashmir from '../assets/dest-kashmir.png';
+import destRajasthan from '../assets/dest-rajasthan.png';
+import destKerala from '../assets/dest-kerala.png';
+import destHimachal from '../assets/dest-himachal.png';
+import destMeghalaya from '../assets/dest-meghalaya.png';
 
 /* ---------- Tweakable defaults ---------- */
 const TWEAK_DEFAULTS = {
@@ -441,23 +447,21 @@ function ImageCard({ img, loc, sub, style, rotate }) {
 
 /* ---------- Destinations: sliding cards ---------- */
 const DESTINATIONS = [
-  { name: 'Jaipur', state: 'Rajasthan', price: 24500, days: 5, tag: 'Heritage', hue: 32 },
-  { name: 'Alleppey', state: 'Kerala', price: 18900, days: 4, tag: 'Backwaters', hue: 150 },
-  { name: 'Leh', state: 'Ladakh', price: 42000, days: 7, tag: 'Himalaya', hue: 220 },
-  { name: 'Varanasi', state: 'Uttar Pradesh', price: 16500, days: 4, tag: 'Spiritual', hue: 45 },
-  { name: 'Hampi', state: 'Karnataka', price: 19800, days: 4, tag: 'Ruins', hue: 60 },
-  { name: 'Rishikesh', state: 'Uttarakhand', price: 14200, days: 3, tag: 'Yoga · Raft', hue: 180 },
-  { name: 'Goa', state: 'Coastal', price: 22000, days: 5, tag: 'Beach', hue: 200 },
-  { name: 'Udaipur', state: 'Rajasthan', price: 26800, days: 4, tag: 'Lakes', hue: 280 }
+  { name: 'Goa Coastline', state: 'Goa', price: 22000, img: destGoa },
+  { name: 'Kashmir Valleys', state: 'Jammu & Kashmir', price: 45000, img: destKashmir },
+  { name: 'Thar Desert', state: 'Rajasthan', price: 28500, img: destRajasthan },
+  { name: 'Backwaters', state: 'Kerala', price: 32000, img: destKerala },
+  { name: 'Pine Forests', state: 'Himachal Pradesh', price: 26800, img: destHimachal },
+  { name: 'Living Roots', state: 'Meghalaya', price: 34000, img: destMeghalaya }
 ];
 
 function Destinations() {
   const scrollRef = useRef(null);
   const scroll = (dir) => {
-    if (scrollRef.current) scrollRef.current.scrollBy({ left: dir * 340, behavior: 'smooth' });
+    if (scrollRef.current) scrollRef.current.scrollBy({ left: dir * 420, behavior: 'smooth' });
   };
   return (
-    <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.6, ease: "easeOut" }} style={{ padding: '100px 0 100px', borderTop: '1px solid var(--line)', background: 'var(--card)', overflow: 'hidden' }}>
+    <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.6, ease: "easeOut" }} style={{ padding: '100px 0 100px', borderTop: '1px solid var(--line)', background: 'var(--page-bg)', overflow: 'hidden' }}>
       <div className={styles.sectionContainer} style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', padding: '0 72px', marginBottom: 40 }}>
         <div>
           <div className={styles.mono} style={{ marginBottom: 16 }}>{'{ 02 · destinations }'}</div>
@@ -474,45 +478,54 @@ function Destinations() {
           </button>
         </div>
       </div>
-      <div ref={scrollRef} className={`${styles.destinationsScroll} ${styles.sectionContainer}`} style={{ display: 'flex', gap: 20, padding: '0 72px 20px', overflowX: 'auto', scrollSnapType: 'x mandatory' }}>
+      <div ref={scrollRef} className={`${styles.destinationsScroll} ${styles.sectionContainer}`} style={{ display: 'flex', gap: 24, padding: '0 72px 20px', overflowX: 'auto', scrollSnapType: 'x mandatory' }}>
         {DESTINATIONS.map((d, i) =>
           <motion.div key={i}
             initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.5, delay: i * 0.08, ease: "easeOut" }}
-            whileHover={{ y: -6, boxShadow: '0 24px 40px -20px rgba(60,30,15,0.25)' }}
+            whileHover={{ scale: 1.01, boxShadow: 'var(--shadow-lg)' }}
             style={{
-              flex: '0 0 320px', scrollSnapAlign: 'start',
-              background: `linear-gradient(165deg, oklch(92% 0.06 ${d.hue}), oklch(98% 0.01 ${d.hue}))`,
-              borderRadius: 20, border: '1px solid var(--line)', overflow: 'hidden',
-              cursor: 'pointer'
+              flex: '0 0 380px', scrollSnapAlign: 'start',
+              background: 'var(--card)',
+              borderRadius: 'var(--radius-xl)', border: '1px solid var(--line)', 
+              padding: 24,
+              boxShadow: 'var(--shadow-sm)',
+              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+              display: 'flex', flexDirection: 'column'
             }}>
-            {/* placeholder image */}
-            <div style={{ height: 220, position: 'relative', borderBottom: '1px solid rgba(0,0,0,0.04)' }}>
-              <svg width="100%" height="100%" viewBox="0 0 320 220" preserveAspectRatio="none">
-                <defs>
-                  <pattern id={`str-${i}`} width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-                    <rect width="3" height="6" fill={`oklch(74% 0.15 ${d.hue})`} opacity="0.15" />
-                  </pattern>
-                </defs>
-                <rect width="320" height="220" fill={`url(#str-${i})`} />
-                <circle cx="80" cy="100" r="50" fill={`oklch(80% 0.12 ${d.hue})`} opacity="0.35" />
-                <path d="M0,180 Q80,140 160,160 T320,150 L320,220 L0,220Z" fill={`oklch(70% 0.14 ${d.hue})`} opacity="0.4" />
-              </svg>
-              <div style={{ position: 'absolute', top: 14, left: 14, padding: '5px 10px', background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(6px)', borderRadius: 999, fontSize: 10.5, fontFamily: 'var(--mono)', color: 'var(--ink-soft)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{d.tag}</div>
-              <div style={{ position: 'absolute', bottom: 14, left: 14, fontFamily: 'var(--mono)', fontSize: 10.5, color: 'var(--ink-soft)' }}>{String(i + 1).padStart(2, '0')} / {DESTINATIONS.length}</div>
+            
+            {/* Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
+              <div>
+                <div style={{ fontSize: 24, fontWeight: 600, color: 'var(--ink)', letterSpacing: '-0.01em' }}>{d.name}</div>
+                <div style={{ fontSize: 16, color: 'var(--ink-soft)', marginTop: 4 }}>{d.state}</div>
+              </div>
             </div>
-            <div style={{ padding: '20px 22px 22px', background: 'rgba(255,255,255,0.6)', backdropFilter: 'blur(10px)' }}>
-              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 6 }}>
-                <div style={{ fontSize: 22, fontWeight: 500, letterSpacing: '-0.01em' }}>{d.name}</div>
-                <div style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--ink-muted)' }}>{d.days}D / {d.days - 1}N</div>
+
+            {/* Image Container */}
+            <div style={{ position: 'relative', height: 320, borderRadius: 'var(--radius-xl)', overflow: 'hidden', marginBottom: 24 }}>
+              <img src={d.img} alt={d.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              
+              {/* Top Right Pill - Solid Background */}
+              <div style={{ position: 'absolute', top: 16, right: 16, background: '#F6F1E6', color: '#2E2E2E', padding: '6px 12px', borderRadius: 'var(--radius-sm)', fontSize: 13, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6, boxShadow: 'var(--shadow-xs)' }}>
+                <I.pin /> Open Trip
               </div>
-              <div style={{ fontSize: 12.5, color: 'var(--ink-muted)', marginBottom: 16 }}>{d.state}</div>
-              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', paddingTop: 12, borderTop: '1px dashed var(--line)' }}>
-                <div>
-                  <div style={{ fontSize: 10.5, color: 'var(--ink-muted)', fontFamily: 'var(--mono)' }}>starting</div>
-                  <div style={{ fontSize: 18, fontWeight: 500 }}>₹{d.price.toLocaleString('en-IN')}</div>
-                </div>
-                <div style={{ fontSize: 12, color: 'var(--a3)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 4 }}>Explore <I.arrow /></div>
+              
+              {/* Bottom Left Pill - Solid Background */}
+              <div style={{ position: 'absolute', bottom: 16, left: 16, background: '#F6F1E6', color: '#2E2E2E', padding: '6px 14px', borderRadius: 'var(--radius-pill)', fontSize: 13, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6, boxShadow: 'var(--shadow-xs)' }}>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 5.5C7.38071 5.5 8.5 4.38071 8.5 3C8.5 1.61929 7.38071 0.5 6 0.5C4.61929 0.5 3.5 1.61929 3.5 3C3.5 4.38071 4.61929 5.5 6 5.5Z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/><path d="M10.5 11.5C10.5 9.01472 8.48528 7 6 7C3.51472 7 1.5 9.01472 1.5 11.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                Private • Request based
               </div>
+            </div>
+
+            {/* Bottom Section */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 'auto' }}>
+              <div>
+                <div style={{ fontSize: 20, fontWeight: 600, color: 'var(--a3)' }}>₹{d.price.toLocaleString('en-IN')}</div>
+                <div style={{ fontSize: 14, color: 'var(--ink-soft)' }}>per person</div>
+              </div>
+              <button style={{ all: 'unset', cursor: 'pointer', background: 'var(--ink)', color: 'var(--card)', padding: '12px 24px', borderRadius: 'var(--radius-lg)', fontSize: 15, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 8, transition: 'background 0.2s ease' }} onMouseEnter={(e) => e.currentTarget.style.background = 'var(--ink-soft)'} onMouseLeave={(e) => e.currentTarget.style.background = 'var(--ink)'}>
+                Plan a Trip <I.arrow />
+              </button>
             </div>
           </motion.div>
         )}
