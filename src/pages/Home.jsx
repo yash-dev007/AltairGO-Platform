@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import styles from './Home.module.css';
 import logoUrl from '../assets/logo.png';
+import heroVideo from '../assets/hero-video.mp4';
 
 /* ---------- Tweakable defaults ---------- */
 const TWEAK_DEFAULTS = {
@@ -285,41 +286,48 @@ function ItineraryCard({ variant, onCycle }) {
 }
 
 /* ---------- Hero ---------- */
-function Hero({ onPlan, headline, headlineItalic, intensity, cardVariant, setCardVariant }) {
-  const parts = headline.split(headlineItalic);
+function Hero({ onPlan }) {
   const navigate = useNavigate();
 
   return (
-    <div style={{ position: 'relative', minHeight: 700, overflow: 'hidden' }}>
-      <Wash intensity={intensity} />
-      <InlineNav onPlan={onPlan} />
+    <div style={{ position: 'relative', minHeight: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          zIndex: 0,
+          filter: 'brightness(0.6)'
+        }}
+      >
+        <source src={heroVideo} type="video/mp4" />
+      </video>
+      <div style={{ position: 'relative', zIndex: 10 }}>
+        <InlineNav onPlan={onPlan} />
+      </div>
 
-      <div className={`${styles.responsiveGrid} ${styles.heroContainer} ${styles.sectionContainer}`} style={{ position: 'relative', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, padding: '40px 72px 72px', alignItems: 'center' }}>
-        {/* Left: headline */}
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }} style={{ position: 'relative', zIndex: 2 }}>
-          <h1 className={styles.heroHeadline} style={{ fontSize: 64, lineHeight: 1.02, letterSpacing: '-0.035em', fontWeight: 500, margin: 0, marginBottom: 22, color: 'var(--ink)' }}>
-            {parts[0]}
-            <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', fontWeight: 400, color: 'var(--a3)' }}>{headlineItalic}</span>
-            {parts[1] || ''}
+      <div className={styles.sectionContainer} style={{ position: 'relative', zIndex: 2, flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 24px', textAlign: 'center' }}>
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }} style={{ maxWidth: 800 }}>
+          <h1 className={styles.heroHeadline} style={{ fontSize: 96, lineHeight: 1.05, letterSpacing: '-0.02em', fontWeight: 600, margin: 0, marginBottom: 24, color: '#ffffff', textShadow: '0 4px 24px rgba(0,0,0,0.4)' }}>
+            Find your <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', fontWeight: 400, color: 'var(--a1)' }}>Ecstacy</span>
           </h1>
 
-          <p style={{ fontSize: 15.5, lineHeight: 1.55, color: 'var(--ink-soft)', maxWidth: 460, margin: 0, marginBottom: 32 }}>
-            An AI trip planner for travelers who don't want cookie-cutter tours — tell it the shape of your trip and it builds the rest, from flights to dinner reservations.
+          <p style={{ fontSize: 28, lineHeight: 1.5, color: 'rgba(255, 255, 255, 0.9)', margin: '0 auto', marginBottom: 40, maxWidth: 700, fontWeight: 400, textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}>
+            Smart trip planning made easy.
           </p>
 
-          <div className={styles.heroActions} style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-            <button onClick={onPlan} style={{ all: 'unset', cursor: 'pointer', padding: '14px 24px', background: 'var(--ink)', color: 'var(--page-bg)', borderRadius: 999, fontSize: 14, fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-              Plan my yatra <span style={{ color: 'var(--a2)', fontWeight: 600 }}>free</span> <I.arrow />
-            </button>
-            <button onClick={() => navigate('/discover')} style={{ all: 'unset', cursor: 'pointer', padding: '14px 22px', border: '1px solid var(--line)', borderRadius: 999, fontSize: 14, fontWeight: 500, background: 'var(--card)', display: 'inline-flex', alignItems: 'center', gap: 8, color: 'var(--ink)' }}>
-              Explore destinations <I.arrow />
+          <div style={{ display: 'flex', gap: 14, alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button onClick={onPlan} style={{ all: 'unset', cursor: 'pointer', padding: '18px 36px', background: 'var(--a1)', color: 'var(--ink)', borderRadius: 999, fontSize: 20, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 10, boxShadow: '0 8px 24px rgba(0,0,0,0.2)', transition: 'transform 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.03)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
+              Plan my trip <I.arrow />
             </button>
           </div>
-        </motion.div>
-
-        {/* Right: product card */}
-        <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }} style={{ position: 'relative', zIndex: 2, display: 'flex', justifyContent: 'flex-end' }}>
-          <ItineraryCard variant={cardVariant} onCycle={() => setCardVariant((cardVariant + 1) % 3)} />
         </motion.div>
       </div>
     </div>
@@ -687,7 +695,6 @@ function FinalCTA({ onPlan }) {
 }
 
 export default function Home() {
-  const [cardVariant, setCardVariant] = useState(1);
   const navigate = useNavigate();
   const handlePlan = () => {
     navigate('/planner');
@@ -695,14 +702,7 @@ export default function Home() {
 
   return (
     <div className={styles.homeWrapper}>
-      <Hero
-        onPlan={handlePlan}
-        headline={TWEAK_DEFAULTS.headline}
-        headlineItalic={TWEAK_DEFAULTS.headlineItalic}
-        intensity={TWEAK_DEFAULTS.gradientIntensity}
-        cardVariant={cardVariant}
-        setCardVariant={setCardVariant}
-      />
+      <Hero onPlan={handlePlan} />
       <About />
       <HowItWorks />
       <Destinations />
