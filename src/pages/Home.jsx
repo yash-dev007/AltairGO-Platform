@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import styles from './Home.module.css';
 import logoUrl from '../assets/logo.png';
-import heroBg from '../assets/hero-bg.png';
+import heroBg from '../assets/hero-bg.jpg';
 import philJaipur from '../assets/phil-jaipur.png';
 import philKerala from '../assets/phil-kerala.png';
 import philGoa from '../assets/phil-goa.png';
