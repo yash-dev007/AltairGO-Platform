@@ -4,6 +4,10 @@ import { motion } from 'framer-motion';
 import styles from './Home.module.css';
 import logoUrl from '../assets/logo.png';
 import heroBg from '../assets/hero-bg.png';
+import philJaipur from '../assets/phil-jaipur.png';
+import philKerala from '../assets/phil-kerala.png';
+import philGoa from '../assets/phil-goa.png';
+import philHimalayas from '../assets/phil-himalayas.png';
 
 /* ---------- Tweakable defaults ---------- */
 const TWEAK_DEFAULTS = {
@@ -86,7 +90,7 @@ function InlineNav({ onPlan }) {
       </nav>
       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
         <button onClick={() => navigate('/login')} style={{ all: 'unset', cursor: 'pointer', fontSize: 13.5, fontWeight: 500, padding: '9px 14px', color: 'var(--ink-soft)' }}>Sign in</button>
-        <button onClick={onPlan} style={{ all: 'unset', cursor: 'pointer', fontSize: 13.5, fontWeight: 500, padding: '10px 18px', background: 'var(--ink)', color: 'var(--page-bg)', borderRadius: 999, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+        <button onClick={onPlan} style={{ all: 'unset', cursor: 'pointer', fontSize: 13.5, fontWeight: 500, padding: '10px 18px', background: 'var(--a1)', color: 'var(--ink)', borderRadius: 'var(--radius-lg)', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
           Plan a trip <I.arrow />
         </button>
       </div>
@@ -168,7 +172,7 @@ function ItineraryCard({ variant, onCycle }) {
   const [hover, setHover] = useState(null);
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 0, background: 'var(--card)', border: '1px solid var(--line)', borderRadius: 22, overflow: 'hidden', boxShadow: '0 30px 60px -30px rgba(60,30,15,0.22), 0 10px 20px -10px rgba(60,30,15,0.1)', maxWidth: '100%' }} className={`${styles.responsiveGrid} ${styles.cardWrapper}`}>
+    <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 0, background: 'var(--card)', border: '1px solid var(--line)', borderRadius: 'var(--radius-xl)', overflow: 'hidden', boxShadow: 'var(--shadow-md)', maxWidth: '100%' }} className={`${styles.responsiveGrid} ${styles.cardWrapper}`}>
       {/* left: itinerary */}
       <div style={{ padding: '22px 22px 20px' }} className={styles.cardLeft}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
@@ -186,7 +190,7 @@ function ItineraryCard({ variant, onCycle }) {
           </button>
         </div>
 
-        <div style={{ fontFamily: '"Instrument Serif", serif', fontSize: 22, lineHeight: 1.2, marginBottom: 8, letterSpacing: '-0.01em' }}>
+        <div style={{ fontFamily: 'var(--font-heading)', fontSize: 22, lineHeight: 1.2, marginBottom: 8, letterSpacing: '-0.01em' }}>
           {data.dest.split(',')[0]} <span style={{ fontStyle: 'italic', color: 'var(--a3)' }}>itinerary</span>
         </div>
         <div style={{ fontSize: 12.5, lineHeight: 1.55, color: 'var(--ink-soft)', marginBottom: 16 }}>
@@ -277,7 +281,7 @@ function ItineraryCard({ variant, onCycle }) {
           )}
         </div>
 
-        <button style={{ all: 'unset', cursor: 'pointer', marginTop: 14, padding: '10px', background: 'var(--ink)', color: 'var(--page-bg)', borderRadius: 10, textAlign: 'center', fontSize: 12, fontWeight: 500, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+        <button style={{ all: 'unset', cursor: 'pointer', marginTop: 14, padding: '10px', background: 'var(--a1)', color: 'var(--ink)', borderRadius: 'var(--radius-lg)', textAlign: 'center', fontSize: 12, fontWeight: 500, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
           <I.spark /> Refine with AI
         </button>
       </div>
@@ -312,7 +316,7 @@ function Hero({ onPlan }) {
       <div className={styles.sectionContainer} style={{ position: 'relative', zIndex: 2, flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 24px', textAlign: 'center' }}>
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }} style={{ maxWidth: 800 }}>
           <h1 className={styles.heroHeadline} style={{ fontSize: 96, lineHeight: 1.05, letterSpacing: '-0.02em', fontWeight: 600, margin: 0, marginBottom: 24, color: '#ffffff', textShadow: '0 4px 24px rgba(0,0,0,0.4)' }}>
-            Find your <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', fontWeight: 400, color: 'var(--a1)' }}>Ecstacy</span>
+            Find your <span style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic', fontWeight: 400, color: 'var(--a1)' }}>Ecstacy</span>
           </h1>
 
           <p style={{ fontSize: 28, lineHeight: 1.5, color: 'rgba(255, 255, 255, 0.9)', margin: '0 auto', marginBottom: 40, maxWidth: 700, fontWeight: 400, textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}>
@@ -320,8 +324,8 @@ function Hero({ onPlan }) {
           </p>
 
           <div style={{ display: 'flex', gap: 14, alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button onClick={onPlan} style={{ all: 'unset', cursor: 'pointer', padding: '18px 36px', background: 'var(--a1)', color: 'var(--ink)', borderRadius: 999, fontSize: 20, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 10, boxShadow: '0 8px 24px rgba(0,0,0,0.2)', transition: 'transform 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.03)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
-              Plan my trip <I.arrow />
+            <button onClick={onPlan} style={{ all: 'unset', cursor: 'pointer', padding: '18px 36px', background: 'var(--a1)', color: 'var(--ink)', borderRadius: 'var(--radius-lg)', fontSize: 20, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 10, boxShadow: 'var(--shadow-sm)', transition: 'transform 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.03)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
+              Plan my trip <I.spark />
             </button>
           </div>
         </motion.div>
@@ -331,38 +335,107 @@ function Hero({ onPlan }) {
 }
 
 /* ---------- About section ---------- */
-function About() {
-  const stats = [
-    { k: '50,000+', v: 'travelers planned' },
-    { k: '28 states', v: 'covered across India' },
-    { k: '4.9 / 5', v: 'average trip rating' },
-    { k: '₹2.4 Cr', v: 'saved on bookings' }
+function Philosophy() {
+  const features = ['India-first AI', 'Smart seasonal routing', 'Train-aware itineraries', 'Personalized trip planning'];
+  const props = [
+    'Built for Indian travel patterns',
+    'AI-powered itineraries',
+    'Real-time seasonal intelligence',
+    'Early access launching soon'
   ];
 
   return (
-    <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.6, ease: "easeOut" }} className={styles.sectionContainer} style={{ padding: '100px 72px', borderTop: '1px solid var(--line)', background: 'var(--page-bg)' }}>
-      <div className={styles.responsiveGrid} style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: 80, alignItems: 'start' }}>
+    <motion.section 
+      initial={{ opacity: 0, y: 30 }} 
+      whileInView={{ opacity: 1, y: 0 }} 
+      viewport={{ once: true, amount: 0.2 }} 
+      transition={{ duration: 0.8, ease: "easeOut" }} 
+      className={styles.sectionContainer} 
+      style={{ padding: '120px 72px', background: 'var(--page-bg)', overflow: 'hidden' }}
+    >
+      <div className={styles.responsiveGrid} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 100, alignItems: 'center' }}>
+        {/* Left: Content */}
         <div>
-          <div className={styles.mono} style={{ marginBottom: 16 }}>{'{ about · altairgo }'}</div>
-          <h2 className={styles.sectionHeadline} style={{ fontSize: 48, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0 }}>
-            Travel, re-imagined for the <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', color: 'var(--a3)' }}>Indian</span> traveler.
+          <div className={styles.mono} style={{ marginBottom: 24 }}>{'{ about • altairgo }'}</div>
+          <h2 className={styles.sectionHeadline} style={{ fontSize: 64, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0, marginBottom: 32 }}>
+            Travel, re-imagined for the <span style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic', color: 'var(--a3)' }}>Indian</span> traveler.
           </h2>
-        </div>
-        <div>
-          <p style={{ fontSize: 16, lineHeight: 1.65, color: 'var(--ink-soft)', margin: 0, marginBottom: 40 }}>
-            Altairgo Intelligence is an AI-first trip planner built from the ground up for India — its seasons, its trains, its monsoons, its festivals, and the way we actually travel. Whether it's a long weekend in Goa, a pilgrimage to Badrinath, or a 14-day Rajasthan circuit, we plan it in minutes instead of weeks.
+          <p style={{ fontSize: 18, lineHeight: 1.6, color: 'var(--ink-soft)', margin: 0, marginBottom: 40, maxWidth: 540 }}>
+            Altairgo is an AI-first travel planner designed for the way India actually travels — trains, monsoons, road trips, pilgrimages, weekend escapes, and spontaneous plans. Build smarter itineraries in minutes instead of spending days researching.
           </p>
-          <div className={styles.responsiveGrid4} style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 24, paddingTop: 32, borderTop: '1px dashed var(--line)' }}>
-            {stats.map((s, i) =>
-              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.5, delay: i * 0.1, ease: "easeOut" }}>
-                <div style={{ fontFamily: '"Instrument Serif", serif', fontSize: 44, fontStyle: 'italic', color: 'var(--a3)', lineHeight: 1 }}>{s.k}</div>
-                <div style={{ fontSize: 13, color: 'var(--ink-muted)', marginTop: 6 }}>{s.v}</div>
-              </motion.div>
-            )}
+
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginBottom: 56 }}>
+            {features.map(f => (
+              <div key={f} style={{ padding: '10px 20px', background: 'var(--a1)', color: 'var(--ink)', borderRadius: 'var(--radius-pill)', fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ width: 4, height: 4, borderRadius: '50%', background: 'var(--ink)' }} />
+                {f}
+              </div>
+            ))}
           </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
+            {props.map(p => (
+              <div key={p} style={{ display: 'flex', gap: 14 }}>
+                <div style={{ width: 18, height: 18, borderRadius: '50%', background: 'var(--a1)', display: 'grid', placeItems: 'center', flexShrink: 0, marginTop: 2 }}>
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5L4 7L8 3" stroke="var(--ink)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </div>
+                <div style={{ fontSize: 15, fontWeight: 500, color: 'var(--ink)', lineHeight: 1.3 }}>{p}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Right: Floating Composition */}
+        <div style={{ position: 'relative', height: 640 }} className={styles.hideMobile}>
+          <ImageCard 
+            img={philJaipur} loc="Jaipur, Rajasthan" sub="Cultural heritage trail" 
+            style={{ top: 0, left: '15%', zIndex: 3 }} rotate={-4} 
+          />
+          <ImageCard 
+            img={philKerala} loc="Kerala Backwaters" sub="Serene canal escape" 
+            style={{ top: 120, right: 0, zIndex: 2 }} rotate={3} 
+          />
+          <ImageCard 
+            img={philGoa} loc="Goa Coastline" sub="Golden sands & sun" 
+            style={{ bottom: 120, left: 0, zIndex: 4 }} rotate={2} 
+          />
+          <ImageCard 
+            img={philHimalayas} loc="Himalayan Peaks" sub="High altitude adventure" 
+            style={{ bottom: 0, right: '15%', zIndex: 1 }} rotate={-2} 
+          />
         </div>
       </div>
     </motion.section>
+  );
+}
+
+function ImageCard({ img, loc, sub, style, rotate }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9, rotate }}
+      whileInView={{ opacity: 1, scale: 1, rotate }}
+      viewport={{ once: true }}
+      whileHover={{ scale: 1.05, rotate: rotate + 2, zIndex: 20, transition: { duration: 0.2 } }}
+      style={{
+        position: 'absolute',
+        width: 280,
+        background: 'var(--card)',
+        padding: '12px 12px 16px',
+        borderRadius: 'var(--radius-xl)',
+        boxShadow: 'var(--shadow-lg)',
+        border: '1px solid var(--line)',
+        cursor: 'pointer',
+        ...style
+      }}
+    >
+      <div style={{ overflow: 'hidden', borderRadius: 'var(--radius-lg)', height: 180, marginBottom: 14 }}>
+        <img src={img} alt={loc} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+      </div>
+      <div>
+        <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--ink)', marginBottom: 2 }}>{loc}</div>
+        <div style={{ fontSize: 12, color: 'var(--ink-soft)', letterSpacing: '0.02em' }}>{sub}</div>
+      </div>
+    </motion.div>
   );
 }
 
@@ -389,7 +462,7 @@ function Destinations() {
         <div>
           <div className={styles.mono} style={{ marginBottom: 16 }}>{'{ 02 · destinations }'}</div>
           <h2 className={styles.sectionHeadline} style={{ fontSize: 48, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0, maxWidth: 600 }}>
-            Handpicked <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', color: 'var(--a3)' }}>corners</span> of India
+            Handpicked <span style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic', color: 'var(--a3)' }}>corners</span> of India
           </h2>
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
@@ -463,10 +536,10 @@ function Blogs() {
         <div>
           <div className={styles.mono} style={{ marginBottom: 16 }}>{'{ 04 · journal }'}</div>
           <h2 style={{ fontSize: 48, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0, maxWidth: 640 }} className={styles.sectionHeadline}>
-            Stories from the <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', color: 'var(--a3)' }}>road</span>
+            Stories from the <span style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic', color: 'var(--a3)' }}>road</span>
           </h2>
         </div>
-        <button onClick={() => navigate('/blogs')} style={{ all: 'unset', cursor: 'pointer', fontSize: 13, color: 'var(--ink)', padding: '10px 18px', border: '1px solid var(--line)', borderRadius: 999, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+        <button onClick={() => navigate('/blogs')} style={{ all: 'unset', cursor: 'pointer', fontSize: 13, color: 'var(--ink)', padding: '10px 18px', border: '1px solid var(--line)', borderRadius: 'var(--radius-pill)', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
           All posts <I.arrow />
         </button>
       </div>
@@ -560,7 +633,7 @@ function HowItWorks() {
       <div style={{ textAlign: 'center', marginBottom: 70 }}>
         <div className={styles.mono} style={{ marginBottom: 16 }}>{'{ 02 · how it works }'}</div>
         <h2 className={styles.sectionHeadline} style={{ fontSize: 52, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0, maxWidth: 760, marginInline: 'auto' }}>
-          From idea to <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', color: 'var(--a3)' }}>boarding pass</span> in four steps
+          From idea to <span style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic', color: 'var(--a3)' }}>boarding pass</span> in four steps
         </h2>
       </div>
 
@@ -576,7 +649,7 @@ function HowItWorks() {
                 color: i === 0 ? 'var(--a2)' : 'var(--a3)',
                 border: i === 0 ? 'none' : '1px solid var(--line)',
                 display: 'grid', placeItems: 'center',
-                fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', fontSize: 22, fontWeight: 400,
+                fontFamily: 'var(--font-heading)', fontStyle: 'italic', fontSize: 22, fontWeight: 400,
                 boxShadow: '0 4px 16px -6px rgba(60,30,15,0.15)',
                 position: 'relative', zIndex: 2
               }}>{s.n}</div>
@@ -619,7 +692,7 @@ function Capabilities() {
         <div>
           <div className={styles.mono} style={{ marginBottom: 16 }}>{'{ 04 · capabilities }'}</div>
           <h2 style={{ fontSize: 48, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0, maxWidth: 640 }} className={styles.sectionHeadline}>
-            Six <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', color: 'var(--a3)' }}>superpowers</span>, one planner.
+            Six <span style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic', color: 'var(--a3)' }}>superpowers</span>, one planner.
           </h2>
         </div>
         <p style={{ fontSize: 15, color: 'var(--ink-soft)', maxWidth: 380, lineHeight: 1.6, margin: 0 }}>
@@ -671,16 +744,16 @@ function FinalCTA({ onPlan }) {
         <div style={{ position: 'relative' }}>
           <div style={{ fontFamily: 'var(--mono)', fontSize: 11.5, color: 'var(--ink-muted)', marginBottom: 20, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{'{ ready when you are }'}</div>
           <h2 style={{ fontSize: 72, lineHeight: 1.02, letterSpacing: '-0.035em', fontWeight: 500, margin: 0, marginBottom: 18 }}>
-            Start planning <span style={{ fontFamily: '"Instrument Serif", serif', fontStyle: 'italic', color: 'var(--a3)' }}>for free</span>.
+            Start planning <span style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic', color: 'var(--a3)' }}>for free</span>.
           </h2>
           <p style={{ fontSize: 17, color: 'var(--ink-soft)', maxWidth: 560, marginInline: 'auto', lineHeight: 1.55, marginBottom: 40 }}>
             Join thousands of travellers who plan smarter. No credit card. No commitments. Just a plan, built for you.
           </p>
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <motion.button onClick={onPlan} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} style={{ all: 'unset', cursor: 'pointer', padding: '16px 28px', background: 'var(--ink)', color: 'var(--card)', borderRadius: 999, fontSize: 15, fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            <motion.button onClick={onPlan} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} style={{ all: 'unset', cursor: 'pointer', padding: '16px 28px', background: 'var(--ink)', color: 'var(--card)', borderRadius: 'var(--radius-lg)', fontSize: 15, fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
               Plan my yatra free <I.arrow />
             </motion.button>
-            <motion.button onClick={() => navigate('/discover')} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} style={{ all: 'unset', cursor: 'pointer', padding: '16px 26px', border: '1px solid var(--line)', background: 'var(--card)', borderRadius: 999, fontSize: 15, fontWeight: 500, color: 'var(--ink)', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            <motion.button onClick={() => navigate('/discover')} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} style={{ all: 'unset', cursor: 'pointer', padding: '16px 26px', border: '1px solid var(--line)', background: 'var(--card)', borderRadius: 'var(--radius-lg)', fontSize: 15, fontWeight: 500, color: 'var(--ink)', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
               Explore destinations <I.arrow />
             </motion.button>
           </div>
@@ -699,7 +772,7 @@ export default function Home() {
   return (
     <div className={styles.homeWrapper}>
       <Hero onPlan={handlePlan} />
-      <About />
+      <Philosophy />
       <HowItWorks />
       <Destinations />
       <Capabilities />
