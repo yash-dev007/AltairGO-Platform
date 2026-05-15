@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import styles from './Home.module.css';
 import logoUrl from '../assets/logo.png';
-import heroVideo from '../assets/hero-video.mp4';
+import heroBg from '../assets/hero-bg.png';
 
 /* ---------- Tweakable defaults ---------- */
 const TWEAK_DEFAULTS = {
@@ -291,24 +291,20 @@ function Hero({ onPlan }) {
 
   return (
     <div style={{ position: 'relative', minHeight: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
+      <div
         style={{
           position: 'absolute',
           top: 0,
           left: 0,
           width: '100%',
           height: '100%',
-          objectFit: 'cover',
+          backgroundImage: `url(${heroBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
           zIndex: 0,
           filter: 'brightness(0.6)'
         }}
-      >
-        <source src={heroVideo} type="video/mp4" />
-      </video>
+      />
       <div style={{ position: 'relative', zIndex: 10 }}>
         <InlineNav onPlan={onPlan} />
       </div>
