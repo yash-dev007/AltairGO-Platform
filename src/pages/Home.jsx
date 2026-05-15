@@ -15,6 +15,12 @@ import destRajasthan from '../assets/dest-rajasthan.png';
 import destKerala from '../assets/dest-kerala.png';
 import destHimachal from '../assets/dest-himachal.png';
 import destMeghalaya from '../assets/dest-meghalaya.png';
+import journalJaipur from '../assets/journal_jaipur.png';
+import journalKerala from '../assets/journal_kerala.png';
+import journalHimachal from '../assets/journal_himachal.png';
+import journalMumbai from '../assets/journal_mumbai.png';
+import journalVaranasi from '../assets/journal_varanasi.png';
+import journalMeghalaya from '../assets/journal_meghalaya.png';
 
 /* ---------- Tweakable defaults ---------- */
 const TWEAK_DEFAULTS = {
@@ -535,49 +541,103 @@ function Destinations() {
   );
 }
 
-/* ---------- Blogs ---------- */
-const BLOGS = [
-  { cat: 'Travel guide', title: 'When to visit Ladakh: a month-by-month guide', date: 'Apr 12, 2026', read: '8 min', hue: 220 },
-  { cat: 'Culture', title: 'The 12 Jyotirlingas — a circuit worth taking slowly', date: 'Apr 04, 2026', read: '12 min', hue: 32 },
-  { cat: 'Food', title: 'Eating through Old Delhi in one monsoon afternoon', date: 'Mar 27, 2026', read: '6 min', hue: 150 }
+/* ---------- Explore Journeys ---------- */
+const JOURNEYS = [
+  { 
+    loc: 'Jaipur, Rajasthan', 
+    title: '48 Hours in Jaipur with AI Planning', 
+    img: journalJaipur 
+  },
+  { 
+    loc: 'Kerala', 
+    title: 'How to Plan a Monsoon Roadtrip in Kerala', 
+    img: journalKerala 
+  },
+  { 
+    loc: 'Himachal Pradesh', 
+    title: 'Smart Budget Travel Across Himachal', 
+    img: journalHimachal 
+  },
+  { 
+    loc: 'Mumbai, Maharashtra', 
+    title: 'Weekend Escapes from Mumbai', 
+    img: journalMumbai 
+  },
+  { 
+    loc: 'Varanasi, UP', 
+    title: 'AI-Curated Spiritual Trails in Varanasi', 
+    img: journalVaranasi 
+  },
+  { 
+    loc: 'Meghalaya', 
+    title: 'Chasing Waterfalls in Meghalaya', 
+    img: journalMeghalaya 
+  }
 ];
 
-function Blogs() {
-  const navigate = useNavigate();
+function ExploreJourneys() {
   return (
-    <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.6, ease: "easeOut" }} style={{ padding: '100px 72px', borderTop: '1px solid var(--line)', background: 'var(--card)' }} className={styles.sectionContainer}>
-      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 48 }}>
-        <div>
-          <div className={styles.mono} style={{ marginBottom: 16 }}>{'{ 04 · journal }'}</div>
-          <h2 style={{ fontSize: 48, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0, maxWidth: 640 }} className={styles.sectionHeadline}>
-            Stories from the <span style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic', color: 'var(--a3)' }}>road</span>
-          </h2>
+    <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.6, ease: "easeOut" }} style={{ padding: '100px 72px', borderTop: '1px solid var(--line)', background: 'var(--page-bg)' }} className={styles.sectionContainer}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 40 }}>
+        <h2 style={{ fontSize: 24, fontWeight: 500, letterSpacing: '-0.01em', margin: 0, color: 'var(--ink)' }}>
+          Explore Journeys
+        </h2>
+        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+          <I.search style={{ position: 'absolute', left: 14, color: 'var(--ink-muted)' }} />
+          <input 
+            type="text" 
+            placeholder="Search destinations" 
+            style={{ 
+              all: 'unset', 
+              padding: '10px 16px 10px 36px', 
+              border: '1px solid var(--line)', 
+              borderRadius: 'var(--radius-lg)', 
+              fontSize: 14, 
+              color: 'var(--ink)', 
+              background: 'var(--card)',
+              width: 200,
+              boxShadow: 'var(--shadow-xs)',
+              transition: 'box-shadow 0.2s ease, border-color 0.2s ease'
+            }} 
+            onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--a3)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(var(--a3-rgb), 0.1)'; }}
+            onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--line)'; e.currentTarget.style.boxShadow = 'var(--shadow-xs)'; }}
+          />
         </div>
-        <button onClick={() => navigate('/blogs')} style={{ all: 'unset', cursor: 'pointer', fontSize: 13, color: 'var(--ink)', padding: '10px 18px', border: '1px solid var(--line)', borderRadius: 'var(--radius-pill)', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-          All posts <I.arrow />
-        </button>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }} className={`${styles.responsiveGrid} ${styles.responsiveGrid3}`}>
-        {BLOGS.map((b, i) =>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }} className={`${styles.responsiveGrid} ${styles.responsiveGrid3}`}>
+        {JOURNEYS.map((j, i) =>
           <motion.article key={i}
             initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.5, delay: i * 0.1, ease: "easeOut" }}
-            whileHover={{ y: -4, boxShadow: '0 20px 30px -18px rgba(60,30,15,0.2)' }}
-            style={{ cursor: 'pointer', border: '1px solid var(--line)', borderRadius: 18, overflow: 'hidden', background: 'var(--card)' }}>
-            <div style={{ height: 220, background: `linear-gradient(150deg, oklch(92% 0.06 ${b.hue}), oklch(82% 0.11 ${b.hue}))`, position: 'relative' }}>
-              <svg width="100%" height="100%" viewBox="0 0 400 220" preserveAspectRatio="none">
-                <defs>
-                  <pattern id={`bstr-${i}`} width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
-                    <rect width="2" height="5" fill="#fff" opacity="0.25" />
-                  </pattern>
-                </defs>
-                <rect width="400" height="220" fill={`url(#bstr-${i})`} />
-              </svg>
-              <div style={{ position: 'absolute', top: 14, left: 14, padding: '4px 10px', background: 'rgba(255,255,255,0.85)', borderRadius: 999, fontSize: 10.5, fontFamily: 'var(--mono)', color: 'var(--ink-soft)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{b.cat}</div>
+            whileHover={{ y: -4, boxShadow: 'var(--shadow-md)' }}
+            style={{ 
+              cursor: 'pointer', 
+              background: 'var(--card)', 
+              borderRadius: 'var(--radius-xl)', 
+              overflow: 'hidden', 
+              border: '1px solid var(--line)',
+              boxShadow: 'var(--shadow-sm)',
+              display: 'flex',
+              flexDirection: 'column',
+              transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+            }}>
+            <div style={{ height: 220, position: 'relative', overflow: 'hidden' }}>
+              <motion.img 
+                src={j.img} 
+                alt={j.title} 
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+              />
             </div>
-            <div style={{ padding: '22px 22px 24px' }}>
-              <h3 style={{ fontSize: 18, fontWeight: 500, lineHeight: 1.3, letterSpacing: '-0.01em', margin: 0, marginBottom: 14 }}>{b.title}</h3>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--ink-muted)' }}>
-                <span>{b.date}</span><span>{b.read} read</span>
+            <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', flex: 1 }}>
+              <div style={{ fontSize: 12, color: 'var(--ink-soft)', marginBottom: 8 }}>{j.loc}</div>
+              <h3 style={{ fontSize: 18, fontWeight: 500, lineHeight: 1.3, letterSpacing: '-0.01em', margin: 0, color: 'var(--ink)' }}>{j.title}</h3>
+              <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'flex-end', paddingTop: 20 }}>
+                <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--page-bg)', display: 'grid', placeItems: 'center', color: 'var(--ink)', border: '1px solid var(--line)', transition: 'background 0.2s ease' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--a1)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--page-bg)'; }}>
+                  <I.arrow />
+                </div>
               </div>
             </div>
           </motion.article>
@@ -813,7 +873,7 @@ export default function Home() {
       <HowItWorks />
       <Destinations />
       <Capabilities />
-      <Blogs />
+      <ExploreJourneys />
       <CinematicFooter onPlan={handlePlan} />
     </div>
   );
