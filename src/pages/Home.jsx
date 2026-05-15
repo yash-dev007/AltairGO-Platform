@@ -10,6 +10,7 @@ import philGoa from '../assets/phil-goa.png';
 import philHimalayas from '../assets/phil-himalayas.png';
 import destGoa from '../assets/dest-goa.png';
 import destKashmir from '../assets/dest-kashmir.png';
+import destKashmir2 from '../assets/dest-kashmir-2.png';
 import destRajasthan from '../assets/dest-rajasthan.png';
 import destKerala from '../assets/dest-kerala.png';
 import destHimachal from '../assets/dest-himachal.png';
@@ -586,51 +587,6 @@ function Blogs() {
   );
 }
 
-/* ---------- Footer ---------- */
-function Footer() {
-  const cols = [
-    { h: 'Product', items: ['AI Itinerary', 'Destinations', 'Group planning', 'Mobile app'] },
-    { h: 'Company', items: ['About us', 'Careers', 'Press', 'Contact', 'Partners'] },
-    { h: 'Resources', items: ['Travel guides', 'Visa help', 'Blog', 'Community', 'Support'] },
-    { h: 'Legal', items: ['Privacy', 'Terms', 'Refund policy', 'Cookie policy', 'GST details'] }
-  ];
-
-  return (
-    <footer style={{ padding: '80px 72px 40px', background: 'var(--ink)', color: 'var(--page-bg)' }} className={styles.sectionContainer}>
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr repeat(4, 1fr)', gap: 40, marginBottom: 60 }} className={`${styles.responsiveGrid} ${styles.footerGrid}`}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-            <Logo onDark={true} />
-          </div>
-          <p style={{ fontSize: 13.5, opacity: 0.65, lineHeight: 1.65, maxWidth: 280, margin: 0, marginBottom: 24 }}>
-            An AI trip planner, made in India, for travelers who want to spend less time planning and more time being there.
-          </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontFamily: 'var(--mono)', fontSize: 11, opacity: 0.6 }}>
-            <div>hello@altairgo.in</div>
-            <div>Bengaluru · Mumbai · Delhi</div>
-          </div>
-        </div>
-        {cols.map((c, i) =>
-          <div key={i}>
-            <div style={{ fontSize: 11, fontFamily: 'var(--mono)', textTransform: 'uppercase', letterSpacing: '0.08em', opacity: 0.5, marginBottom: 18 }}>{c.h}</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {c.items.map((it, j) =>
-                <a key={j} style={{ fontSize: 13, opacity: 0.85, textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}>{it}</a>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-      <div style={{ paddingTop: 30, borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11.5, fontFamily: 'var(--mono)', opacity: 0.55 }}>
-        <div>© 2026 Altairgo Intelligence Pvt. Ltd. · All rights reserved.</div>
-        <div style={{ display: 'flex', gap: 20 }}>
-          <span>Made in 🇮🇳 with चाय</span>
-          <span>v1.0 · 2026</span>
-        </div>
-      </div>
-    </footer>
-  );
-}
 
 /* ---------- How It Works (4-step process) ---------- */
 function HowItWorks() {
@@ -731,48 +687,116 @@ function Capabilities() {
   );
 }
 
-/* ---------- Final CTA Banner ---------- */
-function FinalCTA({ onPlan }) {
-  const navigate = useNavigate();
-  return (
-    <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.6, ease: "easeOut" }} style={{ padding: '0 24px 24px', background: 'var(--page-bg)' }}>
-      <div style={{ position: 'relative', borderRadius: 28, overflow: 'hidden', background: 'var(--card)', color: 'var(--ink)', textAlign: 'center', border: '1px solid var(--line)' }} className={styles.finalCtaBox}>
-        {/* gradient wash */}
-        <svg width="100%" height="100%" viewBox="0 0 1200 500" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-          <defs>
-            <radialGradient id="ctag" cx="0.2" cy="0.8" r="0.7">
-              <stop offset="0" stopColor="var(--a1)" stopOpacity="0.8" />
-              <stop offset="0.5" stopColor="var(--a1)" stopOpacity="0.2" />
-              <stop offset="1" stopColor="var(--card)" stopOpacity="0" />
-            </radialGradient>
-            <radialGradient id="ctag2" cx="0.85" cy="0.2" r="0.5">
-              <stop offset="0" stopColor="var(--a2)" stopOpacity="0.2" />
-              <stop offset="1" stopColor="var(--card)" stopOpacity="0" />
-            </radialGradient>
-          </defs>
-          <rect width="1200" height="500" fill="url(#ctag)" />
-          <rect width="1200" height="500" fill="url(#ctag2)" />
-        </svg>
+/* ---------- Cinematic Footer ---------- */
+function CinematicFooter({ onPlan }) {
+  const cols = [
+    { h: 'Product', items: ['AI Itinerary', 'Destinations', 'Group planning', 'Mobile app'] },
+    { h: 'Company', items: ['About us', 'Careers', 'Press', 'Contact', 'Partners'] },
+    { h: 'Resources', items: ['Travel guides', 'Visa help', 'Blog', 'Community', 'Support'] },
+    { h: 'Legal', items: ['Privacy', 'Terms', 'Refund policy', 'Cookie policy', 'GST details'] }
+  ];
 
-        <div style={{ position: 'relative' }}>
-          <div style={{ fontFamily: 'var(--mono)', fontSize: 11.5, color: 'var(--ink-muted)', marginBottom: 20, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{'{ ready when you are }'}</div>
-          <h2 style={{ fontSize: 72, lineHeight: 1.02, letterSpacing: '-0.035em', fontWeight: 500, margin: 0, marginBottom: 18 }}>
-            Start planning <span style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic', color: 'var(--a3)' }}>for free</span>.
-          </h2>
-          <p style={{ fontSize: 17, color: 'var(--ink-soft)', maxWidth: 560, marginInline: 'auto', lineHeight: 1.55, marginBottom: 40 }}>
-            Join thousands of travellers who plan smarter. No credit card. No commitments. Just a plan, built for you.
-          </p>
-          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <motion.button onClick={onPlan} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} style={{ all: 'unset', cursor: 'pointer', padding: '16px 28px', background: 'var(--ink)', color: 'var(--card)', borderRadius: 'var(--radius-lg)', fontSize: 15, fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-              Plan my yatra free <I.arrow />
-            </motion.button>
-            <motion.button onClick={() => navigate('/discover')} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} style={{ all: 'unset', cursor: 'pointer', padding: '16px 26px', border: '1px solid var(--line)', background: 'var(--card)', borderRadius: 'var(--radius-lg)', fontSize: 15, fontWeight: 500, color: 'var(--ink)', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-              Explore destinations <I.arrow />
-            </motion.button>
+  return (
+    <footer style={{ position: 'relative', width: '100%' }}>
+      {/* Cinematic Background & Floating Card */}
+      <div style={{ position: 'relative', width: '100%', padding: '80px 24px', display: 'flex', justifyContent: 'center', overflow: 'hidden' }}>
+        
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+          <img src={destKashmir2} alt="Kashmir Background" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.3))' }} />
+        </div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }} 
+          whileInView={{ opacity: 1, y: 0 }} 
+          viewport={{ once: true, amount: 0.1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          whileHover={{ y: -8, boxShadow: 'var(--shadow-xl)' }}
+          style={{ 
+            position: 'relative', zIndex: 1, background: 'var(--card)', borderRadius: 'var(--radius-xl)', 
+            padding: 24, width: '100%', maxWidth: 440, boxShadow: 'var(--shadow-lg)',
+            transition: 'transform 0.4s ease, box-shadow 0.4s ease'
+          }}
+        >
+          {/* Card Header */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
+            <div>
+              <div style={{ fontSize: 24, fontWeight: 600, color: 'var(--ink)' }}>Kashmir Valleys</div>
+              <div style={{ fontSize: 15, color: 'var(--ink-soft)', marginTop: 4 }}>Jammu & Kashmir</div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', background: '#F6F1E6', padding: '6px 14px', borderRadius: 'var(--radius-sm)', border: '1px solid #EAE3D1' }}>
+              <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--a3)', lineHeight: 1.2 }}>₹45,000</div>
+              <div style={{ fontSize: 11, color: 'var(--ink-soft)' }}>per person</div>
+            </div>
+          </div>
+
+          {/* Main Image inside Card */}
+          <div style={{ position: 'relative', height: 320, borderRadius: 'var(--radius-lg)', overflow: 'hidden', marginBottom: 24 }}>
+            <img src={destKashmir2} alt="Kashmir" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            
+            {/* Top Right Pill */}
+            <div style={{ position: 'absolute', top: 16, right: 16, background: '#F6F1E6', color: '#2E2E2E', padding: '6px 12px', borderRadius: 'var(--radius-sm)', fontSize: 12, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6, boxShadow: 'var(--shadow-xs)' }}>
+              <I.pin style={{ width: 14, height: 14 }} /> Open Trip
+            </div>
+            
+            {/* Bottom Row Pills */}
+            <div style={{ position: 'absolute', bottom: 16, left: 16, right: 16, display: 'flex', gap: 8, overflowX: 'auto' }}>
+              {['Private Trip', 'AI Curated', 'Best Season'].map(tag => (
+                <div key={tag} style={{ background: '#F6F1E6', color: '#2E2E2E', padding: '6px 12px', borderRadius: 'var(--radius-pill)', fontSize: 11, fontWeight: 500, whiteSpace: 'nowrap', boxShadow: 'var(--shadow-xs)' }}>
+                  {tag}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Card Bottom Area */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ fontSize: 13, color: 'var(--ink-soft)', fontWeight: 500, fontStyle: 'italic' }}>
+              Crafted for Indian travelers
+            </div>
+            <button onClick={onPlan} style={{ all: 'unset', cursor: 'pointer', background: 'var(--ink)', color: 'var(--card)', padding: '12px 24px', borderRadius: 'var(--radius-lg)', fontSize: 14, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 8, transition: 'background 0.2s ease' }} onMouseEnter={(e) => e.currentTarget.style.background = 'var(--ink-soft)'} onMouseLeave={(e) => e.currentTarget.style.background = 'var(--ink)'}>
+              Plan a Trip <I.arrow />
+            </button>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Minimal Elegant Footer Details */}
+      <div style={{ padding: '80px 72px 40px', background: 'var(--page-bg)', borderTop: '1px solid var(--line)' }} className={styles.sectionContainer}>
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr repeat(4, 1fr)', gap: 40, marginBottom: 60 }} className={`${styles.responsiveGrid} ${styles.footerGrid}`}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+              <Logo onDark={false} />
+            </div>
+            <p style={{ fontSize: 14, color: 'var(--ink-soft)', lineHeight: 1.6, maxWidth: 280, margin: 0, marginBottom: 24 }}>
+              An AI trip planner, made in India, for travelers who want to spend less time planning and more time being there.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontFamily: 'var(--mono)', fontSize: 12, color: 'var(--ink-muted)' }}>
+              <div>hello@altairgo.in</div>
+              <div>Bengaluru · Mumbai · Delhi</div>
+            </div>
+          </div>
+          {cols.map((c, i) =>
+            <div key={i}>
+              <div style={{ fontSize: 11, fontFamily: 'var(--mono)', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--ink-muted)', marginBottom: 18 }}>{c.h}</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {c.items.map((it, j) =>
+                  <a key={j} style={{ fontSize: 14, color: 'var(--ink-soft)', textDecoration: 'none', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--ink)'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--ink-soft)'}>{it}</a>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+        
+        <div style={{ paddingTop: 30, borderTop: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, fontFamily: 'var(--mono)', color: 'var(--ink-muted)' }}>
+          <div>© 2026 Altairgo Intelligence Pvt. Ltd. · All rights reserved.</div>
+          <div style={{ display: 'flex', gap: 24 }}>
+            <span>Made in 🇮🇳 with चाय</span>
+            <span>v1.0 · 2026</span>
           </div>
         </div>
       </div>
-    </motion.section>
+    </footer>
   );
 }
 
@@ -790,8 +814,7 @@ export default function Home() {
       <Destinations />
       <Capabilities />
       <Blogs />
-      <FinalCTA onPlan={handlePlan} />
-      <Footer />
+      <CinematicFooter onPlan={handlePlan} />
     </div>
   );
 }
