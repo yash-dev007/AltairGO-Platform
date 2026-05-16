@@ -353,7 +353,7 @@ const TripViewerPage = () => {
   // ─── Loading / error states ──────────────────────────────────────────────────
 
   if (loading) return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: '#f8fafc' }}>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: '#f5f4ed' }}>
       <div className="global-spinner" />
     </div>
   );
@@ -361,9 +361,9 @@ const TripViewerPage = () => {
   if (error) return (
     <div style={{ textAlign: 'center', padding: '8rem 2rem' }}>
       <AlertCircle size={48} color="#ef4444" style={{ margin: '0 auto 1.5rem' }} />
-      <h2 style={{ color: '#1e293b', marginBottom: '0.5rem' }}>Trip Not Found</h2>
-      <p style={{ color: '#64748b', marginBottom: '2rem' }}>This trip doesn't exist or you don't have access.</p>
-      <Link to="/trips" style={{ color: '#1e293b', fontWeight: 600, textDecoration: 'none', background: '#f1f5f9', padding: '0.75rem 1.5rem', borderRadius: '50px' }}>
+      <h2 style={{ color: '#141413', marginBottom: '0.5rem' }}>Trip Not Found</h2>
+      <p style={{ color: '#5e5d59', marginBottom: '2rem' }}>This trip doesn't exist or you don't have access.</p>
+      <Link to="/trips" style={{ color: '#141413', fontWeight: 600, textDecoration: 'none', background: '#faf9f5', padding: '0.75rem 1.5rem', borderRadius: '50px' }}>
         My Trips
       </Link>
     </div>
@@ -406,23 +406,23 @@ const TripViewerPage = () => {
 
   return (
     <>
-    <div style={{ paddingTop: 'var(--navbar-offset, 88px)', minHeight: '100vh', background: '#f8fafc' }}>
+    <div style={{ paddingTop: 'var(--navbar-offset, 88px)', minHeight: '100vh', background: '#f5f4ed' }}>
       {/* Header */}
-      <div style={{ background: 'white', borderBottom: '1px solid #e2e8f0', padding: '1.25rem 2rem' }}>
+      <div style={{ background: 'white', borderBottom: '1px solid #f0eee6', padding: '1.25rem 2rem' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-          <Link to="/trips" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#64748b', textDecoration: 'none', fontWeight: 500, fontSize: '0.9rem' }}>
+          <Link to="/trips" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#5e5d59', textDecoration: 'none', fontWeight: 500, fontSize: '0.9rem' }}>
             <ArrowLeft size={18} /> My Trips
           </Link>
           <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
             <button
               onClick={handleGetVariants}
-              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0.6rem 1.25rem', border: '1px solid #e2e8f0', borderRadius: '50px', background: 'white', cursor: 'pointer', color: '#475569', fontWeight: 500, fontFamily: 'inherit', fontSize: '0.9rem' }}
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0.6rem 1.25rem', border: '1px solid #f0eee6', borderRadius: '50px', background: 'white', cursor: 'pointer', color: '#5e5d59', fontWeight: 500, fontFamily: 'inherit', fontSize: '0.9rem' }}
             >
               <Layers size={16} /> Variants
             </button>
             <button
               onClick={handleShare}
-              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0.6rem 1.25rem', border: '1px solid #e2e8f0', borderRadius: '50px', background: 'white', cursor: 'pointer', color: '#475569', fontWeight: 500, fontFamily: 'inherit', fontSize: '0.9rem' }}
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0.6rem 1.25rem', border: '1px solid #f0eee6', borderRadius: '50px', background: 'white', cursor: 'pointer', color: '#5e5d59', fontWeight: 500, fontFamily: 'inherit', fontSize: '0.9rem' }}
             >
               <Share2 size={16} /> Share
             </button>
@@ -435,10 +435,10 @@ const TripViewerPage = () => {
         <div style={{ background: 'white', borderRadius: '20px', padding: '2rem', boxShadow: '0 4px 20px rgba(0,0,0,0.05)', marginBottom: '1.5rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
             <div>
-              <h1 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1e293b', marginBottom: '0.75rem', lineHeight: 1.2 }}>
+              <h1 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#141413', marginBottom: '0.75rem', lineHeight: 1.2 }}>
                 {tripTitle}
               </h1>
-              <div style={{ display: 'flex', gap: '1.5rem', color: '#64748b', fontSize: '0.9rem', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: '1.5rem', color: '#5e5d59', fontSize: '0.9rem', flexWrap: 'wrap' }}>
                 {trip.duration && (
                   <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <Clock size={16} /> {trip.duration} Days
@@ -467,12 +467,12 @@ const TripViewerPage = () => {
 
           {/* Smart Insights */}
           {insights.length > 0 && (
-            <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #f1f5f9' }}>
-              <h3 style={{ fontWeight: 700, color: '#1e293b', marginBottom: '0.75rem', fontSize: '0.95rem' }}>Smart Insights</h3>
+            <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #faf9f5' }}>
+              <h3 style={{ fontWeight: 700, color: '#141413', marginBottom: '0.75rem', fontSize: '0.95rem' }}>Smart Insights</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 {insights.map((insight, i) => (
-                  <div key={i} style={{ display: 'flex', gap: '8px', fontSize: '0.9rem', color: '#475569' }}>
-                    <span style={{ color: '#4ade80', flexShrink: 0 }}>•</span>
+                  <div key={i} style={{ display: 'flex', gap: '8px', fontSize: '0.9rem', color: '#5e5d59' }}>
+                    <span style={{ color: '#5ac576', flexShrink: 0 }}>•</span>
                     {typeof insight === 'string' ? insight : insight.text || insight.insight || JSON.stringify(insight)}
                   </div>
                 ))}
@@ -483,7 +483,7 @@ const TripViewerPage = () => {
 
         {/* Tab navigation */}
         <div style={{ background: 'white', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.04)', marginBottom: '1.5rem' }}>
-          <div style={{ display: 'flex', borderBottom: '1px solid #e2e8f0', overflowX: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
+          <div style={{ display: 'flex', borderBottom: '1px solid #f0eee6', overflowX: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
             {TABS.map(t => (
               <button
                 key={t.key}
@@ -491,8 +491,8 @@ const TripViewerPage = () => {
                 style={{
                   display: 'flex', alignItems: 'center', gap: '6px', padding: '1rem 1.25rem',
                   border: 'none', background: 'none', fontFamily: 'inherit', fontSize: '0.9rem',
-                  fontWeight: 600, color: activeTab === t.key ? '#1e293b' : '#94a3b8',
-                  borderBottom: activeTab === t.key ? '2px solid #1e293b' : '2px solid transparent',
+                  fontWeight: 600, color: activeTab === t.key ? '#141413' : '#87867f',
+                  borderBottom: activeTab === t.key ? '2px solid #141413' : '2px solid transparent',
                   cursor: 'pointer', whiteSpace: 'nowrap', transition: 'color 0.2s',
                 }}
               >
@@ -581,23 +581,23 @@ const TripViewerPage = () => {
       <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }} onClick={() => setVariantsModal(p => ({ ...p, open: false }))}>
         <div style={{ background: 'white', borderRadius: '20px', padding: '1.75rem', width: '100%', maxWidth: '560px', maxHeight: '80vh', overflowY: 'auto', boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }} onClick={e => e.stopPropagation()}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-            <h3 style={{ fontWeight: 700, color: '#1e293b', fontSize: '1.1rem' }}>Trip Variants</h3>
-            <button onClick={() => setVariantsModal(p => ({ ...p, open: false }))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}><X size={20} /></button>
+            <h3 style={{ fontWeight: 700, color: '#141413', fontSize: '1.1rem' }}>Trip Variants</h3>
+            <button onClick={() => setVariantsModal(p => ({ ...p, open: false }))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#87867f' }}><X size={20} /></button>
           </div>
           {variantsModal.loading ? (
-            <div style={{ textAlign: 'center', padding: '3rem', color: '#94a3b8' }}>Generating variants with AI...</div>
+            <div style={{ textAlign: 'center', padding: '3rem', color: '#87867f' }}>Generating variants with AI...</div>
           ) : variantsModal.variants.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '2rem', color: '#94a3b8' }}>No variants generated.</div>
+            <div style={{ textAlign: 'center', padding: '2rem', color: '#87867f' }}>No variants generated.</div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {variantsModal.variants.map((v, i) => (
-                <div key={i} style={{ padding: '1.25rem', border: '1.5px solid #e2e8f0', borderRadius: '14px' }}>
-                  <div style={{ fontWeight: 700, color: '#1e293b', marginBottom: '0.4rem', fontSize: '0.95rem' }}>
+                <div key={i} style={{ padding: '1.25rem', border: '1.5px solid #f0eee6', borderRadius: '14px' }}>
+                  <div style={{ fontWeight: 700, color: '#141413', marginBottom: '0.4rem', fontSize: '0.95rem' }}>
                     {v.variant_title || v.title || `Variant ${i + 1}`}
                   </div>
-                  {v.description && <div style={{ fontSize: '0.85rem', color: '#64748b', lineHeight: 1.5 }}>{v.description}</div>}
+                  {v.description && <div style={{ fontSize: '0.85rem', color: '#5e5d59', lineHeight: 1.5 }}>{v.description}</div>}
                   {v.estimated_cost && (
-                    <div style={{ marginTop: '0.5rem', fontSize: '0.82rem', color: '#475569', fontWeight: 600 }}>
+                    <div style={{ marginTop: '0.5rem', fontSize: '0.82rem', color: '#5e5d59', fontWeight: 600 }}>
                       Est. ₹{Number(v.estimated_cost).toLocaleString('en-IN')}
                     </div>
                   )}
@@ -614,27 +614,27 @@ const TripViewerPage = () => {
       <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }} onClick={() => setHotelModal(p => ({ ...p, open: false }))}>
         <div style={{ background: 'white', borderRadius: '20px', padding: '1.75rem', width: '100%', maxWidth: '480px', maxHeight: '80vh', overflowY: 'auto', boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }} onClick={e => e.stopPropagation()}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-            <h3 style={{ fontWeight: 700, color: '#1e293b', fontSize: '1.1rem' }}>Change Hotel</h3>
-            <button onClick={() => setHotelModal(p => ({ ...p, open: false }))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}><X size={20} /></button>
+            <h3 style={{ fontWeight: 700, color: '#141413', fontSize: '1.1rem' }}>Change Hotel</h3>
+            <button onClick={() => setHotelModal(p => ({ ...p, open: false }))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#87867f' }}><X size={20} /></button>
           </div>
           <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem' }}>
-            <button onClick={() => setHotelModal(p => ({ ...p, customMode: false }))} style={{ flex: 1, padding: '0.5rem', borderRadius: '8px', border: 'none', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer', background: !hotelModal.customMode ? '#1e293b' : '#f1f5f9', color: !hotelModal.customMode ? 'white' : '#475569' }}>Available Options</button>
-            <button onClick={() => setHotelModal(p => ({ ...p, customMode: true }))} style={{ flex: 1, padding: '0.5rem', borderRadius: '8px', border: 'none', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer', background: hotelModal.customMode ? '#1e293b' : '#f1f5f9', color: hotelModal.customMode ? 'white' : '#475569' }}>Custom Hotel</button>
+            <button onClick={() => setHotelModal(p => ({ ...p, customMode: false }))} style={{ flex: 1, padding: '0.5rem', borderRadius: '8px', border: 'none', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer', background: !hotelModal.customMode ? '#141413' : '#faf9f5', color: !hotelModal.customMode ? 'white' : '#5e5d59' }}>Available Options</button>
+            <button onClick={() => setHotelModal(p => ({ ...p, customMode: true }))} style={{ flex: 1, padding: '0.5rem', borderRadius: '8px', border: 'none', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer', background: hotelModal.customMode ? '#141413' : '#faf9f5', color: hotelModal.customMode ? 'white' : '#5e5d59' }}>Custom Hotel</button>
           </div>
           {!hotelModal.customMode ? (
             hotelModal.loading ? (
-              <div style={{ textAlign: 'center', padding: '2rem', color: '#94a3b8' }}>Loading options...</div>
+              <div style={{ textAlign: 'center', padding: '2rem', color: '#87867f' }}>Loading options...</div>
             ) : hotelModal.options.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '2rem', color: '#94a3b8' }}>No hotel options found for this destination.</div>
+              <div style={{ textAlign: 'center', padding: '2rem', color: '#87867f' }}>No hotel options found for this destination.</div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 {hotelModal.options.map((opt) => (
-                  <div key={opt.hotel_id || opt.id} style={{ padding: '1rem', border: '1.5px solid #e2e8f0', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
+                  <div key={opt.hotel_id || opt.id} style={{ padding: '1rem', border: '1.5px solid #f0eee6', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
                     <div>
-                      <div style={{ fontWeight: 700, color: '#1e293b', fontSize: '0.9rem' }}>{opt.hotel_name || opt.name}</div>
-                      <div style={{ fontSize: '0.8rem', color: '#64748b', textTransform: 'capitalize' }}>{opt.category} · ₹{Number(opt.price_per_night || opt.cost_per_night).toLocaleString('en-IN')}/night</div>
+                      <div style={{ fontWeight: 700, color: '#141413', fontSize: '0.9rem' }}>{opt.hotel_name || opt.name}</div>
+                      <div style={{ fontSize: '0.8rem', color: '#5e5d59', textTransform: 'capitalize' }}>{opt.category} · ₹{Number(opt.price_per_night || opt.cost_per_night).toLocaleString('en-IN')}/night</div>
                     </div>
-                    <button onClick={() => handleSwapHotel(opt.hotel_id || opt.id)} style={{ padding: '0.45rem 1rem', background: '#1e293b', color: 'white', border: 'none', borderRadius: '8px', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer', fontSize: '0.82rem', whiteSpace: 'nowrap' }}>Select</button>
+                    <button onClick={() => handleSwapHotel(opt.hotel_id || opt.id)} style={{ padding: '0.45rem 1rem', background: '#141413', color: 'white', border: 'none', borderRadius: '8px', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer', fontSize: '0.82rem', whiteSpace: 'nowrap' }}>Select</button>
                   </div>
                 ))}
               </div>
@@ -642,22 +642,22 @@ const TripViewerPage = () => {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
-                <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#475569' }}>Hotel Name *</label>
-                <input value={hotelModal.customForm.custom_hotel_name} onChange={e => setHotelModal(p => ({ ...p, customForm: { ...p.customForm, custom_hotel_name: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #e2e8f0', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }} placeholder="e.g. Taj Rambagh Palace" />
+                <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#5e5d59' }}>Hotel Name *</label>
+                <input value={hotelModal.customForm.custom_hotel_name} onChange={e => setHotelModal(p => ({ ...p, customForm: { ...p.customForm, custom_hotel_name: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #f0eee6', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }} placeholder="e.g. Taj Rambagh Palace" />
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
-                  <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#475569' }}>Cost/Night (₹) *</label>
-                  <input type="number" min={1} value={hotelModal.customForm.cost_per_night} onChange={e => setHotelModal(p => ({ ...p, customForm: { ...p.customForm, cost_per_night: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #e2e8f0', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }} placeholder="0" />
+                  <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#5e5d59' }}>Cost/Night (₹) *</label>
+                  <input type="number" min={1} value={hotelModal.customForm.cost_per_night} onChange={e => setHotelModal(p => ({ ...p, customForm: { ...p.customForm, cost_per_night: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #f0eee6', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }} placeholder="0" />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#475569' }}>Category</label>
-                  <select value={hotelModal.customForm.category} onChange={e => setHotelModal(p => ({ ...p, customForm: { ...p.customForm, category: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #e2e8f0', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }}>
+                  <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#5e5d59' }}>Category</label>
+                  <select value={hotelModal.customForm.category} onChange={e => setHotelModal(p => ({ ...p, customForm: { ...p.customForm, category: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #f0eee6', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }}>
                     {['budget', 'mid', 'luxury'].map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
               </div>
-              <button onClick={handleSwapHotelCustom} style={{ padding: '0.75rem', background: '#1e293b', color: 'white', border: 'none', borderRadius: '10px', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer' }}>Save Custom Hotel</button>
+              <button onClick={handleSwapHotelCustom} style={{ padding: '0.75rem', background: '#141413', color: 'white', border: 'none', borderRadius: '10px', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer' }}>Save Custom Hotel</button>
             </div>
           )}
         </div>
@@ -669,43 +669,43 @@ const TripViewerPage = () => {
       <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }} onClick={() => setAddActModal(p => ({ ...p, open: false }))}>
         <div style={{ background: 'white', borderRadius: '20px', padding: '1.75rem', width: '100%', maxWidth: '460px', boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }} onClick={e => e.stopPropagation()}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-            <h3 style={{ fontWeight: 700, color: '#1e293b', fontSize: '1.1rem' }}>Add Activity — Day {addActModal.dayNum}</h3>
-            <button onClick={() => setAddActModal(p => ({ ...p, open: false }))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}><X size={20} /></button>
+            <h3 style={{ fontWeight: 700, color: '#141413', fontSize: '1.1rem' }}>Add Activity — Day {addActModal.dayNum}</h3>
+            <button onClick={() => setAddActModal(p => ({ ...p, open: false }))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#87867f' }}><X size={20} /></button>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div>
-              <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#475569' }}>Activity Name *</label>
-              <input value={addActModal.form.name} onChange={e => setAddActModal(p => ({ ...p, form: { ...p.form, name: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #e2e8f0', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }} placeholder="e.g. Visit City Palace" />
+              <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#5e5d59' }}>Activity Name *</label>
+              <input value={addActModal.form.name} onChange={e => setAddActModal(p => ({ ...p, form: { ...p.form, name: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #f0eee6', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }} placeholder="e.g. Visit City Palace" />
             </div>
             <div>
-              <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#475569' }}>Description</label>
-              <input value={addActModal.form.description} onChange={e => setAddActModal(p => ({ ...p, form: { ...p.form, description: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #e2e8f0', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }} placeholder="Optional description" />
+              <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#5e5d59' }}>Description</label>
+              <input value={addActModal.form.description} onChange={e => setAddActModal(p => ({ ...p, form: { ...p.form, description: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #f0eee6', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }} placeholder="Optional description" />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <div>
-                <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#475569' }}>Type</label>
-                <select value={addActModal.form.type} onChange={e => setAddActModal(p => ({ ...p, form: { ...p.form, type: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #e2e8f0', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }}>
+                <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#5e5d59' }}>Type</label>
+                <select value={addActModal.form.type} onChange={e => setAddActModal(p => ({ ...p, form: { ...p.form, type: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #f0eee6', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }}>
                   {['sightseeing', 'heritage', 'nature', 'adventure', 'food', 'shopping', 'cultural', 'general'].map(t => <option key={t} value={t}>{t}</option>)}
                 </select>
               </div>
               <div>
-                <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#475569' }}>Start Time</label>
-                <input type="time" value={addActModal.form.scheduled_time} onChange={e => setAddActModal(p => ({ ...p, form: { ...p.form, scheduled_time: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #e2e8f0', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }} />
+                <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#5e5d59' }}>Start Time</label>
+                <input type="time" value={addActModal.form.scheduled_time} onChange={e => setAddActModal(p => ({ ...p, form: { ...p.form, scheduled_time: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #f0eee6', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }} />
               </div>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <div>
-                <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#475569' }}>Duration (min)</label>
-                <input type="number" min={15} value={addActModal.form.duration_minutes} onChange={e => setAddActModal(p => ({ ...p, form: { ...p.form, duration_minutes: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #e2e8f0', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }} />
+                <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#5e5d59' }}>Duration (min)</label>
+                <input type="number" min={15} value={addActModal.form.duration_minutes} onChange={e => setAddActModal(p => ({ ...p, form: { ...p.form, duration_minutes: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #f0eee6', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }} />
               </div>
               <div>
-                <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#475569' }}>Cost (₹)</label>
-                <input type="number" min={0} value={addActModal.form.cost} onChange={e => setAddActModal(p => ({ ...p, form: { ...p.form, cost: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #e2e8f0', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }} />
+                <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#5e5d59' }}>Cost (₹)</label>
+                <input type="number" min={0} value={addActModal.form.cost} onChange={e => setAddActModal(p => ({ ...p, form: { ...p.form, cost: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #f0eee6', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }} />
               </div>
             </div>
             <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.25rem' }}>
-              <button onClick={handleAddActivity} disabled={addActModal.saving} style={{ flex: 1, padding: '0.75rem', background: addActModal.saving ? '#94a3b8' : '#1e293b', color: 'white', border: 'none', borderRadius: '10px', fontFamily: 'inherit', fontWeight: 600, cursor: addActModal.saving ? 'not-allowed' : 'pointer' }}>{addActModal.saving ? 'Adding...' : 'Add Activity'}</button>
-              <button onClick={() => setAddActModal(p => ({ ...p, open: false }))} style={{ padding: '0.75rem 1.25rem', background: '#f1f5f9', color: '#475569', border: 'none', borderRadius: '10px', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer' }}>Cancel</button>
+              <button onClick={handleAddActivity} disabled={addActModal.saving} style={{ flex: 1, padding: '0.75rem', background: addActModal.saving ? '#87867f' : '#141413', color: 'white', border: 'none', borderRadius: '10px', fontFamily: 'inherit', fontWeight: 600, cursor: addActModal.saving ? 'not-allowed' : 'pointer' }}>{addActModal.saving ? 'Adding...' : 'Add Activity'}</button>
+              <button onClick={() => setAddActModal(p => ({ ...p, open: false }))} style={{ padding: '0.75rem 1.25rem', background: '#faf9f5', color: '#5e5d59', border: 'none', borderRadius: '10px', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer' }}>Cancel</button>
             </div>
           </div>
         </div>
@@ -718,33 +718,33 @@ const TripViewerPage = () => {
         <div style={{ background: 'white', borderRadius: '20px', padding: '1.75rem', width: '100%', maxWidth: '440px', boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }} onClick={e => e.stopPropagation()}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
             <div>
-              <h3 style={{ fontWeight: 700, color: '#1e293b', fontSize: '1.1rem', marginBottom: '2px' }}>Edit Activity</h3>
-              <div style={{ fontSize: '0.82rem', color: '#94a3b8' }}>{editActModal.actName}</div>
+              <h3 style={{ fontWeight: 700, color: '#141413', fontSize: '1.1rem', marginBottom: '2px' }}>Edit Activity</h3>
+              <div style={{ fontSize: '0.82rem', color: '#87867f' }}>{editActModal.actName}</div>
             </div>
-            <button onClick={() => setEditActModal(p => ({ ...p, open: false }))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}><X size={20} /></button>
+            <button onClick={() => setEditActModal(p => ({ ...p, open: false }))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#87867f' }}><X size={20} /></button>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <div>
-                <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#475569' }}>Start Time</label>
-                <input type="time" value={editActModal.form.scheduled_time} onChange={e => setEditActModal(p => ({ ...p, form: { ...p.form, scheduled_time: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #e2e8f0', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }} />
+                <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#5e5d59' }}>Start Time</label>
+                <input type="time" value={editActModal.form.scheduled_time} onChange={e => setEditActModal(p => ({ ...p, form: { ...p.form, scheduled_time: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #f0eee6', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }} />
               </div>
               <div>
-                <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#475569' }}>Duration (min)</label>
-                <input type="number" min={15} value={editActModal.form.duration_minutes} onChange={e => setEditActModal(p => ({ ...p, form: { ...p.form, duration_minutes: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #e2e8f0', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }} placeholder="e.g. 90" />
+                <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#5e5d59' }}>Duration (min)</label>
+                <input type="number" min={15} value={editActModal.form.duration_minutes} onChange={e => setEditActModal(p => ({ ...p, form: { ...p.form, duration_minutes: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #f0eee6', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }} placeholder="e.g. 90" />
               </div>
             </div>
             <div>
-              <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#475569' }}>Cost Override (₹)</label>
-              <input type="number" min={0} value={editActModal.form.cost_override} onChange={e => setEditActModal(p => ({ ...p, form: { ...p.form, cost_override: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #e2e8f0', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }} placeholder="Leave blank to keep original" />
+              <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#5e5d59' }}>Cost Override (₹)</label>
+              <input type="number" min={0} value={editActModal.form.cost_override} onChange={e => setEditActModal(p => ({ ...p, form: { ...p.form, cost_override: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #f0eee6', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }} placeholder="Leave blank to keep original" />
             </div>
             <div>
-              <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#475569' }}>Personal Note</label>
-              <input value={editActModal.form.user_note} onChange={e => setEditActModal(p => ({ ...p, form: { ...p.form, user_note: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #e2e8f0', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }} placeholder="e.g. Book tickets in advance" />
+              <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.4rem', fontSize: '0.85rem', color: '#5e5d59' }}>Personal Note</label>
+              <input value={editActModal.form.user_note} onChange={e => setEditActModal(p => ({ ...p, form: { ...p.form, user_note: e.target.value } }))} style={{ width: '100%', padding: '0.7rem', border: '1.5px solid #f0eee6', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }} placeholder="e.g. Book tickets in advance" />
             </div>
             <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.25rem' }}>
-              <button onClick={handleEditActivity} disabled={editActModal.saving} style={{ flex: 1, padding: '0.75rem', background: editActModal.saving ? '#94a3b8' : '#1e293b', color: 'white', border: 'none', borderRadius: '10px', fontFamily: 'inherit', fontWeight: 600, cursor: editActModal.saving ? 'not-allowed' : 'pointer' }}>{editActModal.saving ? 'Saving...' : 'Save Changes'}</button>
-              <button onClick={() => setEditActModal(p => ({ ...p, open: false }))} style={{ padding: '0.75rem 1.25rem', background: '#f1f5f9', color: '#475569', border: 'none', borderRadius: '10px', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer' }}>Cancel</button>
+              <button onClick={handleEditActivity} disabled={editActModal.saving} style={{ flex: 1, padding: '0.75rem', background: editActModal.saving ? '#87867f' : '#141413', color: 'white', border: 'none', borderRadius: '10px', fontFamily: 'inherit', fontWeight: 600, cursor: editActModal.saving ? 'not-allowed' : 'pointer' }}>{editActModal.saving ? 'Saving...' : 'Save Changes'}</button>
+              <button onClick={() => setEditActModal(p => ({ ...p, open: false }))} style={{ padding: '0.75rem 1.25rem', background: '#faf9f5', color: '#5e5d59', border: 'none', borderRadius: '10px', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer' }}>Cancel</button>
             </div>
           </div>
         </div>

@@ -1,0 +1,1 @@
+{"nodes": [{"id": "blogspage_blogspage", "label": "BlogsPage", "file_type": "code", "source_file": "src/pages/blogs/BlogsPage.jsx"}], "edges": [{"source": "blogspage_blogspage", "target": "api_getblogs", "relation": "calls", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "src/pages/blogs/BlogsPage.jsx"}], "hyperedges": []}

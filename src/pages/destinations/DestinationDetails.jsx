@@ -58,7 +58,7 @@ const DestinationDetails = () => {
   if (!dest) return (
     <div style={{ textAlign: 'center', padding: '8rem 2rem' }}>
       <h2>Destination not found</h2>
-      <Link to="/discover" style={{ color: '#1e293b', fontWeight: 600, textDecoration: 'none', marginTop: '1rem', display: 'inline-block' }}>
+      <Link to="/discover" style={{ color: '#141413', fontWeight: 600, textDecoration: 'none', marginTop: '1rem', display: 'inline-block' }}>
         Back to Destinations
       </Link>
     </div>
@@ -112,7 +112,7 @@ const DestinationDetails = () => {
       </div>
 
       {/* Tabs */}
-      <div style={{ background: 'white', borderBottom: '1px solid #e2e8f0', position: 'sticky', top: '70px', zIndex: 50 }}>
+      <div style={{ background: 'white', borderBottom: '1px solid #f0eee6', position: 'sticky', top: '70px', zIndex: 50 }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 2rem', display: 'flex', gap: '0' }}>
           {tabs.map((t) => (
             <button
@@ -125,8 +125,8 @@ const DestinationDetails = () => {
                 fontFamily: 'inherit',
                 fontSize: '0.95rem',
                 fontWeight: 600,
-                color: activeTab === t.key ? '#1e293b' : '#94a3b8',
-                borderBottom: activeTab === t.key ? '2px solid #1e293b' : '2px solid transparent',
+                color: activeTab === t.key ? '#141413' : '#87867f',
+                borderBottom: activeTab === t.key ? '2px solid #141413' : '2px solid transparent',
                 cursor: 'pointer',
                 transition: 'color 0.2s',
                 whiteSpace: 'nowrap',
@@ -145,8 +145,8 @@ const DestinationDetails = () => {
         {activeTab === 'overview' && (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '3rem', alignItems: 'start' }}>
             <div>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1e293b', marginBottom: '1rem' }}>About {dest.name}</h2>
-              <p style={{ color: '#475569', lineHeight: 1.8, fontSize: '1.05rem', marginBottom: '2rem' }}>{dest.description || 'A beautiful destination waiting to be explored.'}</p>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#141413', marginBottom: '1rem' }}>About {dest.name}</h2>
+              <p style={{ color: '#5e5d59', lineHeight: 1.8, fontSize: '1.05rem', marginBottom: '2rem' }}>{dest.description || 'A beautiful destination waiting to be explored.'}</p>
               {dest.best_time_to_visit && (
                 <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '12px', padding: '1.25rem', marginBottom: '1.5rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, color: '#065f46', marginBottom: '0.4rem' }}>
@@ -157,7 +157,7 @@ const DestinationDetails = () => {
               )}
               <Link
                 to={`/planner?destination=${encodeURIComponent(dest.name)}`}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#1e293b', color: 'white', padding: '1rem 2rem', borderRadius: '50px', fontWeight: 700, textDecoration: 'none', fontSize: '0.95rem' }}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#141413', color: 'white', padding: '1rem 2rem', borderRadius: '50px', fontWeight: 700, textDecoration: 'none', fontSize: '0.95rem' }}
               >
                 <Sparkles size={18} /> Plan a Trip Here
               </Link>
@@ -170,11 +170,11 @@ const DestinationDetails = () => {
                 { icon: <Users size={18} />, label: 'Best For', value: dest.compatible_traveler_types || 'All travelers' },
                 { icon: <TrendingUp size={18} />, label: 'Popularity', value: dest.popularity_score ? `${dest.popularity_score}/100` : 'N/A' },
               ].map((item, i) => (
-                <div key={i} style={{ background: '#f8fafc', borderRadius: '12px', padding: '1rem 1.25rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                  <div style={{ color: '#475569' }}>{item.icon}</div>
+                <div key={i} style={{ background: '#f5f4ed', borderRadius: '12px', padding: '1rem 1.25rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                  <div style={{ color: '#5e5d59' }}>{item.icon}</div>
                   <div>
-                    <div style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 500 }}>{item.label}</div>
-                    <div style={{ fontWeight: 600, color: '#1e293b', fontSize: '0.95rem' }}>{item.value}</div>
+                    <div style={{ fontSize: '0.8rem', color: '#87867f', fontWeight: 500 }}>{item.label}</div>
+                    <div style={{ fontWeight: 600, color: '#141413', fontSize: '0.95rem' }}>{item.value}</div>
                   </div>
                 </div>
               ))}
@@ -185,20 +185,20 @@ const DestinationDetails = () => {
         {/* Best Time */}
         {activeTab === 'besttime' && (
           <div>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.5rem' }}>Best Time to Visit {dest.name}</h2>
-            <p style={{ color: '#64748b', marginBottom: '2rem' }}>Monthly suitability scores (higher = better)</p>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#141413', marginBottom: '0.5rem' }}>Best Time to Visit {dest.name}</h2>
+            <p style={{ color: '#5e5d59', marginBottom: '2rem' }}>Monthly suitability scores (higher = better)</p>
             <div style={{ background: 'white', borderRadius: '16px', padding: '2rem', boxShadow: '0 4px 20px rgba(0,0,0,0.06)', marginBottom: '2rem' }}>
               <ResponsiveContainer width="100%" height={280}>
                 <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <XAxis dataKey="month" tick={{ fontSize: 12, fill: '#64748b' }} />
-                  <YAxis domain={[0, 100]} tick={{ fontSize: 12, fill: '#64748b' }} />
+                  <XAxis dataKey="month" tick={{ fontSize: 12, fill: '#5e5d59' }} />
+                  <YAxis domain={[0, 100]} tick={{ fontSize: 12, fill: '#5e5d59' }} />
                   <Tooltip
                     formatter={(v) => [`${v}/100`, 'Score']}
-                    contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0' }}
+                    contentStyle={{ borderRadius: '8px', border: '1px solid #f0eee6' }}
                   />
                   <Bar dataKey="score" radius={[6, 6, 0, 0]}>
                     {chartData.map((entry, i) => (
-                      <Cell key={i} fill={entry.score >= 70 ? '#4ade80' : entry.score >= 50 ? '#fbbf24' : '#f87171'} />
+                      <Cell key={i} fill={entry.score >= 70 ? '#5ac576' : entry.score >= 50 ? '#fbbf24' : '#f87171'} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -206,7 +206,7 @@ const DestinationDetails = () => {
             </div>
             {bestTime?.top_months && (
               <div>
-                <h3 style={{ fontWeight: 700, color: '#1e293b', marginBottom: '1rem' }}>Top 3 Months</h3>
+                <h3 style={{ fontWeight: 700, color: '#141413', marginBottom: '1rem' }}>Top 3 Months</h3>
                 <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                   {bestTime.top_months.map((m, i) => (
                     <div key={i} style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '12px', padding: '1rem 1.5rem', textAlign: 'center' }}>
@@ -223,27 +223,27 @@ const DestinationDetails = () => {
         {/* Attractions */}
         {activeTab === 'attractions' && (
           <div>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1e293b', marginBottom: '1.5rem' }}>Top Attractions</h2>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#141413', marginBottom: '1.5rem' }}>Top Attractions</h2>
             {dest.attractions && dest.attractions.length > 0 ? (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
                 {dest.attractions.map((a) => (
-                  <div key={a.id} style={{ background: 'white', borderRadius: '16px', padding: '1.5rem', boxShadow: '0 4px 16px rgba(0,0,0,0.06)', border: '1px solid #f1f5f9' }}>
+                  <div key={a.id} style={{ background: 'white', borderRadius: '16px', padding: '1.5rem', boxShadow: '0 4px 16px rgba(0,0,0,0.06)', border: '1px solid #faf9f5' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-                      <h3 style={{ fontWeight: 700, color: '#1e293b', fontSize: '1rem', flex: 1 }}>{a.name}</h3>
+                      <h3 style={{ fontWeight: 700, color: '#141413', fontSize: '1rem', flex: 1 }}>{a.name}</h3>
                       {a.rating && (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px', background: '#E8F8F2', padding: '4px 8px', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 600, color: '#088A52', flexShrink: 0, marginLeft: '0.5rem' }}>
                           <Star size={12} fill="#0BA060" stroke="none" /> {Number(a.rating).toFixed(1)}
                         </div>
                       )}
                     </div>
-                    <div style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '0.5rem' }}>{a.type}</div>
+                    <div style={{ fontSize: '0.85rem', color: '#5e5d59', marginBottom: '0.5rem' }}>{a.type}</div>
                     {a.entry_cost_max > 0 && (
-                      <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#1e293b' }}>
+                      <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#141413' }}>
                         ₹{Number(a.entry_cost_max).toLocaleString('en-IN')} entry
                       </div>
                     )}
                     {a.avg_visit_duration_hours && (
-                      <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <div style={{ fontSize: '0.8rem', color: '#87867f', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <Clock size={12} /> {a.avg_visit_duration_hours}h avg visit
                       </div>
                     )}
@@ -251,7 +251,7 @@ const DestinationDetails = () => {
                 ))}
               </div>
             ) : (
-              <div style={{ textAlign: 'center', padding: '4rem', background: '#f8fafc', borderRadius: '16px', color: '#64748b' }}>
+              <div style={{ textAlign: 'center', padding: '4rem', background: '#f5f4ed', borderRadius: '16px', color: '#5e5d59' }}>
                 No attraction data available yet.
               </div>
             )}
@@ -261,69 +261,69 @@ const DestinationDetails = () => {
         {/* Budget Estimate */}
         {activeTab === 'budget' && (
           <div style={{ maxWidth: '600px' }}>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.5rem' }}>Budget Estimator</h2>
-            <p style={{ color: '#64748b', marginBottom: '2rem' }}>Get a cost breakdown before you commit to planning</p>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#141413', marginBottom: '0.5rem' }}>Budget Estimator</h2>
+            <p style={{ color: '#5e5d59', marginBottom: '2rem' }}>Get a cost breakdown before you commit to planning</p>
 
-            <form onSubmit={handleBudgetEstimate} style={{ background: '#f8fafc', borderRadius: '16px', padding: '2rem', border: '1px solid #e2e8f0', marginBottom: '2rem' }}>
+            <form onSubmit={handleBudgetEstimate} style={{ background: '#f5f4ed', borderRadius: '16px', padding: '2rem', border: '1px solid #f0eee6', marginBottom: '2rem' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                 <div>
-                  <label style={{ display: 'block', fontWeight: 600, color: '#1e293b', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Duration (days)</label>
+                  <label style={{ display: 'block', fontWeight: 600, color: '#141413', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Duration (days)</label>
                   <input
                     type="number"
                     min={1}
                     max={21}
                     value={budgetForm.duration}
                     onChange={(e) => setBudgetForm(p => ({ ...p, duration: Number(e.target.value) }))}
-                    style={{ width: '100%', padding: '0.75rem 1rem', border: '1.5px solid #e2e8f0', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.95rem', outline: 'none' }}
+                    style={{ width: '100%', padding: '0.75rem 1rem', border: '1.5px solid #f0eee6', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.95rem', outline: 'none' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontWeight: 600, color: '#1e293b', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Travelers</label>
+                  <label style={{ display: 'block', fontWeight: 600, color: '#141413', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Travelers</label>
                   <input
                     type="number"
                     min={1}
                     max={20}
                     value={budgetForm.travelers}
                     onChange={(e) => setBudgetForm(p => ({ ...p, travelers: Number(e.target.value) }))}
-                    style={{ width: '100%', padding: '0.75rem 1rem', border: '1.5px solid #e2e8f0', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.95rem', outline: 'none' }}
+                    style={{ width: '100%', padding: '0.75rem 1rem', border: '1.5px solid #f0eee6', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.95rem', outline: 'none' }}
                   />
                 </div>
               </div>
               <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontWeight: 600, color: '#1e293b', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Style</label>
+                <label style={{ display: 'block', fontWeight: 600, color: '#141413', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Style</label>
                 <select
                   value={budgetForm.budget_category}
                   onChange={(e) => setBudgetForm(p => ({ ...p, budget_category: e.target.value }))}
-                  style={{ width: '100%', padding: '0.75rem 1rem', border: '1.5px solid #e2e8f0', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.95rem', outline: 'none', background: 'white' }}
+                  style={{ width: '100%', padding: '0.75rem 1rem', border: '1.5px solid #f0eee6', borderRadius: '10px', fontFamily: 'inherit', fontSize: '0.95rem', outline: 'none', background: 'white' }}
                 >
                   <option value="budget">Budget</option>
                   <option value="mid">Mid-Range</option>
                   <option value="luxury">Luxury</option>
                 </select>
               </div>
-              <button type="submit" disabled={budgetLoading} style={{ width: '100%', padding: '1rem', background: '#1e293b', color: 'white', border: 'none', borderRadius: '12px', fontFamily: 'inherit', fontWeight: 700, fontSize: '1rem', cursor: 'pointer' }}>
+              <button type="submit" disabled={budgetLoading} style={{ width: '100%', padding: '1rem', background: '#141413', color: 'white', border: 'none', borderRadius: '12px', fontFamily: 'inherit', fontWeight: 700, fontSize: '1rem', cursor: 'pointer' }}>
                 {budgetLoading ? 'Calculating...' : 'Estimate Budget'}
               </button>
             </form>
 
             {budgetEstimate && (
               <div style={{ background: 'white', borderRadius: '16px', padding: '2rem', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
-                <h3 style={{ fontWeight: 700, color: '#1e293b', marginBottom: '1.5rem', fontSize: '1.2rem' }}>
+                <h3 style={{ fontWeight: 700, color: '#141413', marginBottom: '1.5rem', fontSize: '1.2rem' }}>
                   Estimated Total: ₹{Number(budgetEstimate.total || budgetEstimate.total_estimated || 0).toLocaleString('en-IN')}
                 </h3>
                 {(budgetEstimate.breakdown || budgetEstimate.category_breakdown) && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                     {Object.entries(budgetEstimate.breakdown || budgetEstimate.category_breakdown || {}).map(([k, v]) => (
-                      <div key={k} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem 0', borderBottom: '1px solid #f1f5f9' }}>
-                        <span style={{ color: '#64748b', textTransform: 'capitalize' }}>{k}</span>
-                        <span style={{ fontWeight: 600, color: '#1e293b' }}>₹{Number(v).toLocaleString('en-IN')}</span>
+                      <div key={k} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem 0', borderBottom: '1px solid #faf9f5' }}>
+                        <span style={{ color: '#5e5d59', textTransform: 'capitalize' }}>{k}</span>
+                        <span style={{ fontWeight: 600, color: '#141413' }}>₹{Number(v).toLocaleString('en-IN')}</span>
                       </div>
                     ))}
                   </div>
                 )}
                 <Link
                   to={`/planner?destination=${encodeURIComponent(dest.name)}`}
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '1.5rem', background: '#4ade80', color: '#0f172a', padding: '1rem', borderRadius: '12px', fontWeight: 700, textDecoration: 'none' }}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '1.5rem', background: '#5ac576', color: '#141413', padding: '1rem', borderRadius: '12px', fontWeight: 700, textDecoration: 'none' }}
                 >
                   <Sparkles size={16} /> Plan This Trip
                 </Link>

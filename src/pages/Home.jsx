@@ -59,58 +59,6 @@ function Logo({ onDark = false }) {
   );
 }
 
-/* ---------- Inline Nav (inside hero card) ---------- */
-function InlineNav({ onPlan }) {
-  const [open, setOpen] = useState(null);
-  const navigate = useNavigate();
-
-  const items = [
-    { label: 'Home', key: 'home' },
-    { label: 'Destinations', key: 'dest', menu: ['Jaipur, Rajasthan', 'Kerala Backwaters', 'Varanasi, UP', 'Leh-Ladakh', 'Goa', 'Rishikesh & Haridwar', 'Hampi, Karnataka'] },
-    { label: 'Planner', key: 'plan', menu: ['AI Itinerary Builder', 'Multi-city yatra', 'Group planning', 'Budget optimizer in ₹'] },
-    { label: 'Resources', key: 'res', menu: ['Travel guides', 'IRCTC & flights', 'Packing lists', 'Community'] },
-    { label: 'Pricing', key: 'price' }
-  ];
-
-  return (
-    <div className={styles.inlineNav} style={{ position: 'relative', zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 22px', margin: '14px', borderRadius: 999, background: 'rgba(255,255,255,0.55)', backdropFilter: 'blur(18px) saturate(140%)', WebkitBackdropFilter: 'blur(18px) saturate(140%)', border: '1px solid rgba(255,255,255,0.7)', boxShadow: '0 8px 28px -12px rgba(60,30,15,0.18), inset 0 1px 0 rgba(255,255,255,0.8)' }}>
-      <Logo />
-      <nav style={{ display: 'flex', gap: 4, alignItems: 'center' }} onMouseLeave={() => setOpen(null)}>
-        {items.map((it) =>
-          <div key={it.key} style={{ position: 'relative' }}>
-            <button
-              onMouseEnter={() => setOpen(it.menu ? it.key : null)}
-              style={{
-                all: 'unset', cursor: 'pointer', padding: '9px 14px', fontSize: 13.5, fontWeight: 500,
-                color: it.key === 'home' ? 'var(--ink)' : 'var(--ink-soft)',
-                display: 'inline-flex', alignItems: 'center', gap: 5,
-                borderBottom: it.key === 'home' ? '1.5px solid var(--ink)' : '1.5px solid transparent'
-              }}>
-              {it.label}{it.menu && <I.chev style={{ opacity: 0.5 }} />}
-            </button>
-            {it.menu && open === it.key &&
-              <div style={{ position: 'absolute', top: '100%', left: 0, marginTop: 8, minWidth: 220, background: 'var(--card)', border: '1px solid var(--line)', borderRadius: 14, padding: 6, boxShadow: '0 20px 40px -20px rgba(40,30,20,0.18)', zIndex: 50 }}>
-                {it.menu.map((m, i) =>
-                  <div key={i} style={{ padding: '10px 12px', fontSize: 13, color: 'var(--ink-soft)', borderRadius: 9, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--a1)'; e.currentTarget.style.color = 'var(--ink)'; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--ink-soft)'; }}>
-                    {m}<I.arrow style={{ opacity: 0.5 }} />
-                  </div>
-                )}
-              </div>
-            }
-          </div>
-        )}
-      </nav>
-      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-        <button onClick={() => navigate('/login')} style={{ all: 'unset', cursor: 'pointer', fontSize: 13.5, fontWeight: 500, padding: '9px 14px', color: 'var(--ink-soft)' }}>Sign in</button>
-        <button onClick={onPlan} style={{ all: 'unset', cursor: 'pointer', fontSize: 13.5, fontWeight: 500, padding: '10px 18px', background: 'var(--a1)', color: 'var(--ink)', borderRadius: 'var(--radius-lg)', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-          Plan a trip <I.arrow />
-        </button>
-      </div>
-    </div>
-  );
-}
 
 /* ---------- Gradient wash ---------- */
 function Wash({ intensity }) {
@@ -204,7 +152,7 @@ function ItineraryCard({ variant, onCycle }) {
           </button>
         </div>
 
-        <div style={{ fontFamily: 'var(--font-heading)', fontSize: 22, lineHeight: 1.2, marginBottom: 8, letterSpacing: '-0.01em' }}>
+        <div style={{ fontFamily: 'var(--serif)', fontSize: 22, lineHeight: 1.2, marginBottom: 8, letterSpacing: '-0.01em' }}>
           {data.dest.split(',')[0]} <span style={{ fontStyle: 'italic', color: 'var(--a3)' }}>itinerary</span>
         </div>
         <div style={{ fontSize: 12.5, lineHeight: 1.55, color: 'var(--ink-soft)', marginBottom: 16 }}>
@@ -308,40 +256,63 @@ function Hero({ onPlan }) {
   const navigate = useNavigate();
 
   return (
-    <div style={{ position: 'relative', minHeight: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundImage: `url(${heroBg})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          zIndex: 0,
-          filter: 'brightness(0.6)'
-        }}
-      />
-      <div style={{ position: 'relative', zIndex: 10 }}>
-        <InlineNav onPlan={onPlan} />
-      </div>
+    <div style={{ position: 'relative', minHeight: 700, overflow: 'hidden' }}>
+      <Wash intensity={intensity} />
 
-      <div className={styles.sectionContainer} style={{ position: 'relative', zIndex: 2, flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 24px', textAlign: 'center' }}>
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }} style={{ maxWidth: 800 }}>
-          <h1 className={styles.heroHeadline} style={{ fontSize: 96, lineHeight: 1.05, letterSpacing: '-0.02em', fontWeight: 600, margin: 0, marginBottom: 24, color: '#ffffff', textShadow: '0 4px 24px rgba(0,0,0,0.4)' }}>
-            Find your <span style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic', fontWeight: 400, color: 'var(--a1)' }}>Ecstacy</span>
-          </h1>
+      <div className={`${styles.responsiveGrid} ${styles.heroContainer} ${styles.sectionContainer}`} style={{ position: 'relative', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, alignItems: 'center' }}>
+        {/* Left: headline — staggered children */}
+        <div style={{ position: 'relative', zIndex: 2 }}>
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1], delay: 0 }} style={{ marginBottom: 18 }}>
+            <span className={styles.mono} style={{ letterSpacing: '0.05em' }}>{'{ ai · trip · planner }'}</span>
+          </motion.div>
 
-          <p style={{ fontSize: 28, lineHeight: 1.5, color: 'rgba(255, 255, 255, 0.9)', margin: '0 auto', marginBottom: 40, maxWidth: 700, fontWeight: 400, textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}>
-            Smart trip planning made easy.
-          </p>
+          <motion.h1
+            initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+            className={styles.heroHeadline}
+            style={{ fontFamily: 'var(--serif)', fontSize: 64, lineHeight: 1.08, letterSpacing: 0, fontWeight: 500, margin: 0, marginBottom: 22, color: 'var(--ink)' }}
+          >
+            {parts[0]}
+            <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontWeight: 400, color: 'var(--a3)' }}>{headlineItalic}</span>
+            {parts[1] || ''}
+          </motion.h1>
 
-          <div style={{ display: 'flex', gap: 14, alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button onClick={onPlan} style={{ all: 'unset', cursor: 'pointer', padding: '18px 36px', background: 'var(--a1)', color: 'var(--ink)', borderRadius: 'var(--radius-lg)', fontSize: 20, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 10, boxShadow: 'var(--shadow-sm)', transition: 'transform 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.03)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
-              Plan my trip <I.spark />
+          <motion.p
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1], delay: 0.22 }}
+            style={{ fontSize: 15.5, lineHeight: 1.55, color: 'var(--ink-soft)', maxWidth: 460, margin: 0, marginBottom: 32 }}
+          >
+            An AI trip planner for travelers who don't want cookie-cutter tours — tell it the shape of your trip and it builds the rest, from flights to dinner reservations.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.36 }}
+            className={styles.heroActions} style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}
+          >
+            <button onClick={onPlan} style={{ all: 'unset', cursor: 'pointer', padding: '14px 24px', background: 'var(--a3)', color: 'var(--card)', borderRadius: 12, fontSize: 14, fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 8, boxShadow: '0 0 0 1px var(--a3)', transition: 'transform 0.18s ease' }} onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.04)'; }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}>
+              Plan my trip free <I.arrow />
             </button>
-          </div>
+            <button onClick={() => navigate('/discover')} style={{ all: 'unset', cursor: 'pointer', padding: '14px 22px', border: '1px solid var(--line-warm)', borderRadius: 12, fontSize: 14, fontWeight: 500, background: 'var(--card)', display: 'inline-flex', alignItems: 'center', gap: 8, color: 'var(--ink)', transition: 'transform 0.18s ease' }} onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.04)'; }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}>
+              Explore destinations <I.arrow />
+            </button>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            transition={{ duration: 0.9, delay: 0.55 }}
+            style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 40, fontSize: 12, color: 'var(--ink-muted)' }}
+          >
+            <div style={{ display: 'flex', gap: 1, color: 'var(--a3)' }}>
+              {[0, 1, 2, 3, 4].map((i) => <I.star key={i} />)}
+            </div>
+            <span style={{ fontFamily: 'var(--mono)' }}>4.9 · 10,000+ trips planned</span>
+          </motion.div>
+        </div>
+
+        {/* Right: product card */}
+        <motion.div initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 2, delay: 0.18, ease: [0.16, 1, 0.3, 1] }} style={{ position: 'relative', zIndex: 2, display: 'flex', justifyContent: 'flex-end' }}>
+          <ItineraryCard variant={cardVariant} onCycle={() => setCardVariant((cardVariant + 1) % 3)} />
         </motion.div>
       </div>
     </div>
@@ -359,67 +330,29 @@ function Philosophy() {
   ];
 
   return (
-    <motion.section 
-      initial={{ opacity: 0, y: 30 }} 
-      whileInView={{ opacity: 1, y: 0 }} 
-      viewport={{ once: true, amount: 0.2 }} 
-      transition={{ duration: 0.8, ease: "easeOut" }} 
-      className={styles.sectionContainer} 
-      style={{ padding: '120px 72px', background: 'var(--page-bg)', overflow: 'hidden' }}
-    >
-      <div className={styles.responsiveGrid} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 100, alignItems: 'center' }}>
-        {/* Left: Content */}
-        <div>
-          <div className={styles.mono} style={{ marginBottom: 24 }}>{'{ about • altairgo }'}</div>
-          <h2 className={styles.sectionHeadline} style={{ fontSize: 64, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0, marginBottom: 32 }}>
-            Travel, re-imagined for the <span style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic', color: 'var(--a3)' }}>Indian</span> traveler.
+    <section className={styles.sectionContainer} style={{ paddingBlock: '100px', borderTop: '1px solid var(--line)', background: 'var(--page-bg)' }}>
+      <div className={styles.responsiveGrid} style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: 80, alignItems: 'start' }}>
+        <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}>
+          <div className={styles.mono} style={{ marginBottom: 16 }}>{'{ about · altairgo }'}</div>
+          <h2 className={styles.sectionHeadline} style={{ fontSize: 48, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0 }}>
+            Travel, re-imagined for the <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--a3)' }}>Indian</span> traveler.
           </h2>
-          <p style={{ fontSize: 18, lineHeight: 1.6, color: 'var(--ink-soft)', margin: 0, marginBottom: 40, maxWidth: 540 }}>
-            Altairgo is an AI-first travel planner designed for the way India actually travels — trains, monsoons, road trips, pilgrimages, weekend escapes, and spontaneous plans. Build smarter itineraries in minutes instead of spending days researching.
+        </motion.div>
+        <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.65, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}>
+          <p style={{ fontSize: 16, lineHeight: 1.65, color: 'var(--ink-soft)', margin: 0, marginBottom: 40 }}>
+            Altairgo Intelligence is an AI-first trip planner built from the ground up for India — its seasons, its trains, its monsoons, its festivals, and the way we actually travel. Whether it's a long weekend in Goa, a pilgrimage to Badrinath, or a 14-day Rajasthan circuit, we plan it in minutes instead of weeks.
           </p>
-
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginBottom: 56 }}>
-            {features.map(f => (
-              <div key={f} style={{ padding: '10px 20px', background: 'var(--a1)', color: 'var(--ink)', borderRadius: 'var(--radius-pill)', fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ width: 4, height: 4, borderRadius: '50%', background: 'var(--ink)' }} />
-                {f}
-              </div>
-            ))}
+          <div className={styles.responsiveGrid4} style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 24, paddingTop: 32, borderTop: '1px dashed var(--line)' }}>
+            {stats.map((s, i) =>
+              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.5, delay: i * 0.1, ease: "easeOut" }}>
+                <div style={{ fontFamily: 'var(--serif)', fontSize: 44, fontStyle: 'italic', color: 'var(--a3)', lineHeight: 1 }}>{s.k}</div>
+                <div style={{ fontSize: 13, color: 'var(--ink-muted)', marginTop: 6 }}>{s.v}</div>
+              </motion.div>
+            )}
           </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
-            {props.map(p => (
-              <div key={p} style={{ display: 'flex', gap: 14 }}>
-                <div style={{ width: 18, height: 18, borderRadius: '50%', background: 'var(--a1)', display: 'grid', placeItems: 'center', flexShrink: 0, marginTop: 2 }}>
-                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5L4 7L8 3" stroke="var(--ink)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                </div>
-                <div style={{ fontSize: 15, fontWeight: 500, color: 'var(--ink)', lineHeight: 1.3 }}>{p}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Right: Floating Composition */}
-        <div style={{ position: 'relative', height: 640 }} className={styles.hideMobile}>
-          <ImageCard 
-            img={philJaipur} loc="Jaipur, Rajasthan" sub="Cultural heritage trail" 
-            style={{ top: 0, left: '15%', zIndex: 3 }} rotate={-4} 
-          />
-          <ImageCard 
-            img={philKerala} loc="Kerala Backwaters" sub="Serene canal escape" 
-            style={{ top: 120, right: 0, zIndex: 2 }} rotate={3} 
-          />
-          <ImageCard 
-            img={philGoa} loc="Goa Coastline" sub="Golden sands & sun" 
-            style={{ bottom: 120, left: 0, zIndex: 4 }} rotate={2} 
-          />
-          <ImageCard 
-            img={philHimalayas} loc="Himalayan Peaks" sub="High altitude adventure" 
-            style={{ bottom: 0, right: '15%', zIndex: 1 }} rotate={-2} 
-          />
-        </div>
+        </motion.div>
       </div>
-    </motion.section>
+    </section>
   );
 }
 
@@ -469,24 +402,24 @@ function Destinations() {
     if (scrollRef.current) scrollRef.current.scrollBy({ left: dir * 420, behavior: 'smooth' });
   };
   return (
-    <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.6, ease: "easeOut" }} style={{ padding: '100px 0 100px', borderTop: '1px solid var(--line)', background: 'var(--page-bg)', overflow: 'hidden' }}>
-      <div className={styles.sectionContainer} style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', padding: '0 72px', marginBottom: 40 }}>
-        <div>
+    <section style={{ paddingBlock: '100px', borderTop: '1px solid var(--line)', background: 'var(--card)', overflow: 'hidden' }} className={styles.sectionContainer}>
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', padding: '0 0', marginBottom: 40 }}>
+        <motion.div initial={{ opacity: 0, y: 22 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}>
           <div className={styles.mono} style={{ marginBottom: 16 }}>{'{ 02 · destinations }'}</div>
           <h2 className={styles.sectionHeadline} style={{ fontSize: 48, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0, maxWidth: 600 }}>
-            Handpicked <span style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic', color: 'var(--a3)' }}>corners</span> of India
+            Handpicked <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--a3)' }}>corners</span> of India
           </h2>
-        </div>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+        </motion.div>
+        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           <button onClick={() => scroll(-1)} style={{ all: 'unset', cursor: 'pointer', width: 44, height: 44, borderRadius: '50%', border: '1px solid var(--line)', display: 'grid', placeItems: 'center', color: 'var(--ink)' }}>
             <I.arrow style={{ transform: 'rotate(180deg)' }} />
           </button>
           <button onClick={() => scroll(1)} style={{ all: 'unset', cursor: 'pointer', width: 44, height: 44, borderRadius: '50%', background: 'var(--ink)', color: 'var(--page-bg)', display: 'grid', placeItems: 'center' }}>
             <I.arrow />
           </button>
-        </div>
+        </motion.div>
       </div>
-      <div ref={scrollRef} className={`${styles.destinationsScroll} ${styles.sectionContainer}`} style={{ display: 'flex', gap: 24, padding: '0 72px 20px', overflowX: 'auto', scrollSnapType: 'x mandatory' }}>
+      <div ref={scrollRef} className={styles.destinationsScroll} style={{ display: 'flex', gap: 20, padding: '0 0 4px', overflowX: 'auto', scrollSnapType: 'x mandatory', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
         {DESTINATIONS.map((d, i) =>
           <motion.div key={i}
             initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.5, delay: i * 0.08, ease: "easeOut" }}
@@ -538,7 +471,7 @@ function Destinations() {
           </motion.div>
         )}
       </div>
-    </motion.section>
+    </section>
   );
 }
 
@@ -578,32 +511,17 @@ const JOURNEYS = [
 
 function ExploreJourneys() {
   return (
-    <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.6, ease: "easeOut" }} style={{ padding: '100px 72px', borderTop: '1px solid var(--line)', background: 'var(--page-bg)' }} className={styles.sectionContainer}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 40 }}>
-        <h2 style={{ fontSize: 24, fontWeight: 500, letterSpacing: '-0.01em', margin: 0, color: 'var(--ink)' }}>
-          Explore Journeys
-        </h2>
-        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-          <I.search style={{ position: 'absolute', left: 14, color: 'var(--ink-muted)' }} />
-          <input 
-            type="text" 
-            placeholder="Search destinations" 
-            style={{ 
-              all: 'unset', 
-              padding: '10px 16px 10px 36px', 
-              border: '1px solid var(--line)', 
-              borderRadius: 'var(--radius-lg)', 
-              fontSize: 14, 
-              color: 'var(--ink)', 
-              background: 'var(--card)',
-              width: 200,
-              boxShadow: 'var(--shadow-xs)',
-              transition: 'box-shadow 0.2s ease, border-color 0.2s ease'
-            }} 
-            onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--a3)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(var(--a3-rgb), 0.1)'; }}
-            onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--line)'; e.currentTarget.style.boxShadow = 'var(--shadow-xs)'; }}
-          />
-        </div>
+    <section style={{ paddingBlock: '100px', borderTop: '1px solid var(--line)', background: 'var(--card)' }} className={styles.sectionContainer}>
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 48 }}>
+        <motion.div initial={{ opacity: 0, y: 22 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}>
+          <div className={styles.mono} style={{ marginBottom: 16 }}>{'{ 04 · journal }'}</div>
+          <h2 style={{ fontSize: 48, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0, maxWidth: 640 }} className={styles.sectionHeadline}>
+            Stories from the <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--a3)' }}>road</span>
+          </h2>
+        </motion.div>
+        <motion.button initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }} onClick={() => navigate('/blogs')} style={{ all: 'unset', cursor: 'pointer', fontSize: 13, color: 'var(--ink)', padding: '10px 18px', border: '1px solid var(--line)', borderRadius: 999, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          All posts <I.arrow />
+        </motion.button>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }} className={`${styles.responsiveGrid} ${styles.responsiveGrid3}`}>
         {JOURNEYS.map((j, i) =>
@@ -644,103 +562,56 @@ function ExploreJourneys() {
           </motion.article>
         )}
       </div>
-    </motion.section>
-  );
+    </section>);
 }
 
 
-/* ---------- How It Works (Premium Accordion) ---------- */
-function HowItWorks() {
-  const [openAccordion, setOpenAccordion] = useState(0);
 
-  const accordions = [
-    { q: 'When are you traveling?', a: 'Altairgo automatically adjusts recommendations based on season, weather, festivals, monsoons, and crowd patterns across India.' },
-    { q: 'What kind of trip are you planning?', a: 'Choose from road trips, spiritual journeys, family vacations, backpacking adventures, luxury escapes, workations, or weekend getaways.' },
-    { q: 'What’s your budget range?', a: 'Get optimized itineraries for budget, mid-range, or premium travel with smart transport and stay recommendations.' },
-    { q: 'How do you want to travel?', a: 'Plan trips around trains, flights, buses, road travel, or mixed transport with realistic India-first routing.' },
-    { q: 'What makes Altairgo different?', a: 'Unlike generic travel planners, Altairgo is built specifically for Indian travel behavior, regional seasons, train connectivity, and real-world trip flexibility.' }
+/* ---------- How It Works (4-step process) ---------- */
+function HowItWorks() {
+  const steps = [
+    { n: '01', t: 'Tell us your dream trip', d: 'Destination, days, style, budget — the AI reads shorthand and ordinary sentences.' },
+    { n: '02', t: 'AI builds your itinerary', d: 'A day-by-day plan with real costs in ₹, live weather, and bookable experiences.' },
+    { n: '03', t: 'Customize every detail', d: 'Swap hotels, stretch days, add a side trip — the trip editor rebuilds around you.' },
+    { n: '04', t: 'Track, book, and go', d: 'One-tap bookings for flights, trains, stays. Offline-ready when you land.' }
   ];
 
   return (
-    <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.6, ease: "easeOut" }} id="how" className={styles.sectionContainer} style={{ padding: '120px 72px', borderTop: '1px solid var(--line)', background: 'var(--page-bg)' }}>
-      
-      {/* Top Header Section */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 60, gap: 40, flexWrap: 'wrap' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '10px 18px', background: 'var(--ink)', color: 'var(--card)', borderRadius: 'var(--radius-pill)', fontSize: 13, fontWeight: 500, letterSpacing: '0.02em' }}>
-          <I.arrow style={{ transform: 'rotate(90deg)', opacity: 0.8 }} /> How Altairgo Works
-        </div>
-        <div style={{ fontSize: 24, fontWeight: 400, color: 'var(--ink-soft)', maxWidth: 500, lineHeight: 1.4 }}>
-          Turn chaotic chats into a smooth travel experience. Align decisions and create an organized plan.
-        </div>
-      </div>
+    <section id="how" className={styles.sectionContainer} style={{ paddingBlock: '110px', borderTop: '1px solid var(--line)', background: 'var(--page-bg)', position: 'relative' }}>
+      <motion.div
+        initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+        style={{ textAlign: 'center', marginBottom: 70 }}
+      >
+        <div className={styles.mono} style={{ marginBottom: 16 }}>{'{ 02 · how it works }'}</div>
+        <h2 className={styles.sectionHeadline} style={{ fontSize: 52, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0, maxWidth: 760, marginInline: 'auto' }}>
+          From idea to <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--a3)' }}>boarding pass</span> in four steps
+        </h2>
+      </motion.div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr', gap: 80, alignItems: 'flex-start' }} className={styles.responsiveGrid}>
-        
-        {/* Left Side */}
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <div style={{ borderRadius: 'var(--radius-xl)', overflow: 'hidden', height: 420, marginBottom: 40, background: 'var(--card)' }}>
-            <motion.img 
-              src={philHimalayas} 
-              alt="Indian Journey" 
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              whileHover={{ scale: 1.03 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-            />
-          </div>
-          <h2 style={{ fontSize: 44, lineHeight: 1.05, letterSpacing: '-0.02em', fontWeight: 500, margin: 0, marginBottom: 20, color: 'var(--ink)' }}>
-            Plan Your Perfect Indian Journey — Without the Chaos.
-          </h2>
-          <p style={{ fontSize: 16, color: 'var(--ink-soft)', lineHeight: 1.6, margin: 0, marginBottom: 32, maxWidth: 500 }}>
-            Altairgo turns scattered travel ideas into smart AI-powered itineraries built for the way India actually travels — trains, road trips, monsoons, pilgrimages, long weekends, and spontaneous plans.
-          </p>
-          <div>
-            <button style={{ all: 'unset', cursor: 'pointer', fontSize: 15, fontWeight: 500, color: 'var(--ink)', borderBottom: '1.5px solid var(--ink)', paddingBottom: 4, display: 'inline-flex', alignItems: 'center', gap: 8, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = 0.7} onMouseLeave={(e) => e.currentTarget.style.opacity = 1}>
-              Explore Smarter <I.arrow />
-            </button>
-          </div>
-        </div>
-
-        {/* Right Side */}
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 0, marginBottom: 60 }}>
-            {accordions.map((item, i) => (
-              <div key={i} style={{ borderBottom: '1px solid var(--line)', padding: '24px 0' }}>
-                <div 
-                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
-                  onClick={() => setOpenAccordion(openAccordion === i ? -1 : i)}
-                >
-                  <h3 style={{ fontSize: 20, fontWeight: 500, margin: 0, color: openAccordion === i ? 'var(--ink)' : 'var(--ink-soft)', transition: 'color 0.2s' }}>{item.q}</h3>
-                  <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--a1)', display: 'grid', placeItems: 'center', color: 'var(--ink-soft)', transition: 'transform 0.3s, background 0.2s', transform: openAccordion === i ? 'rotate(45deg)' : 'rotate(0)' }}>
-                    <I.plus />
-                  </div>
-                </div>
-                <motion.div 
-                  initial={{ height: 0, opacity: 0 }} 
-                  animate={{ height: openAccordion === i ? 'auto' : 0, opacity: openAccordion === i ? 1 : 0 }} 
-                  transition={{ duration: 0.3, ease: 'easeInOut' }}
-                  style={{ overflow: 'hidden' }}
-                >
-                  <p style={{ fontSize: 15, color: 'var(--ink-soft)', lineHeight: 1.6, margin: 0, paddingTop: 16, paddingBottom: 8, maxWidth: 480 }}>
-                    {item.a}
-                  </p>
-                </motion.div>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start', alignSelf: 'flex-end' }}>
-            <div style={{ width: 150, height: 160, borderRadius: 'var(--radius-lg)', overflow: 'hidden', transform: 'translateY(20px)' }}>
-              <img src={destRajasthan} alt="Rajasthan" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+      <div className={styles.responsiveGrid4} style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0, position: 'relative' }}>
+        {/* connecting line */}
+        <div style={{ position: 'absolute', top: 28, left: '12.5%', right: '12.5%', height: 1, borderTop: '1px dashed var(--line)' }} />
+        {steps.map((s, i) =>
+          <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.5, delay: i * 0.15, ease: "easeOut" }} style={{ padding: '0 20px', position: 'relative' }}>
+            <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', marginBottom: 28 }}>
+              <div style={{
+                width: 56, height: 56, borderRadius: '50%',
+                background: i === 0 ? 'var(--ink)' : 'var(--card)',
+                color: i === 0 ? 'var(--a2)' : 'var(--a3)',
+                border: i === 0 ? 'none' : '1px solid var(--line)',
+                display: 'grid', placeItems: 'center',
+                fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: 22, fontWeight: 400,
+                boxShadow: '0 4px 16px -6px rgba(60,30,15,0.15)',
+                position: 'relative', zIndex: 2
+              }}>{s.n}</div>
             </div>
-            <div style={{ width: 170, height: 120, borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
-              <img src={destKerala} alt="Kerala" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            </div>
-          </div>
-        </div>
-
+            <h3 style={{ fontSize: 18, fontWeight: 500, letterSpacing: '-0.01em', margin: 0, marginBottom: 10, textAlign: 'center' }}>{s.t}</h3>
+            <p style={{ fontSize: 13.5, color: 'var(--ink-soft)', lineHeight: 1.6, margin: 0, textAlign: 'center', maxWidth: 240, marginInline: 'auto' }}>{s.d}</p>
+          </motion.div>
+        )}
       </div>
-    </motion.section>
-  );
+    </section>);
 }
 
 /* ---------- Platform Capabilities ---------- */
@@ -767,12 +638,12 @@ function Capabilities() {
     }
   };
   return (
-    <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.6, ease: "easeOut" }} style={{ padding: '110px 72px', borderTop: '1px solid var(--line)', background: 'var(--card)' }} className={styles.sectionContainer}>
+    <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.6, ease: "easeOut" }} style={{ paddingBlock: '110px', borderTop: '1px solid var(--line)', background: 'var(--card)' }} className={styles.sectionContainer}>
       <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 56, flexWrap: 'wrap', gap: 24 }}>
         <div>
           <div className={styles.mono} style={{ marginBottom: 16 }}>{'{ 04 · capabilities }'}</div>
           <h2 style={{ fontSize: 48, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0, maxWidth: 640 }} className={styles.sectionHeadline}>
-            Six <span style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic', color: 'var(--a3)' }}>superpowers</span>, one planner.
+            Six <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--a3)' }}>superpowers</span>, one planner.
           </h2>
         </div>
         <p style={{ fontSize: 15, color: 'var(--ink-soft)', maxWidth: 380, lineHeight: 1.6, margin: 0 }}>
@@ -798,119 +669,190 @@ function Capabilities() {
   );
 }
 
-/* ---------- Cinematic Footer ---------- */
-function CinematicFooter({ onPlan }) {
-  const cols = [
-    { h: 'Product', items: ['AI Itinerary', 'Destinations', 'Group planning', 'Mobile app'] },
-    { h: 'Company', items: ['About us', 'Careers', 'Press', 'Contact', 'Partners'] },
-    { h: 'Resources', items: ['Travel guides', 'Visa help', 'Blog', 'Community', 'Support'] },
-    { h: 'Legal', items: ['Privacy', 'Terms', 'Refund policy', 'Cookie policy', 'GST details'] }
-  ];
+/* ---------- Packages ---------- */
+const PACKAGES = [
+  {
+    name: 'Wanderer',
+    price: 0,
+    period: 'forever',
+    tag: 'Free',
+    desc: 'Everything you need to plan your first trip — no credit card, no catch.',
+    feats: ['3 AI itineraries / month', 'Day-by-day planner', 'Budget estimator', 'PDF export'],
+    primary: false,
+    cta: 'Start free'
+  },
+  {
+    name: 'Explorer',
+    price: 499,
+    period: 'per month',
+    tag: 'Most loved',
+    desc: 'Unlimited trips, real-time bookings, and the full AltairGO intelligence stack.',
+    feats: ['Unlimited itineraries', 'One-tap bookings', 'Live weather rerouting', 'Smart budget tracking', 'Priority AI queue', 'Trip sharing'],
+    primary: true,
+    cta: 'Choose Explorer'
+  }
+];
 
+function Packages() {
+  const navigate = useNavigate();
   return (
-    <footer style={{ position: 'relative', width: '100%' }}>
-      {/* Cinematic Background & Floating Card */}
-      <div style={{ position: 'relative', width: '100%', padding: '80px 24px', display: 'flex', justifyContent: 'center', overflow: 'hidden' }}>
-        
-        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-          <img src={destKashmir2} alt="Kashmir Background" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.3))' }} />
-        </div>
-
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }} 
-          whileInView={{ opacity: 1, y: 0 }} 
-          viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          whileHover={{ y: -8, boxShadow: 'var(--shadow-xl)' }}
-          style={{ 
-            position: 'relative', zIndex: 1, background: 'var(--card)', borderRadius: 'var(--radius-xl)', 
-            padding: 24, width: '100%', maxWidth: 440, boxShadow: 'var(--shadow-lg)',
-            transition: 'transform 0.4s ease, box-shadow 0.4s ease'
-          }}
-        >
-          {/* Card Header */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
-            <div>
-              <div style={{ fontSize: 24, fontWeight: 600, color: 'var(--ink)' }}>Kashmir Valleys</div>
-              <div style={{ fontSize: 15, color: 'var(--ink-soft)', marginTop: 4 }}>Jammu & Kashmir</div>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', background: '#F6F1E6', padding: '6px 14px', borderRadius: 'var(--radius-sm)', border: '1px solid #EAE3D1' }}>
-              <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--a3)', lineHeight: 1.2 }}>₹45,000</div>
-              <div style={{ fontSize: 11, color: 'var(--ink-soft)' }}>per person</div>
-            </div>
-          </div>
-
-          {/* Main Image inside Card */}
-          <div style={{ position: 'relative', height: 320, borderRadius: 'var(--radius-lg)', overflow: 'hidden', marginBottom: 24 }}>
-            <img src={destKashmir2} alt="Kashmir" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            
-            {/* Top Right Pill */}
-            <div style={{ position: 'absolute', top: 16, right: 16, background: '#F6F1E6', color: '#2E2E2E', padding: '6px 12px', borderRadius: 'var(--radius-sm)', fontSize: 12, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6, boxShadow: 'var(--shadow-xs)' }}>
-              <I.pin style={{ width: 14, height: 14 }} /> Open Trip
-            </div>
-            
-            {/* Bottom Row Pills */}
-            <div style={{ position: 'absolute', bottom: 16, left: 16, right: 16, display: 'flex', gap: 8, overflowX: 'auto' }}>
-              {['Private Trip', 'AI Curated', 'Best Season'].map(tag => (
-                <div key={tag} style={{ background: '#F6F1E6', color: '#2E2E2E', padding: '6px 12px', borderRadius: 'var(--radius-pill)', fontSize: 11, fontWeight: 500, whiteSpace: 'nowrap', boxShadow: 'var(--shadow-xs)' }}>
-                  {tag}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Card Bottom Area */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ fontSize: 13, color: 'var(--ink-soft)', fontWeight: 500, fontStyle: 'italic' }}>
-              Crafted for Indian travelers
-            </div>
-            <button onClick={onPlan} style={{ all: 'unset', cursor: 'pointer', background: 'var(--ink)', color: 'var(--card)', padding: '12px 24px', borderRadius: 'var(--radius-lg)', fontSize: 14, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 8, transition: 'background 0.2s ease' }} onMouseEnter={(e) => e.currentTarget.style.background = 'var(--ink-soft)'} onMouseLeave={(e) => e.currentTarget.style.background = 'var(--ink)'}>
-              Plan a Trip <I.arrow />
-            </button>
-          </div>
-        </motion.div>
+    <motion.section
+      initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.6, ease: 'easeOut' }}
+      style={{ paddingBlock: '110px', borderTop: '1px solid var(--line)', background: 'var(--page-bg)' }}
+      className={styles.sectionContainer}
+    >
+      <div style={{ textAlign: 'center', marginBottom: 64 }}>
+        <div className={styles.mono} style={{ marginBottom: 16 }}>{'{ 05 · pricing }'}</div>
+        <h2 className={styles.sectionHeadline} style={{ fontSize: 52, lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 500, margin: 0, maxWidth: 640, marginInline: 'auto' }}>
+          Simple plans, <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--a3)' }}>no surprises.</span>
+        </h2>
       </div>
 
-      {/* Minimal Elegant Footer Details */}
-      <div style={{ position: 'relative', padding: '80px 72px 40px', background: 'var(--page-bg)', borderTop: '1px solid var(--line)', overflow: 'hidden' }} className={styles.sectionContainer}>
-        {/* Soft atmospheric background */}
-        <div style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
-          <img src={footerBg} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.25, mixBlendMode: 'multiply' }} />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, transparent, var(--page-bg))' }} />
-        </div>
+      <div className={styles.pkgGrid} style={{ gridTemplateColumns: 'repeat(2, 1fr)', gap: 20, maxWidth: 820, marginInline: 'auto' }}>
+        {PACKAGES.map((pkg) => (
+          <motion.div
+            key={pkg.name}
+            whileHover={{ y: -4 }}
+            transition={{ duration: 0.22 }}
+            style={{
+              borderRadius: 20,
+              padding: '40px 36px',
+              background: pkg.primary ? 'var(--ink)' : 'var(--card)',
+              color: pkg.primary ? 'var(--card)' : 'var(--ink)',
+              border: pkg.primary ? 'none' : '1px solid var(--line-warm)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}
+          >
+            {/* background glow for primary */}
+            {pkg.primary && (
+              <svg width="100%" height="100%" viewBox="0 0 400 300" preserveAspectRatio="none"
+                style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+                <defs>
+                  <radialGradient id="pkgg" cx="0.5" cy="1" r="0.8">
+                    <stop offset="0" stopColor="var(--a3)" stopOpacity="0.22" />
+                    <stop offset="1" stopColor="transparent" stopOpacity="0" />
+                  </radialGradient>
+                </defs>
+                <rect width="400" height="300" fill="url(#pkgg)" />
+              </svg>
+            )}
 
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr repeat(4, 1fr)', gap: 40, marginBottom: 60 }} className={`${styles.responsiveGrid} ${styles.footerGrid}`}>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-                <Logo onDark={false} />
-              </div>
-              <p style={{ fontSize: 14, color: 'var(--ink-soft)', lineHeight: 1.6, maxWidth: 280, margin: 0, marginBottom: 24 }}>
-                An AI trip planner, made in India, for travelers who want to spend less time planning and more time being there.
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontFamily: 'var(--mono)', fontSize: 12, color: 'var(--ink-muted)' }}>
-                <div>hello@altairgo.in</div>
-                <div>Bengaluru · Mumbai · Delhi</div>
-              </div>
-            </div>
-            {cols.map((c, i) =>
-              <div key={i}>
-                <div style={{ fontSize: 11, fontFamily: 'var(--mono)', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--ink-muted)', marginBottom: 18 }}>{c.h}</div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  {c.items.map((it, j) =>
-                    <a key={j} style={{ fontSize: 14, color: 'var(--ink-soft)', textDecoration: 'none', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--ink)'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--ink-soft)'}>{it}</a>
+            <div style={{ position: 'relative' }}>
+              {/* tag */}
+              <span style={{
+                display: 'inline-block', marginBottom: 24,
+                padding: '4px 10px', borderRadius: 999, fontSize: 11, fontWeight: 500,
+                background: pkg.primary ? 'var(--a3)' : 'var(--a1)',
+                color: pkg.primary ? 'var(--card)' : 'var(--a3)',
+                fontFamily: 'var(--mono)'
+              }}>{pkg.tag}</span>
+
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ fontSize: 22, fontWeight: 500, letterSpacing: '-0.01em', marginBottom: 4 }}>{pkg.name}</div>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                  <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: 44, lineHeight: 1, letterSpacing: '-0.02em' }}>
+                    {pkg.price === 0 ? 'Free' : `₹${pkg.price}`}
+                  </span>
+                  {pkg.price > 0 && (
+                    <span style={{ fontSize: 13, opacity: 0.55 }}>/ {pkg.period}</span>
                   )}
                 </div>
               </div>
-            )}
-          </div>
-          
-          <div style={{ paddingTop: 30, borderTop: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, fontFamily: 'var(--mono)', color: 'var(--ink-muted)' }}>
-            <div>© 2026 Altairgo Intelligence Pvt. Ltd. · All rights reserved.</div>
-            <div style={{ display: 'flex', gap: 24 }}>
-              <span>v1.0 · 2026</span>
+
+              <p style={{ fontSize: 13.5, lineHeight: 1.6, opacity: 0.7, marginBottom: 28, margin: '0 0 28px' }}>{pkg.desc}</p>
+
+              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 32px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {pkg.feats.map((f) => (
+                  <li key={f} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13.5 }}>
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <circle cx="7" cy="7" r="6.5" stroke={pkg.primary ? 'var(--a2)' : 'var(--a3)'} strokeOpacity="0.5" />
+                      <path d="M4 7l2 2 4-4" stroke={pkg.primary ? 'var(--a2)' : 'var(--a3)'} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    <span style={{ opacity: 0.85 }}>{f}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                onClick={() => navigate('/planner')}
+                style={{
+                  all: 'unset', cursor: 'pointer', width: '100%', textAlign: 'center',
+                  padding: '13px 20px', borderRadius: 12, fontSize: 14, fontWeight: 500,
+                  background: pkg.primary ? 'var(--a2)' : 'var(--ink)',
+                  color: 'var(--card)',
+                  boxSizing: 'border-box',
+                  transition: 'opacity 0.18s'
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.85'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
+              >
+                {pkg.cta}
+              </button>
             </div>
+          </motion.div>
+        ))}
+      </div>
+    </motion.section>
+  );
+}
+
+/* ---------- Final CTA Banner ---------- */
+function FinalCTA({ onPlan }) {
+  const navigate = useNavigate();
+  return (
+    <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.6, ease: 'easeOut' }} style={{ padding: '0 24px 24px', background: 'var(--page-bg)' }}>
+      <div style={{ position: 'relative', borderRadius: 28, overflow: 'hidden', background: 'var(--ink)', color: 'var(--card)', textAlign: 'center' }} className={styles.finalCtaBox}>
+        {/* terracotta radial glow + grid */}
+        <svg width="100%" height="100%" viewBox="0 0 1200 500" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+          <defs>
+            <radialGradient id="ctag1" cx="0.5" cy="1.1" r="0.7">
+              <stop offset="0" stopColor="#5ac576" stopOpacity="0.28" />
+              <stop offset="0.55" stopColor="#8dd9a0" stopOpacity="0.1" />
+              <stop offset="1" stopColor="#141413" stopOpacity="0" />
+            </radialGradient>
+            <radialGradient id="ctag2" cx="0.18" cy="0.85" r="0.45">
+              <stop offset="0" stopColor="#5ac576" stopOpacity="0.15" />
+              <stop offset="1" stopColor="transparent" stopOpacity="0" />
+            </radialGradient>
+            <radialGradient id="ctag3" cx="0.82" cy="0.85" r="0.4">
+              <stop offset="0" stopColor="#5ac576" stopOpacity="0.12" />
+              <stop offset="1" stopColor="transparent" stopOpacity="0" />
+            </radialGradient>
+            <pattern id="ctaGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M40 0H0V40" stroke="white" strokeOpacity="0.04" fill="none" />
+            </pattern>
+          </defs>
+          <rect width="1200" height="500" fill="url(#ctag1)" />
+          <rect width="1200" height="500" fill="url(#ctag2)" />
+          <rect width="1200" height="500" fill="url(#ctag3)" />
+          <rect width="1200" height="500" fill="url(#ctaGrid)" />
+        </svg>
+
+        <div style={{ position: 'relative' }}>
+          <div style={{ fontFamily: 'var(--mono)', fontSize: 11.5, color: 'rgba(250,249,245,0.45)', marginBottom: 20, letterSpacing: '0.06em' }}>{'{ ready when you are }'}</div>
+          <h2 className={styles.ctaHeadline} style={{ lineHeight: 1.02, letterSpacing: '-0.035em', fontWeight: 500, margin: 0, marginBottom: 18, color: 'var(--card)' }}>
+            Start planning <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--a2)' }}>for free</span>.
+          </h2>
+          <p style={{ fontSize: 17, color: 'rgba(250,249,245,0.6)', maxWidth: 520, marginInline: 'auto', lineHeight: 1.6, marginBottom: 40 }}>
+            Join thousands of travellers who plan smarter. No credit card. No commitments. Just a plan, built for you.
+          </p>
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 40 }}>
+            <motion.button onClick={onPlan} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} style={{ all: 'unset', cursor: 'pointer', padding: '16px 28px', background: 'var(--a2)', color: 'var(--ink)', borderRadius: 999, fontSize: 15, fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 8, boxShadow: '0 0 0 1px var(--a2)' }}>
+              Plan my trip <I.arrow />
+            </motion.button>
+            <motion.button onClick={() => navigate('/discover')} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} style={{ all: 'unset', cursor: 'pointer', padding: '16px 26px', border: '1px solid rgba(255,255,255,0.18)', background: 'rgba(255,255,255,0.04)', borderRadius: 999, fontSize: 15, fontWeight: 500, color: 'rgba(250,249,245,0.85)', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+              Explore destinations <I.arrow />
+            </motion.button>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, fontFamily: 'var(--mono)', fontSize: 11, color: 'rgba(250,249,245,0.35)', letterSpacing: '0.04em' }}>
+            <span style={{ opacity: 0.4 }}>·</span>
+            <span>4.9 ★</span>
+            <span style={{ opacity: 0.4 }}>·</span>
+            <span>28 states</span>
+            <span style={{ opacity: 0.4 }}>·</span>
+            <span>made in India</span>
           </div>
         </div>
       </div>
@@ -931,8 +873,9 @@ export default function Home() {
       <HowItWorks />
       <Destinations />
       <Capabilities />
-      <ExploreJourneys />
-      <CinematicFooter onPlan={handlePlan} />
+      <Packages />
+      <Blogs />
+      <FinalCTA onPlan={handlePlan} />
     </div>
   );
 }

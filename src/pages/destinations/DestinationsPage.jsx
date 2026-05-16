@@ -167,7 +167,7 @@ const DestinationsPage = () => {
                 value={aiQuery}
                 onChange={e => setAiQuery(e.target.value)}
                 placeholder='AI search: "beaches for families" or "mountain treks"'
-                style={{ width: '100%', paddingLeft: '40px', paddingRight: '12px', paddingTop: '0.7rem', paddingBottom: '0.7rem', border: '1.5px solid #e0d7f7', borderRadius: '50px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', background: '#faf5ff', color: '#1e293b', boxSizing: 'border-box' }}
+                style={{ width: '100%', paddingLeft: '40px', paddingRight: '12px', paddingTop: '0.7rem', paddingBottom: '0.7rem', border: '1.5px solid #e0d7f7', borderRadius: '50px', fontFamily: 'inherit', fontSize: '0.9rem', outline: 'none', background: '#faf5ff', color: '#141413', boxSizing: 'border-box' }}
               />
             </div>
             <button
@@ -204,14 +204,14 @@ const DestinationsPage = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   padding: '6rem 2rem',
-                  backgroundColor: '#f8fafc',
+                  backgroundColor: '#f5f4ed',
                   borderRadius: '1.5rem',
-                  border: '1px dashed #cbd5e1',
+                  border: '1px dashed #c8c5bc',
                   textAlign: 'center',
                 }}>
-                  <SearchX size={48} style={{ color: '#94a3b8', marginBottom: '1.5rem' }} />
-                  <h3 style={{ fontSize: '1.5rem', fontWeight: 600, color: '#334155', marginBottom: '0.5rem' }}>No destinations found</h3>
-                  <p style={{ fontSize: '1rem', color: '#64748b', maxWidth: '400px' }}>
+                  <SearchX size={48} style={{ color: '#87867f', marginBottom: '1.5rem' }} />
+                  <h3 style={{ fontSize: '1.5rem', fontWeight: 600, color: '#30302e', marginBottom: '0.5rem' }}>No destinations found</h3>
+                  <p style={{ fontSize: '1rem', color: '#5e5d59', maxWidth: '400px' }}>
                     {searchTerm
                       ? `No results for "${searchTerm}". Try a different search.`
                       : 'Try adjusting your filters.'}
@@ -226,7 +226,7 @@ const DestinationsPage = () => {
                   onClick={() => { setPage(p => p + 1); fetchDestinations(); }}
                   disabled={loading}
                   style={{
-                    background: '#1e293b',
+                    background: '#141413',
                     color: 'white',
                     padding: '0.85rem 2.5rem',
                     borderRadius: '50px',

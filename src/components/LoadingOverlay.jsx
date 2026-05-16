@@ -17,12 +17,12 @@ const LoadingOverlay = ({ message = 'Loading...' }) => {
       <div style={{
         width: '48px',
         height: '48px',
-        border: '4px solid #e2e8f0',
-        borderTopColor: '#1e293b',
+        border: '4px solid #f0eee6',
+        borderTopColor: '#141413',
         borderRadius: '50%',
         animation: 'spin 0.8s linear infinite',
       }} />
-      <p style={{ color: '#475569', fontSize: '1rem', fontWeight: '500', fontFamily: 'Poppins, sans-serif' }}>
+      <p style={{ color: '#5e5d59', fontSize: '1rem', fontWeight: '500', fontFamily: 'Poppins, sans-serif' }}>
         {message}
       </p>
     </div>

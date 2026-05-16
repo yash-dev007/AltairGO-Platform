@@ -261,12 +261,12 @@ const TripPlannerPage = () => {
                     <div
                       key={dest.id}
                       onClick={() => addDest(dest)}
-                      style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '0.85rem 1rem', cursor: 'pointer', borderBottom: '1px solid #f1f5f9', transition: 'background 0.15s' }}
-                      onMouseEnter={(e) => e.currentTarget.style.background = '#f8fafc'}
+                      style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '0.85rem 1rem', cursor: 'pointer', borderBottom: '1px solid #faf9f5', transition: 'background 0.15s' }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = '#f5f4ed'}
                       onMouseLeave={(e) => e.currentTarget.style.background = 'white'}
                     >
                       <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--color-bg-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                        <MapPin size={16} color="#64748b" />
+                        <MapPin size={16} color="#5e5d59" />
                       </div>
                       <div>
                         <div style={{ fontWeight: 600, color: 'var(--color-text)', fontSize: '0.95rem' }}>{dest.name}</div>
@@ -462,7 +462,7 @@ const TripPlannerPage = () => {
                     <button
                       key={t.value}
                       onClick={() => setTravelerType(t.value)}
-                      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', padding: '0.75rem 1.25rem', border: `2px solid ${travelerType === t.value ? 'var(--color-primary)' : 'var(--color-border)'}`, borderRadius: '14px', background: travelerType === t.value ? 'var(--color-primary)' : 'var(--color-bg-elevated)', color: travelerType === t.value ? 'white' : '#475569', fontFamily: 'inherit', cursor: 'pointer', transition: 'all 0.2s', minWidth: '80px' }}
+                      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', padding: '0.75rem 1.25rem', border: `2px solid ${travelerType === t.value ? 'var(--color-primary)' : 'var(--color-border)'}`, borderRadius: '14px', background: travelerType === t.value ? 'var(--color-primary)' : 'var(--color-bg-elevated)', color: travelerType === t.value ? 'white' : '#5e5d59', fontFamily: 'inherit', cursor: 'pointer', transition: 'all 0.2s', minWidth: '80px' }}
                     >
                       <span style={{ fontSize: '1.5rem' }}>{t.emoji}</span>
                       <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>{t.label}</span>
@@ -510,7 +510,7 @@ const TripPlannerPage = () => {
                         border: `1.5px solid ${selectedInterests.includes(i.value) ? 'var(--color-primary)' : 'var(--color-border)'}`,
                         borderRadius: '999px',
                         background: selectedInterests.includes(i.value) ? 'var(--color-primary)' : 'var(--color-bg-elevated)',
-                        color: selectedInterests.includes(i.value) ? 'white' : '#475569',
+                        color: selectedInterests.includes(i.value) ? 'white' : '#5e5d59',
                         fontFamily: 'inherit', fontWeight: 500, cursor: 'pointer', fontSize: '0.88rem',
                         transition: 'all 0.15s',
                       }}

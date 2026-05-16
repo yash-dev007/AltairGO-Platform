@@ -1,160 +1,248 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Search, User, LogOut, Plane } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext.jsx';
-import { search } from '../../services/api.js';
-import styles from './Navbar.module.css';
 import logo from '../../assets/logo.png';
+import styles from './Navbar.module.css';
+
+const NAV_LINKS = [
+  { label: 'Home', to: '/' },
+  { label: 'Destinations', to: '/discover' },
+  { label: 'Blogs', to: '/blogs' },
+];
+
+function Logo() {
+  return (
+    <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+      <img src={logo} alt="AltairGO" style={{ height: 28, objectFit: 'contain' }} />
+    </Link>
+  );
+}
+
+const ArrowIcon = () => (
+  <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+    <path d="M2.5 6.5h8M7 3l3.5 3.5L7 10" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const UserIcon = () => (
+  <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+    <circle cx="6.5" cy="4.5" r="2.2" stroke="currentColor" strokeWidth="1.3" />
+    <path d="M1.5 11.5c0-2.2 2.2-4 5-4s5 1.8 5 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+  </svg>
+);
+
+const HamburgerIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+    <path d="M3 6h14M3 10h14M3 14h14" stroke="#1a1814" strokeWidth="1.6" strokeLinecap="round" />
+  </svg>
+);
+
+const CloseIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+    <path d="M4 4l12 12M16 4L4 16" stroke="#1a1814" strokeWidth="1.6" strokeLinecap="round" />
+  </svg>
+);
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [showResults, setShowResults] = useState(false);
-  const [searchLoading, setSearchLoading] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolledToBottom, setScrolledToBottom] = useState(false);
   const location = useLocation();
-  const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const searchTimeout = useRef(null);
+  const { user, logout } = useAuth();
 
-  useEffect(() => { setIsOpen(false); }, [location.pathname]);
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const isBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 100;
+      setScrolledToBottom(isBottom);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-  const handleSearchChange = (e) => {
-    const q = e.target.value;
-    setSearchQuery(q);
-    if (searchTimeout.current) clearTimeout(searchTimeout.current);
-    if (q.length < 2) { setShowResults(false); return; }
-    searchTimeout.current = setTimeout(async () => {
-      setSearchLoading(true);
-      try {
-        const data = await search(q, 'destination', 8);
-        setSearchResults(data.results || data || []);
-        setShowResults(true);
-      } catch {
-        setSearchResults([]);
-      } finally {
-        setSearchLoading(false);
-      }
-    }, 300);
-  };
-
-  const handleSearchKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      if (searchResults.length > 0) {
-        navigate(`/destination/${searchResults[0].id}`);
-      } else if (searchQuery.trim().length >= 2) {
-        navigate(`/discover?q=${encodeURIComponent(searchQuery.trim())}`);
-      }
-      setShowResults(false);
-      setSearchQuery('');
-    }
-  };
+  const isActive = (to) =>
+    to === '/' ? location.pathname === '/' : location.pathname.startsWith(to);
 
   const handleLogout = () => {
     logout();
-    setIsOpen(false);
+    setMobileOpen(false);
     navigate('/');
   };
 
   return (
-    <nav className={styles.navbar}>
-      <div className={styles.container}>
-        <Link to="/" className={styles.logo} onClick={() => window.scrollTo(0, 0)}>
-          <img src={logo} alt="AltairGO Logo" className={styles.logoImg} />
-        </Link>
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100 }}>
+      {/* ── Main pill bar ── */}
+      <div className={styles.navPill}>
+        <div style={{
+          opacity: scrolledToBottom ? 0 : 1,
+          pointerEvents: scrolledToBottom ? 'none' : 'auto',
+          transition: 'opacity 0.3s ease',
+          display: 'flex',
+          alignItems: 'center'
+        }}>
+          <Logo />
+        </div>
 
-        <button className={styles.mobileToggle} onClick={() => setIsOpen(!isOpen)} aria-label="Toggle menu">
-          {isOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-
-        <div className={`${styles.links} ${isOpen ? styles.active : ''}`}>
-          <Link to="/" className={styles.link} onClick={() => setIsOpen(false)}>Home</Link>
-          <Link to="/discover" className={styles.link} onClick={() => setIsOpen(false)}>Discover</Link>
-          <Link to="/blogs" className={styles.link} onClick={() => setIsOpen(false)}>Blogs</Link>
-          {user && <Link to="/trips" className={styles.link} onClick={() => setIsOpen(false)}>My Trips</Link>}
-
-          {user ? (
-            <button
-              onClick={handleLogout}
-              className={`${styles.link} ${styles.mobileBtnOnly}`}
-              style={{ background: 'transparent', border: 'none', color: '#dc2626', textAlign: 'left', paddingLeft: 0, fontSize: '1.5rem', cursor: 'pointer' }}
+        {/* Desktop links */}
+        <nav className={styles.desktopLinks}>
+          {NAV_LINKS.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              className={styles.desktopLink}
+              style={{
+                textDecoration: 'none',
+                padding: '9px 14px',
+                fontSize: 13.5,
+                lineHeight: 1,
+                fontWeight: 500,
+                color: isActive(item.to) ? 'var(--ink, #1a1814)' : 'var(--ink-soft, #6b6356)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                borderBottom: isActive(item.to) ? '1.5px solid var(--ink, #1a1814)' : '1.5px solid transparent',
+                transition: 'color 0.2s, border-color 0.2s',
+              }}
             >
-              Logout
-            </button>
-          ) : (
-            <Link to="/login" className={`${styles.mobileLoginBtn} ${styles.mobileBtnOnly}`} onClick={() => setIsOpen(false)}>
-              <User size={18} className={styles.btnIcon} />
-              Sign In
+              {item.label}
             </Link>
-          )}
-        </div>
+          ))}
+        </nav>
 
-        <div className={styles.searchContainer}>
-          <div className={styles.searchWrapper}>
-            <Search size={16} className={styles.searchIcon} />
-            <input
-              type="text"
-              placeholder="Search destinations..."
-              className={styles.searchInput}
-              value={searchQuery}
-              onChange={handleSearchChange}
-              onKeyDown={handleSearchKeyDown}
-              onFocus={() => { if (searchQuery.length >= 2) setShowResults(true); }}
-              onBlur={() => setTimeout(() => setShowResults(false), 200)}
-            />
-          </div>
-          {showResults && (
-            <div className={styles.searchResults}>
-              {searchLoading ? (
-                <div style={{ padding: '1rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.9rem' }}>Searching...</div>
-              ) : searchResults.length > 0 ? (
-                searchResults.map((item) => (
-                  <Link
-                    key={item.id}
-                    to={`/destination/${item.id}`}
-                    className={styles.searchResultItem}
-                    onClick={() => { setShowResults(false); setSearchQuery(''); }}
-                  >
-                    <div className={styles.resultImage}>
-                      {item.image_url || item.image ? (
-                        <img src={item.image_url || item.image} alt={item.name} onError={(e) => { e.target.style.display = 'none'; }} />
-                      ) : null}
-                    </div>
-                    <div className={styles.resultInfo}>
-                      <span className={styles.resultName}>{item.name}</span>
-                      <span className={styles.resultLocation}>{item.location || item.state_name || ''}</span>
-                    </div>
-                  </Link>
-                ))
-              ) : (
-                <div style={{ padding: '1rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.9rem' }}>No results found</div>
-              )}
-            </div>
-          )}
-        </div>
-
-        <div className={styles.navActions}>
+        {/* CTA group */}
+        <div className={styles.ctaGroup}>
           {user ? (
             <>
-              <Link to="/trips" className={styles.userChip}>
-                <User size={16} />
-                {user.name?.split(' ')[0] || 'Account'}
+              <Link
+                to="/trips"
+                className={styles.signInDesktop}
+                style={{
+                  all: 'unset', cursor: 'pointer', fontSize: 13.5, fontWeight: 500,
+                  padding: '9px 16px', color: 'var(--ink-soft, #6b6356)',
+                  borderRadius: 999, border: '1px solid var(--line, #e7e2d8)',
+                  background: 'var(--card, #fff)', display: 'inline-flex', alignItems: 'center', gap: 6,
+                  transition: 'all 0.2s ease', boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
+                }}
+              >
+                <UserIcon />
+                Account
               </Link>
-              <button onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'none', border: '1px solid #e2e8f0', color: '#64748b', padding: '0.45rem 0.9rem', borderRadius: '50px', cursor: 'pointer', fontSize: '0.85rem', fontFamily: 'inherit' }}>
-                <LogOut size={14} /> Logout
+              <button
+                onClick={handleLogout}
+                className={styles.planDesktop}
+                style={{
+                  all: 'unset', cursor: 'pointer', fontSize: 13.5, fontWeight: 600,
+                  padding: '10px 20px', background: 'var(--ink, #1a1814)',
+                  color: 'var(--page-bg, #faf7f2)', borderRadius: 999,
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  transition: 'all 0.2s ease', boxShadow: '0 4px 14px rgba(0,0,0,0.18)',
+                }}
+              >
+                Sign Out
               </button>
             </>
           ) : (
             <>
-              <Link to="/login" className={styles.loginBtn}>
-                <User size={16} className={styles.btnIcon} />
+              <button
+                onClick={() => navigate('/login')}
+                className={styles.signInDesktop}
+                style={{
+                  all: 'unset', cursor: 'pointer', fontSize: 13.5, fontWeight: 500,
+                  padding: '9px 16px', color: 'var(--ink-soft, #6b6356)',
+                  borderRadius: 999, border: '1px solid var(--line, #e7e2d8)',
+                  background: 'var(--card, #fff)', display: 'inline-flex', alignItems: 'center', gap: 6,
+                  transition: 'all 0.2s ease', boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
+                }}
+              >
+                <UserIcon />
                 Sign In
-              </Link>
+              </button>
             </>
           )}
+
+          {/* Hamburger Menu Only for Mobile (Visible via CSS media query) */}
+          <button
+            className={styles.hamburger}
+            onClick={() => setMobileOpen((o) => !o)}
+            aria-label="Toggle menu"
+          >
+            {mobileOpen ? <CloseIcon /> : <HamburgerIcon />}
+          </button>
         </div>
       </div>
-    </nav>
+
+      {/* ── Mobile dropdown ── */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            className={styles.mobileMenu}
+            initial={{ opacity: 0, y: -6, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.98 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+          >
+            {NAV_LINKS.map((item, i) => (
+              <motion.div
+                key={item.to}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.2, delay: i * 0.04, ease: 'easeOut' }}
+              >
+                <Link
+                  to={item.to}
+                  onClick={() => setMobileOpen(false)}
+                  className={`${styles.menuLink} ${isActive(item.to) ? styles.activeMenuLink : ''}`}
+                >
+                  {item.label}
+                </Link>
+              </motion.div>
+            ))}
+            {user && (
+              <Link to="/trips" className={styles.menuLink} onClick={() => setMobileOpen(false)}>
+                My Trips
+              </Link>
+            )}
+
+            <motion.div
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.22, delay: 0.14, ease: 'easeOut' }}
+              style={{ marginTop: 8 }}
+            >
+              {user ? (
+                <button
+                  onClick={handleLogout}
+                  style={{
+                    all: 'unset', cursor: 'pointer',
+                    padding: '13px 20px', fontSize: 15, fontWeight: 600,
+                    color: '#dc2626', borderRadius: 14,
+                    border: '1.5px solid #fecaca', background: '#fef2f2',
+                    display: 'flex', alignItems: 'center', gap: 8,
+                    justifyContent: 'center', width: '100%', boxSizing: 'border-box',
+                  }}
+                >
+                  Sign Out
+                </button>
+              ) : (
+                <button
+                  onClick={() => { navigate('/login'); setMobileOpen(false); }}
+                  style={{
+                    all: 'unset', cursor: 'pointer',
+                    padding: '14px 20px', fontSize: 15, fontWeight: 600,
+                    color: 'var(--page-bg, #faf9f5)',
+                    background: 'var(--ink, #141413)',
+                    borderRadius: 14,
+                    display: 'flex', alignItems: 'center', gap: 8,
+                    justifyContent: 'center', width: '100%', boxSizing: 'border-box',
+                  }}
+                >
+                  <UserIcon /> Sign In
+                </button>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 };
 

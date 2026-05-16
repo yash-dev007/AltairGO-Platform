@@ -54,9 +54,9 @@ const PageLoader = () => (
 // 404 Page
 const NotFoundPage = () => (
   <div style={{ minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem', padding: '2rem', textAlign: 'center' }}>
-    <h1 style={{ fontSize: '4rem', fontWeight: 800, color: '#1e293b', margin: 0 }}>404</h1>
-    <p style={{ fontSize: '1.2rem', color: '#64748b', margin: 0 }}>Page not found</p>
-    <a href="/" style={{ marginTop: '1rem', background: '#1e293b', color: 'white', padding: '0.75rem 2rem', borderRadius: '999px', textDecoration: 'none', fontWeight: 600 }}>Go Home</a>
+    <h1 style={{ fontSize: '4rem', fontWeight: 800, color: '#141413', margin: 0 }}>404</h1>
+    <p style={{ fontSize: '1.2rem', color: '#5e5d59', margin: 0 }}>Page not found</p>
+    <a href="/" style={{ marginTop: '1rem', background: '#141413', color: 'white', padding: '0.75rem 2rem', borderRadius: '999px', textDecoration: 'none', fontWeight: 600 }}>Go Home</a>
   </div>
 );
 
@@ -65,8 +65,7 @@ function AppLayout() {
   const isAdmin = location.pathname.startsWith('/admin');
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
   const isGenerating = location.pathname.startsWith('/planner/generating');
-  const isHome = location.pathname === '/';
-  const shouldHideLayout = isAdmin || isAuthPage || isGenerating || isHome;
+  const shouldHideLayout = isAdmin || isAuthPage || isGenerating;
 
   return (
     <>

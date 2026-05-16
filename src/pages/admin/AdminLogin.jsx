@@ -27,11 +27,11 @@ const AdminLogin = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0f172a', padding: '2rem' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#141413', padding: '2rem' }}>
       <div style={{ width: '100%', maxWidth: '400px' }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <div style={{ width: '64px', height: '64px', background: 'rgba(255,255,255,0.1)', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <Shield size={30} color="#4ade80" />
+            <Shield size={30} color="#5ac576" />
           </div>
           <h1 style={{ color: 'white', fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.02em', marginBottom: '0.5rem' }}>Admin Access</h1>
           <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.95rem' }}>Enter your admin access key</p>
@@ -69,7 +69,7 @@ const AdminLogin = () => {
           <button
             type="submit"
             disabled={loading}
-            style={{ width: '100%', padding: '14px', background: '#4ade80', color: '#0f172a', border: 'none', borderRadius: '12px', fontFamily: 'inherit', fontWeight: 700, fontSize: '1rem', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1 }}
+            style={{ width: '100%', padding: '14px', background: '#5ac576', color: '#141413', border: 'none', borderRadius: '12px', fontFamily: 'inherit', fontWeight: 700, fontSize: '1rem', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1 }}
           >
             {loading ? 'Verifying...' : 'Access Dashboard'}
           </button>

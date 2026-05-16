@@ -28,14 +28,14 @@ class ErrorBoundary extends React.Component {
           fontFamily: 'Poppins, sans-serif',
         }}>
           <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⚠️</div>
-          <h2 style={{ fontSize: '1.5rem', color: '#1e293b', marginBottom: '0.5rem' }}>Something went wrong</h2>
-          <p style={{ color: '#64748b', marginBottom: '2rem', maxWidth: '400px' }}>
+          <h2 style={{ fontSize: '1.5rem', color: '#141413', marginBottom: '0.5rem' }}>Something went wrong</h2>
+          <p style={{ color: '#5e5d59', marginBottom: '2rem', maxWidth: '400px' }}>
             An unexpected error occurred. Please refresh the page and try again.
           </p>
           <button
             onClick={() => { this.setState({ hasError: false, error: null }); window.location.reload(); }}
             style={{
-              background: '#1e293b',
+              background: '#141413',
               color: 'white',
               padding: '0.75rem 2rem',
               border: 'none',

@@ -8,7 +8,7 @@ const BOOKING_TYPE_ICONS = {
 
 const BOOKING_STATUS_COLORS = {
   pending: '#0BA060', approved: '#10b981', executed: '#3b82f6',
-  failed: '#ef4444', cancelled: '#94a3b8', rejected: '#ef4444',
+  failed: '#ef4444', cancelled: '#87867f', rejected: '#ef4444',
 };
 
 export default function BookingsTab({
@@ -38,11 +38,11 @@ export default function BookingsTab({
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <h2 style={{ fontWeight: 700, color: '#1e293b', fontSize: '1.2rem' }}>Booking Plan</h2>
+        <h2 style={{ fontWeight: 700, color: '#141413', fontSize: '1.2rem' }}>Booking Plan</h2>
         {bookings.some(b => b.status === 'approved') && (
           <button
             onClick={onExecuteAll}
-            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0.75rem 1.5rem', background: '#1e293b', color: 'white', border: 'none', borderRadius: '50px', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer', fontSize: '0.9rem' }}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0.75rem 1.5rem', background: '#141413', color: 'white', border: 'none', borderRadius: '50px', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer', fontSize: '0.9rem' }}
           >
             <Check size={16} /> Confirm & Book All Approved
           </button>
@@ -56,7 +56,7 @@ export default function BookingsTab({
         return (
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
             {pills.map(({ status, count }) => (
-              <span key={status} style={{ padding: '4px 12px', borderRadius: '999px', fontSize: '0.8rem', fontWeight: 700, background: (BOOKING_STATUS_COLORS[status] || '#94a3b8') + '18', color: BOOKING_STATUS_COLORS[status] || '#94a3b8', textTransform: 'capitalize' }}>
+              <span key={status} style={{ padding: '4px 12px', borderRadius: '999px', fontSize: '0.8rem', fontWeight: 700, background: (BOOKING_STATUS_COLORS[status] || '#87867f') + '18', color: BOOKING_STATUS_COLORS[status] || '#87867f', textTransform: 'capitalize' }}>
                 {count} {status}
               </span>
             ))}
@@ -65,7 +65,7 @@ export default function BookingsTab({
       })()}
 
       {bookings.length === 0 ? (
-        <div style={{ background: 'white', borderRadius: '16px', padding: '3rem', textAlign: 'center', color: '#64748b' }}>
+        <div style={{ background: 'white', borderRadius: '16px', padding: '3rem', textAlign: 'center', color: '#5e5d59' }}>
           <Package size={40} style={{ margin: '0 auto 1rem', opacity: 0.3 }} />
           <p>No bookings found. Generate a trip to see booking options.</p>
         </div>
@@ -76,28 +76,28 @@ export default function BookingsTab({
             const itemName = b.item_name || b.provider_name || b.booking_type?.replace(/_/g, ' ');
             const cost = b.cost_inr || b.estimated_cost;
             return (
-              <div key={b.id} style={{ background: 'white', borderRadius: '16px', padding: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)', borderLeft: `4px solid ${BOOKING_STATUS_COLORS[b.status] || '#e2e8f0'}` }}>
+              <div key={b.id} style={{ background: 'white', borderRadius: '16px', padding: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)', borderLeft: `4px solid ${BOOKING_STATUS_COLORS[b.status] || '#f0eee6'}` }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.75rem' }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
                       <span style={{ fontSize: '1.3rem', lineHeight: 1 }}>{typeIcon}</span>
-                      <span style={{ fontWeight: 700, color: '#1e293b', fontSize: '0.95rem' }}>{itemName}</span>
-                      <span style={{ fontSize: '0.75rem', fontWeight: 600, padding: '3px 10px', borderRadius: '999px', background: (BOOKING_STATUS_COLORS[b.status] || '#94a3b8') + '20', color: BOOKING_STATUS_COLORS[b.status] || '#94a3b8', textTransform: 'capitalize' }}>
+                      <span style={{ fontWeight: 700, color: '#141413', fontSize: '0.95rem' }}>{itemName}</span>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 600, padding: '3px 10px', borderRadius: '999px', background: (BOOKING_STATUS_COLORS[b.status] || '#87867f') + '20', color: BOOKING_STATUS_COLORS[b.status] || '#87867f', textTransform: 'capitalize' }}>
                         {b.status}
                       </span>
                       {b.self_arranged && (
                         <span title="You'll handle this booking yourself" style={{ fontSize: '0.75rem', background: '#f0f9ff', color: '#0284c7', padding: '3px 8px', borderRadius: '999px', fontWeight: 600, cursor: 'help' }}>Self-arranged ⓘ</span>
                       )}
                     </div>
-                    {b.partner_name && <div style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '4px' }}>via {b.partner_name}</div>}
-                    {b.notes && <div style={{ fontSize: '0.82rem', color: '#94a3b8', marginBottom: '4px' }}>{b.notes}</div>}
+                    {b.partner_name && <div style={{ fontSize: '0.85rem', color: '#5e5d59', marginBottom: '4px' }}>via {b.partner_name}</div>}
+                    {b.notes && <div style={{ fontSize: '0.82rem', color: '#87867f', marginBottom: '4px' }}>{b.notes}</div>}
                     <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                      {cost > 0 && <span style={{ fontSize: '1rem', fontWeight: 700, color: '#1e293b' }}>₹{Number(cost).toLocaleString('en-IN')}</span>}
+                      {cost > 0 && <span style={{ fontSize: '1rem', fontWeight: 700, color: '#141413' }}>₹{Number(cost).toLocaleString('en-IN')}</span>}
                       {b.booking_url && (
                         <a href={b.booking_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.82rem', color: '#0284c7', fontWeight: 600 }}>View booking ↗</a>
                       )}
                       {b.booking_ref && (
-                        <span style={{ fontSize: '0.78rem', color: '#94a3b8' }}>Ref: {b.booking_ref}</span>
+                        <span style={{ fontSize: '0.78rem', color: '#87867f' }}>Ref: {b.booking_ref}</span>
                       )}
                     </div>
                   </div>
@@ -109,7 +109,7 @@ export default function BookingsTab({
                       </>
                     )}
                     {(b.status === 'approved' || b.status === 'executed' || b.status === 'booked') && (
-                      <button onClick={() => onCancel(b.id)} style={{ padding: '0.5rem 1rem', background: '#f8fafc', color: '#64748b', border: '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem' }}>Cancel</button>
+                      <button onClick={() => onCancel(b.id)} style={{ padding: '0.5rem 1rem', background: '#f5f4ed', color: '#5e5d59', border: '1px solid #f0eee6', borderRadius: '8px', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem' }}>Cancel</button>
                     )}
                   </div>
                 </div>

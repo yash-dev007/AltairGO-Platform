@@ -143,17 +143,17 @@ const GeneratingPage = () => {
 
   if (error) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', padding: '2rem' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f4ed', padding: '2rem' }}>
         <div style={{ textAlign: 'center', maxWidth: '500px' }}>
           <div style={{ width: '64px', height: '64px', background: '#fef2f2', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
             <AlertCircle size={32} color="#dc2626" />
           </div>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.75rem' }}>Generation Failed</h2>
-          <p style={{ color: '#64748b', marginBottom: '2rem', lineHeight: 1.6 }}>{error}</p>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#141413', marginBottom: '0.75rem' }}>Generation Failed</h2>
+          <p style={{ color: '#5e5d59', marginBottom: '2rem', lineHeight: 1.6 }}>{error}</p>
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
             <button
               onClick={() => navigate('/planner')}
-              style={{ padding: '0.85rem 2rem', background: '#1e293b', color: 'white', border: 'none', borderRadius: '50px', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer', fontSize: '0.95rem' }}
+              style={{ padding: '0.85rem 2rem', background: '#141413', color: 'white', border: 'none', borderRadius: '50px', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer', fontSize: '0.95rem' }}
             >
               Try Again
             </button>
@@ -166,7 +166,7 @@ const GeneratingPage = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0d3b2e 100%)',
+      background: 'linear-gradient(135deg, #141413 0%, #141413 50%, #0d3b2e 100%)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -180,7 +180,7 @@ const GeneratingPage = () => {
             position: 'absolute',
             inset: 0,
             borderRadius: '50%',
-            border: '3px solid rgba(74,222,128,0.2)',
+            border: '3px solid rgba(90, 197, 118,0.2)',
             animation: 'spin 3s linear infinite',
           }} />
           <div style={{
@@ -188,7 +188,7 @@ const GeneratingPage = () => {
             inset: '8px',
             borderRadius: '50%',
             border: '3px solid transparent',
-            borderTopColor: '#4ade80',
+            borderTopColor: '#5ac576',
             animation: 'spin 1.5s linear infinite',
           }} />
           <div style={{
@@ -198,7 +198,7 @@ const GeneratingPage = () => {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-            <Sparkles size={36} color="#4ade80" />
+            <Sparkles size={36} color="#5ac576" />
           </div>
         </div>
 
@@ -206,7 +206,7 @@ const GeneratingPage = () => {
           Building Your Perfect Trip
         </h1>
 
-        <p style={{ color: '#4ade80', fontSize: '1.05rem', fontWeight: 500, minHeight: '1.5rem', marginBottom: '2.5rem', transition: 'opacity 0.5s' }}>
+        <p style={{ color: '#5ac576', fontSize: '1.05rem', fontWeight: 500, minHeight: '1.5rem', marginBottom: '2.5rem', transition: 'opacity 0.5s' }}>
           {MESSAGES[messageIndex]}
         </p>
 
@@ -215,7 +215,7 @@ const GeneratingPage = () => {
           <div style={{
             height: '100%',
             borderRadius: '999px',
-            background: 'linear-gradient(90deg, #4ade80, #22d3ee)',
+            background: 'linear-gradient(90deg, #5ac576, #22d3ee)',
             width: `${progress}%`,
             transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
           }} />
@@ -231,11 +231,11 @@ const GeneratingPage = () => {
             <div key={i} style={{
               padding: '1rem',
               borderRadius: '12px',
-              background: stage.done ? 'rgba(74,222,128,0.1)' : 'rgba(255,255,255,0.05)',
-              border: `1px solid ${stage.done ? 'rgba(74,222,128,0.3)' : 'rgba(255,255,255,0.08)'}`,
+              background: stage.done ? 'rgba(90, 197, 118,0.1)' : 'rgba(255,255,255,0.05)',
+              border: `1px solid ${stage.done ? 'rgba(90, 197, 118,0.3)' : 'rgba(255,255,255,0.08)'}`,
               transition: 'all 0.5s',
             }}>
-              <div style={{ fontSize: '0.85rem', fontWeight: 600, color: stage.done ? '#4ade80' : 'rgba(255,255,255,0.5)' }}>
+              <div style={{ fontSize: '0.85rem', fontWeight: 600, color: stage.done ? '#5ac576' : 'rgba(255,255,255,0.5)' }}>
                 {stage.done ? '✓ ' : ''}{stage.label}
               </div>
             </div>

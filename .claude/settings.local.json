@@ -6,5 +6,9 @@
       "Bash(.venv/Scripts/python.exe -c \"import backend.scripts.enrich_destinations; print\\(''OK, destinations:'', len\\(backend.scripts.enrich_destinations.DESTINATIONS\\)\\)\")",
       "WebFetch(domain:api.anthropic.com)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "playwright"
+  ],
+  "enableAllProjectMcpServers": true
 }
