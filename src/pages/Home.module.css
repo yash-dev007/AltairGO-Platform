@@ -14,7 +14,7 @@
   --serif: 'Source Serif 4', Georgia, serif;
   --mono: 'JetBrains Mono', ui-monospace, monospace;
 
-  font-family: 'Geist', system-ui, sans-serif;
+  font-family: var(--font-body);
   background: var(--page-bg);
   color: var(--ink);
   min-height: 100vh;
@@ -142,6 +142,10 @@
 
   .footerGrid {
     grid-template-columns: 1fr 1fr !important;
+  }
+
+  .hideMobile {
+    display: none !important;
   }
 }
 
